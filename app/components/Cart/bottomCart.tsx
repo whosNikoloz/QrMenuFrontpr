@@ -31,32 +31,53 @@ const BottomCart: React.FC<{ lng: string; items: Item[] }> = ({
   items,
 }) => {
   const [cartItems, setCartItems] = useState<Item[]>([]);
-
-  const [itemQuantities, setItemQuantities] = useState<ItemQuantities>(
-    cartItems.reduce((quantities: ItemQuantities, item) => {
-      quantities[item.id] = 1;
-      return quantities;
-    }, {} as ItemQuantities)
-  );
+  const [itemQuantities, setItemQuantities] = useState<ItemQuantities>({});
 
   useEffect(() => {
-    setCartItems(items);
-    // Initialize itemQuantities based on items
-    const initialQuantities = items.reduce(
-      (quantities: ItemQuantities, item) => {
-        quantities[item.id] = item.quantity || 0;
-        return quantities;
-      },
-      {}
-    );
-    setItemQuantities(initialQuantities);
+    // Fetch cart items from localStorage when component mounts
+    const storedCartItems = localStorage.getItem("cartItems");
+    if (storedCartItems) {
+      try {
+        const parsedCartItems = JSON.parse(storedCartItems);
+        if (Array.isArray(parsedCartItems)) {
+          // Ensure parsed data is an array
+          setCartItems(parsedCartItems);
+        } else {
+          // If not an array, handle it accordingly (e.g., set to an empty array)
+          setCartItems([]);
+        }
+      } catch (error) {
+        console.error("Error parsing cart items from localStorage:", error);
+        // If parsing fails, set cartItems to an empty array
+        setCartItems([]);
+      }
+    } else {
+      // If no cart items found in localStorage, initialize cartItems as an empty array
+      setCartItems([]);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Update cart items from props whenever they change
+    if (items.length > 0) {
+      setCartItems(items);
+    }
   }, [items]);
+
+  useEffect(() => {
+    // Initialize itemQuantities based on cartItems
+    const initialQuantities: ItemQuantities = {};
+    cartItems.forEach((item) => {
+      initialQuantities[item.id] = 1; // You can set a default quantity here
+    });
+    setItemQuantities(initialQuantities);
+  }, [cartItems]);
 
   // Function to handle incrementing item quantity
   const handleIncrement = (itemId: number) => {
     setItemQuantities((prevQuantities) => ({
       ...prevQuantities,
-      [itemId]: prevQuantities[itemId] + 1,
+      [itemId]: (prevQuantities[itemId] || 0) + 1,
     }));
   };
 
@@ -71,9 +92,7 @@ const BottomCart: React.FC<{ lng: string; items: Item[] }> = ({
   };
 
   const getTotalPrice = (): number => {
-    return cartItems.reduce((total, item) => {
-      return total + item.price * (itemQuantities[item.id] || 0);
-    }, 0);
+    return 0;
   };
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -127,54 +146,58 @@ const BottomCart: React.FC<{ lng: string; items: Item[] }> = ({
             {lng === "en" ? "Your Cart" : "თქვენი კალათა"}
           </ModalHeader>
           <ModalBody>
-            {cartItems.map((item) => (
-              <div
-                className="flex justify-between bg-transparent p-2"
-                key={item.id}
-              >
-                <Image
-                  src={item.imageUrl}
-                  width={150}
-                  alt="Sample Image"
-                  className="rounded-lg"
-                />
-                <div className="ml-4 flex w-full flex-col justify-between">
-                  <h1 className="text-md font-bold text-black dark:text-white">
-                    {item.title}
-                  </h1>
-                  <p className="text-xs text-white dark:text-white/70">
-                    {item.description}
-                  </p>
-                  <div className="mt-auto flex items-center justify-between">
-                    <p className="mr-2 text-sm text-black dark:text-white">
-                      {item.price}{" "}
-                      <span className="text-xs ml-1">
-                        {lng === "en" ? "GEL" : "₾"}
-                      </span>
-                    </p>
-                    <ButtonGroup className="gap-2">
-                      <Button
-                        size="sm"
-                        isIconOnly
-                        onClick={() => handleDecrement(item.id)}
-                        className="text-white text-3xl bg-transparent"
-                      >
-                        -
-                      </Button>
-                      <p>{itemQuantities[item.id]}</p>
-                      <Button
-                        size="sm"
-                        isIconOnly
-                        onClick={() => handleIncrement(item.id)}
-                        className="text-white text-3xl bg-transparent"
-                      >
-                        +
-                      </Button>
-                    </ButtonGroup>
+            {cartItems && (
+              <>
+                {cartItems.map((item, index) => (
+                  <div
+                    className="flex justify-between bg-transparent p-2"
+                    key={index}
+                  >
+                    <Image
+                      src={item.imageUrl}
+                      width={150}
+                      alt="Sample Image"
+                      className="rounded-lg"
+                    />
+                    <div className="ml-4 flex w-full flex-col justify-between">
+                      <h1 className="text-md font-bold text-black dark:text-white">
+                        {item.title}
+                      </h1>
+                      <p className="text-xs text-white dark:text-white/70">
+                        {item.description}
+                      </p>
+                      <div className="mt-auto flex items-center justify-between">
+                        <p className="mr-2 text-sm text-black dark:text-white">
+                          {item.price}{" "}
+                          <span className="text-xs ml-1">
+                            {lng === "en" ? "GEL" : "₾"}
+                          </span>
+                        </p>
+                        <ButtonGroup className="gap-2">
+                          <Button
+                            size="sm"
+                            isIconOnly
+                            onClick={() => handleDecrement(item.id)}
+                            className="text-white text-3xl bg-transparent"
+                          >
+                            -
+                          </Button>
+                          <p>{itemQuantities[item.id]}</p>
+                          <Button
+                            size="sm"
+                            isIconOnly
+                            onClick={() => handleIncrement(item.id)}
+                            className="text-white text-3xl bg-transparent"
+                          >
+                            +
+                          </Button>
+                        </ButtonGroup>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            ))}
+                ))}
+              </>
+            )}
           </ModalBody>
           <ModalFooter className="flex flex-col justify-center w-full">
             <h1 className="font-bold text-lg flex justify-between p-1">

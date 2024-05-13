@@ -30,7 +30,6 @@ const CategorySection: React.FC<CategorySectionProps> = ({
   const handleAddToCart = (item: Item) => {
     if (onAddToCart) {
       onAddToCart(item);
-      localStorage.setItem("cartItems", JSON.stringify(item));
     }
   };
 

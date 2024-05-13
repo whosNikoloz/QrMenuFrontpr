@@ -118,7 +118,8 @@ export default function MenuPage({
       const newCartItems = [...prevCartItems, item];
       return newCartItems;
     });
-    console.log("Cart Items: ", cartItems);
+    console.log(cartItems);
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
   }
 
   return (
