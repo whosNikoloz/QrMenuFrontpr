@@ -37,8 +37,16 @@ export default function MenuPage({
 
   return (
     <MainLayout lang={lang}>
-      <CategorySection title={staticData.title} items={staticData.items} />
-      <CategorySection title={staticData.title} items={staticData.items} />
+      <CategorySection
+        title={staticData.title}
+        items={staticData.items}
+        lang={lang}
+      />
+      <CategorySection
+        title={staticData.title}
+        items={staticData.items}
+        lang={lang}
+      />
     </MainLayout>
   );
 }
