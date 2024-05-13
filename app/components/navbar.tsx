@@ -5,6 +5,7 @@ import { Link, Button, Avatar, ButtonGroup } from "@nextui-org/react";
 import { usePathname, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
+import { motion } from "framer-motion";
 import {
   Modal,
   ModalContent,
@@ -31,7 +32,17 @@ const UserIcon = dynamic(
   { ssr: false }
 );
 
-export const Navbar = ({ lng, NotMain }: { lng: string; NotMain: boolean }) => {
+interface NavbarProps {
+  lng: string;
+  Menupage: boolean;
+  extoggleLayout: (arg: boolean) => void;
+}
+
+export const Navbar: React.FC<NavbarProps> = ({
+  lng,
+  Menupage,
+  extoggleLayout,
+}) => {
   const [lngstartCon, setLngstartCon] = useState<ReactNode>(null);
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [visible, setVisible] = useState(true);
@@ -63,9 +74,6 @@ export const Navbar = ({ lng, NotMain }: { lng: string; NotMain: boolean }) => {
     router.push(newPath);
     return newPath;
   };
-
-  const handleLogin = () => {};
-
   useEffect(() => {
     switch (lng) {
       case "ka":
@@ -101,6 +109,21 @@ export const Navbar = ({ lng, NotMain }: { lng: string; NotMain: boolean }) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [prevScrollPos]);
 
+  const [biglayout, setBiglayout] = useState(true);
+
+  const toggleLayout = () => setBiglayout(!biglayout);
+
+  const handleToggle = () => {
+    toggleLayout();
+    extoggleLayout(biglayout); // Call the toggleLayout function passed from parent (MenuLayout)
+  };
+
+  const spring = {
+    type: "spring",
+    stiffness: 700,
+    damping: 30,
+  };
+
   return (
     <>
       <nav
@@ -133,6 +156,15 @@ export const Navbar = ({ lng, NotMain }: { lng: string; NotMain: boolean }) => {
                     {lng == "en" ? "About Me" : "ჩემს შესახებ"}
                   </Link> */}
               <ButtonGroup>
+                {Menupage && (
+                  <div
+                    className="switch"
+                    data-isOn={biglayout}
+                    onClick={handleToggle}
+                  >
+                    <motion.div className="handle" layout transition={spring} />
+                  </div>
+                )}
                 <Button
                   className="bg-transparent text-black dark:text-white"
                   onClick={() =>
@@ -154,13 +186,6 @@ export const Navbar = ({ lng, NotMain }: { lng: string; NotMain: boolean }) => {
                   isIconOnly
                 >
                   {lngstartCon}
-                </Button>
-                <Button
-                  className="bg-transparent text-black dark:text-white"
-                  isIconOnly
-                  onPress={onOpen}
-                >
-                  {<UserIcon size={22} />}
                 </Button>
               </ButtonGroup>
             </div>

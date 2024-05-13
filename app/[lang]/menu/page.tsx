@@ -1,7 +1,8 @@
+"use client";
 import { Locale } from "@/i18n.config";
 import React from "react";
 import CategorySection from "@/app/components/menu/categorysection";
-import MainLayout from "../layouts/MainLayout";
+import { MenuLayout } from "../layouts/MenuLayout";
 
 export default function MenuPage({
   params: { lang },
@@ -35,18 +36,25 @@ export default function MenuPage({
     ],
   };
 
+  const [changelayout, setChangelayout] = React.useState(false);
+  function toggleLayout(arg: boolean) {
+    setChangelayout(arg);
+  }
+
   return (
-    <MainLayout lang={lang}>
+    <MenuLayout lang={lang} toggleLayout={toggleLayout}>
       <CategorySection
+        biglayout={changelayout}
         title={staticData.title}
         items={staticData.items}
         lang={lang}
       />
       <CategorySection
+        biglayout={changelayout}
         title={staticData.title}
         items={staticData.items}
         lang={lang}
       />
-    </MainLayout>
+    </MenuLayout>
   );
 }

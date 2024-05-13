@@ -2,23 +2,24 @@ import { Navbar } from "@/app/components/navbar";
 import { Locale } from "@/i18n.config";
 import { BottomCart } from "@/app/components/Cart/bottomCart";
 
-export default function MainLayout({
-  children,
-  lang,
-}: {
-  children: React.ReactNode;
+interface MenuLayoutProps {
   lang: Locale;
-}) {
+  children: React.ReactNode;
+  toggleLayout: (arg: boolean) => void;
+}
+
+export const MenuLayout: React.FC<MenuLayoutProps> = ({
+  lang,
+  toggleLayout,
+  children,
+}) => {
+  function MenuToggleLayout(data: any) {
+    toggleLayout(data);
+  }
   return (
     <div className="relative  flex flex-col h-full ">
       <div className="justify-center items-center flex mb-24">
-        <Navbar
-          lng={lang}
-          Menupage={false}
-          extoggleLayout={function (arg: boolean): void {
-            throw new Error("Function not implemented.");
-          }}
-        />{" "}
+        <Navbar lng={lang} Menupage={true} extoggleLayout={MenuToggleLayout} />
       </div>
       {children}
       <div className="justify-center bg-transparent items-center flex mb-24">
@@ -26,4 +27,4 @@ export default function MainLayout({
       </div>
     </div>
   );
-}
+};
