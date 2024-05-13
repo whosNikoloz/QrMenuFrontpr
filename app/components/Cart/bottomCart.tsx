@@ -36,25 +36,14 @@ const BottomCart: React.FC<{ lng: string; items: Item[] }> = ({
   useEffect(() => {
     // Fetch cart items from localStorage when component mounts
     const storedCartItems = localStorage.getItem("cartItems");
-    if (storedCartItems) {
-      try {
-        const parsedCartItems = JSON.parse(storedCartItems);
-        if (Array.isArray(parsedCartItems)) {
-          // Ensure parsed data is an array
-          setCartItems(parsedCartItems);
-        } else {
-          // If not an array, handle it accordingly (e.g., set to an empty array)
-          setCartItems([]);
-        }
-      } catch (error) {
-        console.error("Error parsing cart items from localStorage:", error);
-        // If parsing fails, set cartItems to an empty array
-        setCartItems([]);
-      }
-    } else {
-      // If no cart items found in localStorage, initialize cartItems as an empty array
-      setCartItems([]);
+
+    if (!storedCartItems) {
+      return;
     }
+    const parsedCartItems = JSON.parse(storedCartItems);
+
+    // Ensure parsed data is an array
+    setCartItems(parsedCartItems);
   }, []);
 
   useEffect(() => {
@@ -75,10 +64,24 @@ const BottomCart: React.FC<{ lng: string; items: Item[] }> = ({
 
   // Function to handle incrementing item quantity
   const handleIncrement = (itemId: number) => {
-    setItemQuantities((prevQuantities) => ({
-      ...prevQuantities,
-      [itemId]: (prevQuantities[itemId] || 0) + 1,
-    }));
+    setItemQuantities((prevQuantities) => {
+      const updatedQuantities = {
+        ...prevQuantities,
+        [itemId]: (prevQuantities[itemId] || 0) + 1,
+      };
+
+      // Update cartItems with updated quantities
+      const updatedCartItems = cartItems.map((item) => ({
+        ...item,
+        quantity: updatedQuantities[item.id] || 0,
+      }));
+
+      // Save updated cartItems to localStorage
+      localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
+      console.log(updatedCartItems);
+
+      return updatedQuantities;
+    });
   };
 
   // Function to handle decrementing item quantity

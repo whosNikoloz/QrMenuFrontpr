@@ -116,10 +116,14 @@ export default function MenuPage({
   function handleAddToCart(item: Item) {
     setCartItems((prevCartItems) => {
       const newCartItems = [...prevCartItems, item];
-      return newCartItems;
+      localStorage.setItem("cartItems", JSON.stringify(newCartItems)); // Store updated items in localStorage
+      return newCartItems; // Update state with new items
     });
-    console.log(cartItems);
-    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+  }
+
+  function arraysAreEqual(arr1: any[], arr2: string | any[]) {
+    if (arr1.length !== arr2.length) return false;
+    return arr1.every((item: any, index: number) => item === arr2[index]);
   }
 
   return (
