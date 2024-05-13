@@ -85,10 +85,8 @@ const BottomCart: React.FC<{ lng: string; items: Item[] }> = ({
         {/* Display total price and order button */}
         <div className="flex justify-between w-full ml-3">
           <div className="flex items-center gap-2">
-            <p className="text-black font-medium">
-              {lng === "en" ? "Total:" : "სულ:"}
-            </p>
-            <div className="text-md text-black font-bold">
+            <p className="font-bold">{lng === "en" ? "Total:" : "სულ:"}</p>
+            <div className="text-md  font-bold">
               {getTotalPrice().toFixed(2)} {lng === "en" ? "GEL" : "₾"}
             </div>
           </div>
@@ -103,6 +101,7 @@ const BottomCart: React.FC<{ lng: string; items: Item[] }> = ({
             <Button
               color="success"
               size="md"
+              className="text-gray-800"
               onClick={onOpen}
               endContent={<LockIcon />}
             >
@@ -184,7 +183,7 @@ const BottomCart: React.FC<{ lng: string; items: Item[] }> = ({
                 {getTotalPrice().toFixed(2)} {lng === "en" ? "GEL" : "₾"}
               </span>
             </h1>
-            <Button color="primary" className="w-full" onClick={onClose}>
+            <Button className="w-full bg-green-600" onClick={onClose}>
               {lng === "en" ? "Order" : "შეკვეთა"}
             </Button>
           </ModalFooter>

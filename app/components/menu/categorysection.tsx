@@ -41,17 +41,17 @@ const CategorySection: React.FC<CategorySectionProps> = ({
       </h1>
 
       {biglayout ? (
-        <div className="mx-4 mt-4 grid grid-cols-1 grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="mt-4 grid  grid-cols-2 gap-4">
           {items.map((item, index) => (
             <div key={index} className="w-full">
-              <div className="max-w-[200px] rounded-3xl border bg-white text-center font-semibold shadow-lg">
+              <div className="w-[200px] h-[320px] rounded-3xl border bg-[#313638]/85 text-center font-semibold shadow-lg">
                 <Image
                   src={item.imageUrl}
                   width={200}
                   alt="Sample Image"
                   className="rounded-3xl"
                 />
-                <h1 className="text-lg text-gray-700">{item.title}</h1>
+                <h1 className="text-lg text-white">{item.title}</h1>
                 <h3 className="text-sm text-gray-400">{item.description}</h3>
                 <Button
                   size="md"
@@ -66,7 +66,10 @@ const CategorySection: React.FC<CategorySectionProps> = ({
         </div>
       ) : (
         items.map((item, index) => (
-          <div className="flex justify-between bg-transparent p-6" key={index}>
+          <div
+            className="flex justify-between bg-[#313638]/85 p-4 mt-2 rounded-2xl"
+            key={index}
+          >
             <Image
               src={item.imageUrl}
               width={200}
