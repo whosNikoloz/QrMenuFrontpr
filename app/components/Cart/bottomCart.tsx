@@ -92,7 +92,9 @@ const BottomCart: React.FC<{ lng: string; items: Item[] }> = ({
   };
 
   const getTotalPrice = (): number => {
-    return 0;
+    return cartItems.reduce((total, item) => {
+      return total + item.price * (itemQuantities[item.id] || 0);
+    }, 0);
   };
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -150,7 +152,7 @@ const BottomCart: React.FC<{ lng: string; items: Item[] }> = ({
               <>
                 {cartItems.map((item, index) => (
                   <div
-                    className="flex justify-between bg-transparent p-2"
+                    className="flex justify-between bg-transparent p-3 border-b border-gray-200 dark:border-gray-700"
                     key={index}
                   >
                     <Image
