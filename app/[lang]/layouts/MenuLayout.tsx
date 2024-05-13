@@ -22,9 +22,6 @@ export const MenuLayout: React.FC<MenuLayoutProps> = ({
         <Navbar lng={lang} Menupage={true} extoggleLayout={MenuToggleLayout} />
       </div>
       {children}
-      <div className="justify-center bg-transparent items-center flex mb-24">
-        <BottomCart lng={lang} />{" "}
-      </div>
     </div>
   );
 };

@@ -1,5 +1,4 @@
-"use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LockIcon } from "@/app/components/icons";
 import {
   Modal,
@@ -20,81 +19,38 @@ interface Item {
   price: number;
   description: string;
   imageUrl: string;
+  quantity?: number;
 }
 
 interface ItemQuantities {
   [key: number]: number;
 }
 
-export const BottomCart = ({ lng }: { lng: string }) => {
-  const staticData: { title: string; items: Item[] } = {
-    title: "Sample Title",
-    items: [
-      {
-        id: 1,
-        title: "Item 1",
-        price: 10,
-        description: "This is item 1",
-        imageUrl:
-          "https://images.immediate.co.uk/production/volatile/sites/30/2022/08/Corndogs-7832ef6.jpg?quality=90&resize=556,505",
-      },
-      {
-        id: 2,
-        title: "Item 2",
-        price: 20,
-        description: "This is item 2",
-        imageUrl:
-          "https://images.immediate.co.uk/production/volatile/sites/30/2022/08/Corndogs-7832ef6.jpg?quality=90&resize=556,505",
-      },
-      {
-        id: 3,
-        title: "Item 1",
-        price: 10,
-        description: "This is item 1",
-        imageUrl:
-          "https://images.immediate.co.uk/production/volatile/sites/30/2022/08/Corndogs-7832ef6.jpg?quality=90&resize=556,505",
-      },
-      {
-        id: 4,
-        title: "Item 2",
-        price: 20,
-        description: "This is item 2",
-        imageUrl:
-          "https://images.immediate.co.uk/production/volatile/sites/30/2022/08/Corndogs-7832ef6.jpg?quality=90&resize=556,505",
-      },
-      {
-        id: 5,
-        title: "Item 1",
-        price: 10,
-        description: "This is item 1",
-        imageUrl:
-          "https://images.immediate.co.uk/production/volatile/sites/30/2022/08/Corndogs-7832ef6.jpg?quality=90&resize=556,505",
-      },
-      {
-        id: 6,
-        title: "Item 2",
-        price: 20,
-        description: "This is item 2",
-        imageUrl:
-          "https://images.immediate.co.uk/production/volatile/sites/30/2022/08/Corndogs-7832ef6.jpg?quality=90&resize=556,505",
-      },
-      {
-        id: 7,
-        title: "Item 1",
-        price: 10,
-        description: "This is item 1",
-        imageUrl:
-          "https://images.immediate.co.uk/production/volatile/sites/30/2022/08/Corndogs-7832ef6.jpg?quality=90&resize=556,505",
-      },
-    ],
-  };
+const BottomCart: React.FC<{ lng: string; items: Item[] }> = ({
+  lng,
+  items,
+}) => {
+  const [cartItems, setCartItems] = useState<Item[]>([]);
 
   const [itemQuantities, setItemQuantities] = useState<ItemQuantities>(
-    staticData.items.reduce((quantities: ItemQuantities, item) => {
+    cartItems.reduce((quantities: ItemQuantities, item) => {
       quantities[item.id] = 1;
       return quantities;
     }, {} as ItemQuantities)
   );
+
+  useEffect(() => {
+    setCartItems(items);
+    // Initialize itemQuantities based on items
+    const initialQuantities = items.reduce(
+      (quantities: ItemQuantities, item) => {
+        quantities[item.id] = item.quantity || 0;
+        return quantities;
+      },
+      {}
+    );
+    setItemQuantities(initialQuantities);
+  }, [items]);
 
   // Function to handle incrementing item quantity
   const handleIncrement = (itemId: number) => {
@@ -114,21 +70,26 @@ export const BottomCart = ({ lng }: { lng: string }) => {
     }
   };
 
-  // Calculate total price based on item quantities
-  const totalPrice = staticData.items.reduce((total, item) => {
-    return total + item.price * itemQuantities[item.id];
-  }, 0);
+  const getTotalPrice = (): number => {
+    return cartItems.reduce((total, item) => {
+      return total + item.price * (itemQuantities[item.id] || 0);
+    }, 0);
+  };
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <>
+      {/* Cart display section */}
       <div className="fixed z-50 bottom-4 left-1/2 transform -translate-x-1/2 inline-flex items-center w-11/12 max-w-screen-lg dark:bg-green-600 bg-white shadow-xl rounded-3xl p-2">
+        {/* Display total price and order button */}
         <div className="flex justify-between w-full ml-3">
           <div className="flex items-center gap-2">
-            <p className="text-black font-medium">სულ:</p>
+            <p className="text-black font-medium">
+              {lng === "en" ? "Total:" : "სულ:"}
+            </p>
             <div className="text-md text-black font-bold">
-              {totalPrice.toFixed(2)} ₾
+              {getTotalPrice().toFixed(2)} {lng === "en" ? "GEL" : "₾"}
             </div>
           </div>
           <Badge
@@ -145,12 +106,13 @@ export const BottomCart = ({ lng }: { lng: string }) => {
               onClick={onOpen}
               endContent={<LockIcon />}
             >
-              შეკვეთა
+              {lng === "en" ? "Order" : "შეკვეთა"}
             </Button>
           </Badge>
         </div>
       </div>
 
+      {/* Cart modal */}
       <Modal
         size="full"
         isOpen={isOpen}
@@ -166,7 +128,7 @@ export const BottomCart = ({ lng }: { lng: string }) => {
             {lng === "en" ? "Your Cart" : "თქვენი კალათა"}
           </ModalHeader>
           <ModalBody>
-            {staticData.items.map((item) => (
+            {cartItems.map((item) => (
               <div
                 className="flex justify-between bg-transparent p-2"
                 key={item.id}
@@ -178,10 +140,12 @@ export const BottomCart = ({ lng }: { lng: string }) => {
                   className="rounded-lg"
                 />
                 <div className="ml-4 flex w-full flex-col justify-between">
-                  <h1 className="text-md font-bold text-black dark:text-white ">
+                  <h1 className="text-md font-bold text-black dark:text-white">
                     {item.title}
                   </h1>
-                  <p className="text-xs/3 text-white/70">{item.description}</p>
+                  <p className="text-xs text-white dark:text-white/70">
+                    {item.description}
+                  </p>
                   <div className="mt-auto flex items-center justify-between">
                     <p className="mr-2 text-sm text-black dark:text-white">
                       {item.price}{" "}
@@ -215,13 +179,13 @@ export const BottomCart = ({ lng }: { lng: string }) => {
           </ModalBody>
           <ModalFooter className="flex flex-col justify-center w-full">
             <h1 className="font-bold text-lg flex justify-between p-1">
-              სულ:{" "}
+              {lng === "en" ? "Total:" : "სულ:"}{" "}
               <span>
-                {totalPrice.toFixed(2)} {lng === "en" ? "GEL" : "₾"}
+                {getTotalPrice().toFixed(2)} {lng === "en" ? "GEL" : "₾"}
               </span>
             </h1>
             <Button color="primary" className="w-full" onClick={onClose}>
-              შეკვეთა
+              {lng === "en" ? "Order" : "შეკვეთა"}
             </Button>
           </ModalFooter>
         </ModalContent>

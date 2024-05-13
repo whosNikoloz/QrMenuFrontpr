@@ -21,9 +21,6 @@ export default function MainLayout({
         />{" "}
       </div>
       {children}
-      <div className="justify-center bg-transparent items-center flex mb-24">
-        <BottomCart lng={lang} />{" "}
-      </div>
     </div>
   );
 }

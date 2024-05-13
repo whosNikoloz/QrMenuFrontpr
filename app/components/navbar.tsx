@@ -170,7 +170,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 {Menupage && (
                   <div
                     className="switch"
-                    data-isOn={biglayout}
+                    data-ison={biglayout}
                     onClick={handleToggle}
                   >
                     <motion.div className="handle" layout transition={spring} />

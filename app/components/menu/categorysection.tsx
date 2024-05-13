@@ -1,11 +1,14 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import { Image, Button, Card, CardHeader } from "@nextui-org/react";
 
 interface Item {
+  id: number;
   title: string;
   price: number;
   description: string;
   imageUrl: string;
+  quantity?: number;
 }
 
 interface CategorySectionProps {
@@ -13,6 +16,8 @@ interface CategorySectionProps {
   lang: string;
   biglayout?: boolean;
   items: Item[];
+  cartItems: Item[];
+  onAddToCart: (item: Item) => void;
 }
 
 const CategorySection: React.FC<CategorySectionProps> = ({
@@ -20,7 +25,15 @@ const CategorySection: React.FC<CategorySectionProps> = ({
   items,
   biglayout,
   lang,
+  onAddToCart,
 }) => {
+  const handleAddToCart = (item: Item) => {
+    if (onAddToCart) {
+      onAddToCart(item);
+      localStorage.setItem("cartItems", JSON.stringify(item));
+    }
+  };
+
   return (
     <div className="p-2">
       <h1 className="ml-4 text-black dark:text-white font-bold text-xl">
@@ -42,6 +55,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
                 <h3 className="text-sm text-gray-400">{item.description}</h3>
                 <Button
                   size="md"
+                  onClick={() => handleAddToCart(item)}
                   className="text-white text-sm mb-4 mt-4  rounded-3xl px-8 py-2 font-bold  bg-green-600"
                 >
                   დამატება
@@ -74,7 +88,11 @@ const CategorySection: React.FC<CategorySectionProps> = ({
                   </span>
                 </p>
 
-                <Button size="sm" className="text-white text-xs bg-green-600">
+                <Button
+                  size="sm"
+                  onClick={() => handleAddToCart(item)}
+                  className="text-white text-xs bg-green-600"
+                >
                   დამატება
                 </Button>
               </div>
