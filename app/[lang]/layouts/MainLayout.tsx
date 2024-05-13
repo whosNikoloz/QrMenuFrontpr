@@ -1,6 +1,5 @@
 import { Navbar } from "@/app/components/navbar";
 import { Locale } from "@/i18n.config";
-import { BottomCart } from "@/app/components/Cart/bottomCart";
 
 export default function MainLayout({
   children,

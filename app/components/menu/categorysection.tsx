@@ -44,7 +44,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
         <div className="mt-4 grid  grid-cols-2 gap-4">
           {items.map((item, index) => (
             <div key={index} className="w-full">
-              <div className="w-[200px] h-[320px] rounded-3xl border bg-[#313638]/85 text-center font-semibold shadow-lg">
+              <div className="max-w-[200px] h-[320px] rounded-3xl border bg-[#313638]/85 text-center font-semibold shadow-lg">
                 <Image
                   src={item.imageUrl}
                   width={200}
