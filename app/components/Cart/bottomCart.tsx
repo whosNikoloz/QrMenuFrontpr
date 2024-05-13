@@ -84,10 +84,21 @@ const BottomCart: React.FC<{ lng: string; items: Item[] }> = ({
   // Function to handle decrementing item quantity
   const handleDecrement = (itemId: number) => {
     if (itemQuantities[itemId] > 0) {
+      // Decrease item quantity in itemQuantities
       setItemQuantities((prevQuantities) => ({
         ...prevQuantities,
         [itemId]: prevQuantities[itemId] - 1,
       }));
+
+      // If item quantity reaches zero, remove the item from cartItems
+      if (itemQuantities[itemId] === 1) {
+        // Filter out the item with matching itemId
+        const updatedCartItems = cartItems.filter((item) => item.id !== itemId);
+
+        // Update cartItems state and localStorage
+        setCartItems(updatedCartItems);
+        localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
+      }
     }
   };
 
