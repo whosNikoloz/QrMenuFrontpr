@@ -1,7 +1,14 @@
 "use client";
 
 import React, { ReactNode, useState, useEffect } from "react";
-import { Link, Button, Avatar, ButtonGroup } from "@nextui-org/react";
+import {
+  Link,
+  Button,
+  Avatar,
+  ButtonGroup,
+  Menu,
+  button,
+} from "@nextui-org/react";
 import { usePathname, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
@@ -138,7 +145,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                 href={`/${lng}`}
                 className={`p-0 bg-transparent data-[hover=true]:bg-transparent font-bold gap-1 text-md sm:text-xl dark:text-taso-lightgray text-black `}
               >
-                {lng == "en" ? "Nika" : "ნიკა"} {lng == "en" ? "DEV" : "დევ"}
+                {Menupage
+                  ? `${lng == "en" ? "Menu" : "მენიუ"}`
+                  : `${lng == "en" ? "Nika" : "ნიკა"} ${
+                      lng == "en" ? "DEV" : "დევ"
+                    }`}
               </Link>
             </div>
 
