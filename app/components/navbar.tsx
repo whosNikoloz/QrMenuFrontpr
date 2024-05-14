@@ -6,23 +6,14 @@ import {
   Button,
   Avatar,
   ButtonGroup,
-  Menu,
+  Switch,
   button,
+  useDisclosure,
 } from "@nextui-org/react";
 import { usePathname, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
-import { motion } from "framer-motion";
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  useDisclosure,
-  Checkbox,
-  Input,
-} from "@nextui-org/react";
+
 import { MailIcon, LockIcon } from "@/app/components/icons";
 
 const SunFilledIcon = dynamic(
@@ -168,13 +159,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </Link> */}
               <ButtonGroup>
                 {Menupage && (
-                  <div
-                    className="switch"
-                    data-ison={biglayout}
-                    onClick={handleToggle}
-                  >
-                    <motion.div className="handle" layout transition={spring} />
-                  </div>
+                  <Switch
+                    defaultSelected
+                    size="lg"
+                    onChange={handleToggle}
+                    color="success"
+                  ></Switch>
                 )}
                 <Button
                   className="bg-transparent text-black dark:text-white"
