@@ -251,10 +251,10 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItem[] }> = ({
                 ))}
               </>
             ) : (
-              <div className="flex flex-col p-3 justify-center items-center h-screen">
+              <div className="flex flex-col p-3 justify-center items-center ">
                 <Image
                   src="/shopping-cart-com.png" // Convert StaticImageData to string
-                  width={400}
+                  width={300}
                   alt="logo"
                   className="p-10"
                 />
