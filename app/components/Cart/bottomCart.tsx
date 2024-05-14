@@ -12,52 +12,48 @@ import {
   Image,
   ButtonGroup,
 } from "@nextui-org/react";
-
-interface Item {
-  id: number;
-  title: string;
-  price: number;
-  description: string;
-  imageUrl: string;
-  quantity?: number;
-}
+import Product from "@/models/Product";
+import CartItem from "@/models/CartItem";
 
 interface ItemQuantities {
   [key: number]: number;
 }
 
-const BottomCart: React.FC<{ lng: string; items: Item[] }> = ({
+const BottomCart: React.FC<{ lng: string; CartItems: CartItem[] }> = ({
   lng,
-  items,
+  CartItems,
 }) => {
-  const [cartItems, setCartItems] = useState<Item[]>([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [itemQuantities, setItemQuantities] = useState<ItemQuantities>({});
 
   useEffect(() => {
     // Fetch cart items from localStorage when component mounts
     const storedCartItems = localStorage.getItem("cartItems");
 
-    if (!storedCartItems) {
-      return;
+    if (storedCartItems) {
+      try {
+        const parsedCartItems: CartItem[] = JSON.parse(storedCartItems);
+        console.log(parsedCartItems);
+        setCartItems(parsedCartItems); // Set cart items in state
+      } catch (error) {
+        console.error("Error parsing cart items from localStorage:", error);
+        // Handle error if needed
+      }
     }
-    const parsedCartItems = JSON.parse(storedCartItems);
-
-    // Ensure parsed data is an array
-    setCartItems(parsedCartItems);
   }, []);
 
   useEffect(() => {
     // Update cart items from props whenever they change
-    if (items.length > 0) {
-      setCartItems(items);
+    if (CartItems.length > 0) {
+      setCartItems(CartItems);
     }
-  }, [items]);
+  }, [CartItems]);
 
   useEffect(() => {
     // Initialize itemQuantities based on cartItems
     const initialQuantities: ItemQuantities = {};
-    cartItems.forEach((item) => {
-      initialQuantities[item.id] = 1; // You can set a default quantity here
+    cartItems.forEach((cartitem) => {
+      initialQuantities[cartitem.product.id] = 1; // You can set a default quantity here
     });
     setItemQuantities(initialQuantities);
   }, [cartItems]);
@@ -71,9 +67,9 @@ const BottomCart: React.FC<{ lng: string; items: Item[] }> = ({
       };
 
       // Update cartItems with updated quantities
-      const updatedCartItems = cartItems.map((item) => ({
-        ...item,
-        quantity: updatedQuantities[item.id] || 0,
+      const updatedCartItems = cartItems.map((cartitem) => ({
+        ...cartitem,
+        quantity: updatedQuantities[cartitem.product.id] || 0,
       }));
 
       // Save updated cartItems to localStorage
@@ -96,7 +92,9 @@ const BottomCart: React.FC<{ lng: string; items: Item[] }> = ({
       // If item quantity reaches zero, remove the item from cartItems
       if (itemQuantities[itemId] === 1) {
         // Filter out the item with matching itemId
-        const updatedCartItems = cartItems.filter((item) => item.id !== itemId);
+        const updatedCartItems = cartItems.filter(
+          (cartitem) => cartitem.product.id !== itemId
+        );
 
         // Update cartItems state and localStorage
         setCartItems(updatedCartItems);
@@ -107,7 +105,17 @@ const BottomCart: React.FC<{ lng: string; items: Item[] }> = ({
 
   const getTotalPrice = (): number => {
     return cartItems.reduce((total, item) => {
-      return total + item.price * (itemQuantities[item.id] || 0);
+      if (item.product.discount !== 0) {
+        return (
+          total +
+          (item.product.price -
+            (item.product.price * item.product.discount) / 100) *
+            (itemQuantities[item.product.id] || 0)
+        );
+      }
+      return (
+        total + item.product.price * (itemQuantities[item.product.id] || 0)
+      );
     }, 0);
   };
 
@@ -164,45 +172,66 @@ const BottomCart: React.FC<{ lng: string; items: Item[] }> = ({
           <ModalBody>
             {cartItems && (
               <>
-                {cartItems.map((item, index) => (
+                {cartItems.map((cartitem, index) => (
                   <div
                     className="flex justify-between bg-transparent p-3 border-b border-gray-200 dark:border-gray-700"
                     key={index}
                   >
                     <Image
-                      src={item.imageUrl}
+                      src={cartitem.product.imageUrl}
                       width={150}
                       alt="Sample Image"
                       className="rounded-lg"
                     />
                     <div className="ml-4 flex w-full flex-col justify-between">
                       <h1 className="text-md font-bold text-black dark:text-white">
-                        {item.title}
+                        {cartitem.product.name}
                       </h1>
                       <p className="text-xs text-white dark:text-white/70">
-                        {item.description}
+                        {cartitem.product.description}
+                      </p>
+                      <p className="text-xs mt-3 text-white dark:text-white/70">
+                        {cartitem.customDescription}
                       </p>
                       <div className="mt-auto flex items-center justify-between">
                         <p className="mr-2 text-sm text-black dark:text-white">
-                          {item.price}{" "}
-                          <span className="text-xs ml-1">
-                            {lng === "en" ? "GEL" : "₾"}
-                          </span>
+                          {cartitem.product.discount !== 0 ? (
+                            <>
+                              {/* Original price */}
+                              <span className="line-through">
+                                {cartitem.product.price}{" "}
+                                {lng === "en" ? "GEL" : "₾"}
+                              </span>
+
+                              {/* Discounted price */}
+                              <span className="text-green-500 ml-1">
+                                {(cartitem.product.price *
+                                  cartitem.product.discount) /
+                                  100}{" "}
+                                {lng === "en" ? "GEL" : "₾"}
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              {cartitem.product.price}{" "}
+                              {lng === "en" ? "GEL" : "₾"}
+                            </>
+                          )}
                         </p>
                         <ButtonGroup className="gap-2">
                           <Button
                             size="sm"
                             isIconOnly
-                            onClick={() => handleDecrement(item.id)}
+                            onClick={() => handleDecrement(cartitem.product.id)}
                             className="text-white text-3xl bg-transparent"
                           >
                             -
                           </Button>
-                          <p>{itemQuantities[item.id]}</p>
+                          <p>{itemQuantities[cartitem.product.id]}</p>
                           <Button
                             size="sm"
                             isIconOnly
-                            onClick={() => handleIncrement(item.id)}
+                            onClick={() => handleIncrement(cartitem.product.id)}
                             className="text-white text-3xl bg-transparent"
                           >
                             +
