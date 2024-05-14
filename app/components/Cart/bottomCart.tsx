@@ -161,7 +161,7 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItem[] }> = ({
             {lng === "en" ? "Your Cart" : "თქვენი კალათა"}
           </ModalHeader>
           <ModalBody>
-            {cartItems && (
+            {cartItems.length != 0 ? (
               <>
                 {cartItems.map((cartitem, index) => (
                   <div
@@ -249,18 +249,46 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItem[] }> = ({
                   </div>
                 ))}
               </>
+            ) : (
+              <div className="flex flex-col p-3 justify-center items-center h-screen">
+                <Image
+                  src="/shopping-cart-com.png" // Convert StaticImageData to string
+                  width={400}
+                  alt="logo"
+                  className="p-10"
+                />
+                <p className="text-lg text-gray-500">
+                  {lng === "en" ? "No items in cart" : "კალათა ცარიელია"}
+                </p>
+              </div>
             )}
           </ModalBody>
           <ModalFooter className="flex flex-col justify-center w-full">
-            <h1 className="font-bold text-lg flex justify-between p-1">
-              {lng === "en" ? "Total:" : "სულ:"}{" "}
-              <span>
-                {getTotalPrice().toFixed(2)} {lng === "en" ? "GEL" : "₾"}
-              </span>
-            </h1>
-            <Button className="w-full bg-green-600" onClick={onClose}>
-              {lng === "en" ? "Order" : "შეკვეთა"}
-            </Button>
+            {cartItems.length != 0 ? (
+              <>
+                <h1 className="font-bold text-lg flex justify-between p-1">
+                  {lng === "en" ? "Total:" : "სულ:"}{" "}
+                  <span>
+                    {getTotalPrice().toFixed(2)} {lng === "en" ? "GEL" : "₾"}
+                  </span>
+                </h1>
+                <Button
+                  className="w-full font-bold bg-green-600"
+                  onClick={onClose}
+                >
+                  {lng === "en" ? "Order" : "შეკვეთა"}
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  className="w-full bg-green-600 font-bold"
+                  onClick={onClose}
+                >
+                  {lng === "en" ? "Back To Menu" : "მენიუში გადასვლა"}
+                </Button>
+              </>
+            )}
           </ModalFooter>
         </ModalContent>
       </Modal>
