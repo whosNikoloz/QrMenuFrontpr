@@ -16,6 +16,7 @@ import {
   Textarea,
 } from "@nextui-org/react";
 import Product from "@/models/Product";
+import toast, { Toaster } from "react-hot-toast";
 import CartItem from "@/models/CartItem";
 import { AddToShoppingCart } from "../icons";
 
@@ -42,11 +43,6 @@ const CategorySection: React.FC<CategorySectionProps> = ({
   const handleAddToCart = (product: Product) => {
     setSelectedProduct(product); // Set the selected item
     onOpen();
-    // if (onAddToCart) {
-    //   onAddToCart(item);
-    //   setSelectedItem(item); // Set the selected item
-    //   onOpen(); // Open the modal
-    // }
   };
 
   const handleAddToCartModal = () => {
@@ -66,6 +62,11 @@ const CategorySection: React.FC<CategorySectionProps> = ({
         },
       });
       onClose();
+      if (lang === "en") {
+        toast.success("Successfully Added to Cart!");
+      } else {
+        toast.success("დამატებულია კალათში !");
+      }
     }
   };
 
@@ -256,6 +257,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
           </ModalFooter>
         </ModalContent>
       </Modal>
+      <Toaster position="top-center" reverseOrder={false} />
     </>
   );
 };
