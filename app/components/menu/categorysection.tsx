@@ -79,7 +79,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
 
   const handleDecreaseQuantity = (product: Product) => {
     const existingCartItem = cartItems.find(
-      (item) => item.product.id === product.id
+      (item) => item.product?.id === product.id
     );
     if (existingCartItem && existingCartItem.quantity > 1) {
       onUpdateCartItemQuantity(product, existingCartItem.quantity - 1);
@@ -97,7 +97,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
           <div className="mt-4 grid  grid-cols-2 gap-4">
             {products.map((product, index) => {
               const cartItem = cartItems.find(
-                (item) => item.product.id === product.id
+                (item) => item.product?.id === product.id
               );
 
               return (
@@ -173,7 +173,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
         ) : (
           products.map((product, index) => {
             const cartItem = cartItems.find(
-              (item) => item.product.id === product.id
+              (item) => item.product?.id === product.id
             );
 
             return (

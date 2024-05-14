@@ -110,10 +110,9 @@ export default function MenuPage({
     setCartItems((prevCartItems: CartItem[]) => {
       const itemIndex = prevCartItems.findIndex(
         (item) =>
-          item.product.id === cartItem.product.id &&
+          item.product?.id === cartItem.product?.id &&
           item.customDescription === cartItem.customDescription
       );
-
       let newCartItems: CartItem[];
       if (itemIndex > -1) {
         // Item exists, update the quantity
@@ -138,7 +137,7 @@ export default function MenuPage({
   function handleUpdateCartItemQuantity(product: Product, quantity: number) {
     setCartItems((prevCartItems: CartItem[]) => {
       const updatedCartItems = prevCartItems.map((cartItem) => {
-        if (cartItem.product.id === product.id) {
+        if (cartItem.product?.id === product.id) {
           return { ...cartItem, quantity } as CartItem;
         }
         return cartItem;

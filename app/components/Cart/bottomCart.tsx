@@ -34,7 +34,7 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItem[] }> = ({
   useEffect(() => {
     const initialQuantities: ItemQuantities = {};
     cartItems.forEach((cartItem) => {
-      const key = `${cartItem.product.id}-${cartItem.customDescription}`;
+      const key = `${cartItem.product?.id}-${cartItem.customDescription}`;
       initialQuantities[key] = cartItem.quantity;
     });
     setItemQuantities(initialQuantities);
@@ -50,7 +50,7 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItem[] }> = ({
       };
       // Update cartItems with updated quantities
       const updatedCartItems = cartItems.map((cartitem) =>
-        `${cartitem.product.id}-${cartitem.customDescription}` === key
+        `${cartitem.product?.id}-${cartitem.customDescription}` === key
           ? { ...cartitem, quantity: updatedQuantities[key] }
           : cartitem
       );
@@ -76,12 +76,12 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItem[] }> = ({
         // If quantity is 0 or less, remove item from cartItems
         updatedCartItems = cartItems.filter(
           (cartitem) =>
-            `${cartitem.product.id}-${cartitem.customDescription}` !== key
+            `${cartitem.product?.id}-${cartitem.customDescription}` !== key
         );
       } else {
         // Otherwise, update quantity in cartItems
         updatedCartItems = cartItems.map((cartitem) =>
-          `${cartitem.product.id}-${cartitem.customDescription}` === key
+          `${cartitem.product?.id}-${cartitem.customDescription}` === key
             ? { ...cartitem, quantity: updatedQuantities[key] }
             : cartitem
         ) as CartItem[]; // Cast to ensure all items are CartItem instances
@@ -103,12 +103,13 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItem[] }> = ({
 
   const getTotalPrice = (): number => {
     return cartItems.reduce((total, item) => {
-      const key = `${item.product.id}-${item.customDescription}`;
+      const key = `${item.product?.id}-${item.customDescription}`;
+
       const price =
-        item.product.discount !== 0
-          ? item.product.price -
-            (item.product.price * item.product.discount) / 100
-          : item.product.price;
+        item.product?.discount !== 0
+          ? item.product?.price -
+            (item.product?.price * item.product?.discount) / 100
+          : item.product?.price;
       return total + price * (itemQuantities[key] || 0);
     }, 0);
   };
@@ -169,42 +170,42 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItem[] }> = ({
                     key={index}
                   >
                     <Image
-                      src={cartitem.product.imageUrl}
+                      src={cartitem.product?.imageUrl}
                       width={150}
                       alt="Sample Image"
                       className="rounded-lg"
                     />
                     <div className="ml-4 flex w-full flex-col justify-between">
                       <h1 className="text-md font-bold text-black dark:text-white">
-                        {cartitem.product.name}
+                        {cartitem.product?.name}
                       </h1>
                       <p className="text-xs text-white dark:text-white/70">
-                        {cartitem.product.description}
+                        {cartitem.product?.description}
                       </p>
                       <p className="text-xs mt-3 text-white dark:text-white/70">
                         {cartitem.customDescription}
                       </p>
                       <div className="mt-auto flex items-center justify-between">
                         <p className="mr-2 text-sm text-black dark:text-white">
-                          {cartitem.product.discount !== 0 ? (
+                          {cartitem.product?.discount !== 0 ? (
                             <>
                               {/* Original price */}
                               <span className="line-through">
-                                {cartitem.product.price}{" "}
+                                {cartitem.product?.price}{" "}
                                 {lng === "en" ? "GEL" : "₾"}
                               </span>
 
                               {/* Discounted price */}
                               <span className="text-green-500 ml-1">
-                                {(cartitem.product.price *
-                                  cartitem.product.discount) /
+                                {(cartitem.product?.price *
+                                  cartitem.product?.discount) /
                                   100}{" "}
                                 {lng === "en" ? "GEL" : "₾"}
                               </span>
                             </>
                           ) : (
                             <>
-                              {cartitem.product.price}{" "}
+                              {cartitem.product?.price}{" "}
                               {lng === "en" ? "GEL" : "₾"}
                             </>
                           )}
@@ -215,7 +216,7 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItem[] }> = ({
                             isIconOnly
                             onClick={() =>
                               handleDecrement(
-                                cartitem.product.id,
+                                cartitem.product?.id,
                                 cartitem.customDescription
                               )
                             }
@@ -226,7 +227,7 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItem[] }> = ({
                           <p className="text-lg">
                             {
                               itemQuantities[
-                                `${cartitem.product.id}-${cartitem.customDescription}`
+                                `${cartitem.product?.id}-${cartitem.customDescription}`
                               ]
                             }
                           </p>
@@ -235,7 +236,7 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItem[] }> = ({
                             isIconOnly
                             onClick={() =>
                               handleIncrement(
-                                cartitem.product.id,
+                                cartitem.product?.id,
                                 cartitem.customDescription
                               )
                             }
