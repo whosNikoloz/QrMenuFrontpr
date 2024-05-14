@@ -1,20 +1,12 @@
 "use client";
 
 import React, { ReactNode, useState, useEffect } from "react";
-import {
-  Link,
-  Button,
-  Avatar,
-  ButtonGroup,
-  Switch,
-  button,
-  useDisclosure,
-} from "@nextui-org/react";
+import { Link, Button, Avatar, ButtonGroup, Switch } from "@nextui-org/react";
 import { usePathname, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
 
-import { MailIcon, LockIcon } from "@/app/components/icons";
+import { SearchIcon } from "@/app/components/icons";
 
 const SunFilledIcon = dynamic(
   () => import("@/app/components/icons").then((mod) => mod.SunFilledIcon),
@@ -34,20 +26,18 @@ interface NavbarProps {
   lng: string;
   Menupage: boolean;
   extoggleLayout: (arg: boolean) => void;
+  openSearch: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   lng,
   Menupage,
   extoggleLayout,
+  openSearch,
 }) => {
   const [lngstartCon, setLngstartCon] = useState<ReactNode>(null);
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [visible, setVisible] = useState(true);
-
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const { resolvedTheme, theme, setTheme } = useTheme();
 
@@ -116,10 +106,10 @@ export const Navbar: React.FC<NavbarProps> = ({
     extoggleLayout(biglayout); // Call the toggleLayout function passed from parent (MenuLayout)
   };
 
-  const spring = {
-    type: "spring",
-    stiffness: 700,
-    damping: 30,
+  const handleSerach = () => {
+    if (openSearch) {
+      openSearch();
+    }
   };
 
   return (
@@ -159,12 +149,21 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </Link> */}
               <ButtonGroup>
                 {Menupage && (
-                  <Switch
-                    defaultSelected
-                    size="lg"
-                    onChange={handleToggle}
-                    color="success"
-                  ></Switch>
+                  <>
+                    <Button
+                      className="bg-transparent text-black dark:text-white"
+                      onClick={handleSerach}
+                      isIconOnly
+                    >
+                      <SearchIcon size={18} />
+                    </Button>
+                    <Switch
+                      defaultSelected
+                      size="lg"
+                      onChange={handleToggle}
+                      color="success"
+                    ></Switch>
+                  </>
                 )}
                 <Button
                   className="bg-transparent text-black dark:text-white"
@@ -179,6 +178,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     <MoonFilledIcon />
                   )}
                 </Button>
+
                 <Button
                   className="bg-transparent text-black dark:text-white"
                   onClick={() =>

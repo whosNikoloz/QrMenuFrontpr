@@ -6,6 +6,20 @@ import { MenuLayout } from "../layouts/MenuLayout";
 import BottomCart from "@/app/components/Cart/bottomCart";
 import Product from "@/models/Product";
 import CartItem from "@/models/CartItem";
+import {
+  Avatar,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  useDisclosure,
+  Image,
+  Button,
+  ButtonGroup,
+} from "@nextui-org/react";
+import { AddToShoppingCart, SearchIcon } from "@/app/components/icons";
 
 export default function MenuPage({
   params: { lang },
@@ -90,6 +104,7 @@ export default function MenuPage({
   function toggleLayout(arg: boolean) {
     setChangelayout(arg);
   }
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
@@ -147,13 +162,35 @@ export default function MenuPage({
     });
   }
 
-  function arraysAreEqual(arr1: any[], arr2: string | any[]) {
-    if (arr1.length !== arr2.length) return false;
-    return arr1.every((item: any, index: number) => item === arr2[index]);
-  }
+  const combinedProducts = [
+    ...staticData.products,
+    ...secondstaticData.products,
+  ];
+
+  combinedProducts.map((product, index) => {
+    const cartItem = cartItems.find((item) => item.product?.id === product.id);
+
+    // ... rest of your code
+  });
+
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearch = (event: {
+    target: { value: React.SetStateAction<string> };
+  }) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filteredProducts = combinedProducts.filter((product) =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <MenuLayout lang={lang} toggleLayout={toggleLayout}>
+    <MenuLayout
+      lang={lang}
+      toggleLayout={toggleLayout}
+      eopenSearch={() => onOpen()}
+    >
       <CategorySection
         biglayout={changelayout}
         title={staticData.title}
@@ -175,6 +212,126 @@ export default function MenuPage({
       <div className="justify-center bg-transparent items-center flex mb-24">
         <BottomCart lng={lang} CartItems={cartItems} />{" "}
       </div>
+
+      <Modal
+        size="full"
+        isOpen={isOpen}
+        onClose={onClose}
+        radius="md"
+        scrollBehavior="inside"
+        isDismissable={false}
+        backdrop="blur"
+        shouldBlockScroll={true}
+      >
+        <ModalContent>
+          <ModalHeader className="flex flex-col gap-1 ">
+            <div className="px-10">
+              <Input
+                classNames={{
+                  base: "max-w-full sm:max-w-[10rem] h-10",
+                  mainWrapper: "h-full",
+                  input: "text-[16px]",
+                  inputWrapper:
+                    "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+                }}
+                placeholder="Type to search..."
+                size="sm"
+                startContent={<SearchIcon size={18} />}
+                type="search"
+                value={searchTerm}
+                onChange={handleSearch}
+              />
+            </div>
+          </ModalHeader>
+          <ModalBody>
+            {filteredProducts.map((product, index) => {
+              const cartItem = cartItems.find(
+                (item) => item.product?.id === product.id
+              );
+
+              return (
+                <div
+                  className="flex justify-between bg-[#313638]/85 p-4 mt-2 rounded-2xl"
+                  key={index}
+                >
+                  <Image
+                    src={product.imageUrl}
+                    width={200}
+                    alt="Sample Image"
+                    className="rounded-lg"
+                  />
+
+                  <div className="ml-4  flex w-full flex-col justify-between">
+                    <h1 className="text-md font-bold text-black dark:text-white ">
+                      {product.name}
+                    </h1>
+                    <p className="text-xs/3 mt-2 text-white/70">
+                      {product.description}
+                    </p>
+
+                    <div className="mt-auto flex items-center justify-between">
+                      <p className="mr-2 text-sm text-black dark:text-white relative">
+                        {product.discount !== 0 ? (
+                          <>
+                            {/* Original price */}
+                            <span className="line-through">
+                              {product.price} {lang === "en" ? "GEL" : "₾"}
+                            </span>
+
+                            {/* Discounted price */}
+                            <span className="text-green-500 ml-1">
+                              {product.getDiscountedPrice()}{" "}
+                              {lang === "en" ? "GEL" : "₾"}
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            {product.price} {lang === "en" ? "GEL" : "₾"}
+                          </>
+                        )}
+                      </p>
+
+                      {cartItem ? (
+                        <div className="flex items-center">
+                          <ButtonGroup className="gap-2">
+                            <Button
+                              size="sm"
+                              isIconOnly
+                              //onClick={() => handleDecreaseQuantity(product)}
+                              className="text-white text-3xl bg-red-600"
+                            >
+                              -
+                            </Button>
+                            <p className="text-lg">{cartItem.quantity}</p>
+                            <Button
+                              size="sm"
+                              isIconOnly
+                              //onClick={() => handleIncreaseQuantity(product)}
+                              className="text-white text-3xl bg-green-600"
+                            >
+                              +
+                            </Button>
+                          </ButtonGroup>
+                        </div>
+                      ) : (
+                        <Button
+                          size="sm"
+                          //onClick={() => handleAddToCart(product)}
+                          endContent={<AddToShoppingCart size={23} />}
+                          className="text-white text-sm bg-green-600"
+                        >
+                          {lang === "en" ? "Add" : "დამატება"}
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </ModalBody>
+          <ModalFooter className="flex flex-col justify-center w-full"></ModalFooter>
+        </ModalContent>
+      </Modal>
     </MenuLayout>
   );
 }

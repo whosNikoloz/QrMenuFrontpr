@@ -14,6 +14,7 @@ import {
   useDisclosure,
   Divider,
   Textarea,
+  Avatar,
 } from "@nextui-org/react";
 import Product from "@/models/Product";
 import toast, { Toaster } from "react-hot-toast";
@@ -332,6 +333,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
           </ModalFooter>
         </ModalContent>
       </Modal>
+
       <Toaster position="top-center" reverseOrder={false} />
     </>
   );

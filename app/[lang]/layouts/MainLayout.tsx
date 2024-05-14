@@ -17,6 +17,9 @@ export default function MainLayout({
           extoggleLayout={function (arg: boolean): void {
             throw new Error("Function not implemented.");
           }}
+          openSearch={function (): void {
+            throw new Error("Function not implemented.");
+          }}
         />{" "}
       </div>
       {children}
