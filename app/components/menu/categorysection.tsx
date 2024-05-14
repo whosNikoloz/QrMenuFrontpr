@@ -27,19 +27,21 @@ interface CategorySectionProps {
   products: Product[];
   cartItems: CartItem[];
   onAddToCart: (cartItem: CartItem) => void;
+  onUpdateCartItemQuantity: (product: Product, quantity: number) => void;
 }
 
 const CategorySection: React.FC<CategorySectionProps> = ({
   title,
   products,
   biglayout,
+  cartItems,
   lang,
   onAddToCart,
+  onUpdateCartItemQuantity,
 }) => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [customDescription, setCustomDescription] = useState("");
-
   const handleAddToCart = (product: Product) => {
     setSelectedProduct(product); // Set the selected item
     onOpen();
@@ -70,6 +72,20 @@ const CategorySection: React.FC<CategorySectionProps> = ({
     }
   };
 
+  const handleIncreaseQuantity = async (product: Product) => {
+    setSelectedProduct(product); // Set the selected item
+    onOpen();
+  };
+
+  const handleDecreaseQuantity = (product: Product) => {
+    const existingCartItem = cartItems.find(
+      (item) => item.product.id === product.id
+    );
+    if (existingCartItem && existingCartItem.quantity > 1) {
+      onUpdateCartItemQuantity(product, existingCartItem.quantity - 1);
+    }
+  };
+
   return (
     <>
       <div className="p-2">
@@ -79,109 +95,168 @@ const CategorySection: React.FC<CategorySectionProps> = ({
 
         {biglayout ? (
           <div className="mt-4 grid  grid-cols-2 gap-4">
-            {products.map((product, index) => (
-              <div key={index} className="w-full">
-                <div className="max-w-[200px] h-[350px] rounded-3xl border bg-[#313638]/85 text-center font-semibold shadow-lg">
-                  <Image
-                    src={product.imageUrl}
-                    width={200}
-                    alt="Sample Image"
-                    className="rounded-3xl"
-                  />
-                  <h1 className="text-lg text-white">{product.name}</h1>
-                  <h3 className="text-sm text-gray-400">
-                    {product.description}
-                  </h3>
-                  <h3 className="text-sm mt-5">
-                    {product.discount !== 0 ? (
-                      <>
-                        {/* Original price */}
-                        <span className="line-through">
-                          {product.price} {lang === "en" ? "GEL" : "₾"}
-                        </span>
+            {products.map((product, index) => {
+              const cartItem = cartItems.find(
+                (item) => item.product.id === product.id
+              );
 
-                        {/* Discounted price */}
-                        <span className="text-green-500 ml-1">
-                          {product.getDiscountedPrice()}{" "}
-                          {lang === "en" ? "GEL" : "₾"}
-                        </span>
-                      </>
+              return (
+                <div key={index} className="w-full">
+                  <div className="max-w-[200px] h-[350px] rounded-3xl border bg-[#313638]/85 text-center font-semibold shadow-lg">
+                    <Image
+                      src={product.imageUrl}
+                      width={200}
+                      alt="Sample Image"
+                      className="rounded-3xl"
+                    />
+                    <h1 className="text-lg text-white">{product.name}</h1>
+                    <h3 className="text-sm text-gray-400">
+                      {product.description}
+                    </h3>
+                    <h3 className="text-sm mt-5">
+                      {product.discount !== 0 ? (
+                        <>
+                          {/* Original price */}
+                          <span className="line-through">
+                            {product.price} {lang === "en" ? "GEL" : "₾"}
+                          </span>
+
+                          {/* Discounted price */}
+                          <span className="text-green-500 ml-1">
+                            {product.getDiscountedPrice()}{" "}
+                            {lang === "en" ? "GEL" : "₾"}
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          {product.price} {lang === "en" ? "GEL" : "₾"}
+                        </>
+                      )}
+                    </h3>
+                    {cartItem ? (
+                      <div className="flex justify-center mt-4">
+                        <ButtonGroup className="gap-2">
+                          <Button
+                            size="sm"
+                            isIconOnly
+                            onClick={() => handleDecreaseQuantity(product)}
+                            className="text-white text-3xl bg-red-600"
+                          >
+                            -
+                          </Button>
+                          <p className="text-lg">{cartItem.quantity}</p>
+                          <Button
+                            size="sm"
+                            isIconOnly
+                            onClick={() => handleIncreaseQuantity(product)}
+                            className="text-white text-3xl bg-green-600"
+                          >
+                            +
+                          </Button>
+                        </ButtonGroup>
+                      </div>
                     ) : (
-                      <>
-                        {product.price} {lang === "en" ? "GEL" : "₾"}
-                      </>
+                      <Button
+                        size="md"
+                        onClick={() => handleAddToCart(product)}
+                        endContent={<AddToShoppingCart size={24} />}
+                        className="text-white text-sm mb-4 mt-4  rounded-3xl px-8 py-2 font-bold  bg-green-600"
+                      >
+                        {lang === "en" ? "Add" : "დამატება"}
+                      </Button>
                     )}
-                  </h3>
-                  <Button
-                    size="md"
-                    onClick={() => handleAddToCart(product)}
-                    endContent={<AddToShoppingCart size={24} />}
-                    className="text-white text-sm mb-4 mt-4  rounded-3xl px-8 py-2 font-bold  bg-green-600"
-                  >
-                    {lang === "en" ? "Add" : "დამატება"}
-                  </Button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
-          products.map((product, index) => (
-            <div
-              className="flex justify-between bg-[#313638]/85 p-4 mt-2 rounded-2xl"
-              key={index}
-            >
-              <Image
-                src={product.imageUrl}
-                width={200}
-                alt="Sample Image"
-                className="rounded-lg"
-              />
+          products.map((product, index) => {
+            const cartItem = cartItems.find(
+              (item) => item.product.id === product.id
+            );
 
-              <div className="ml-4  flex w-full flex-col justify-between">
-                <h1 className="text-md font-bold text-black dark:text-white ">
-                  {product.name}
-                </h1>
-                <p className="text-xs/3 mt-2 text-white/70">
-                  {product.description}
-                </p>
+            return (
+              <div
+                className="flex justify-between bg-[#313638]/85 p-4 mt-2 rounded-2xl"
+                key={index}
+              >
+                <Image
+                  src={product.imageUrl}
+                  width={200}
+                  alt="Sample Image"
+                  className="rounded-lg"
+                />
 
-                <div className="mt-auto flex items-center justify-between">
-                  <p className="mr-2 text-sm text-black dark:text-white relative">
-                    {product.discount !== 0 ? (
-                      <>
-                        {/* Original price */}
-                        <span className="line-through">
-                          {product.price} {lang === "en" ? "GEL" : "₾"}
-                        </span>
-
-                        {/* Discounted price */}
-                        <span className="text-green-500 ml-1">
-                          {product.getDiscountedPrice()}{" "}
-                          {lang === "en" ? "GEL" : "₾"}
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        {product.price} {lang === "en" ? "GEL" : "₾"}
-                      </>
-                    )}
+                <div className="ml-4  flex w-full flex-col justify-between">
+                  <h1 className="text-md font-bold text-black dark:text-white ">
+                    {product.name}
+                  </h1>
+                  <p className="text-xs/3 mt-2 text-white/70">
+                    {product.description}
                   </p>
 
-                  <Button
-                    size="sm"
-                    onClick={() => handleAddToCart(product)}
-                    endContent={<AddToShoppingCart size={23} />}
-                    className="text-white text-sm bg-green-600"
-                  >
-                    {lang === "en" ? "Add" : "დამატება"}
-                  </Button>
+                  <div className="mt-auto flex items-center justify-between">
+                    <p className="mr-2 text-sm text-black dark:text-white relative">
+                      {product.discount !== 0 ? (
+                        <>
+                          {/* Original price */}
+                          <span className="line-through">
+                            {product.price} {lang === "en" ? "GEL" : "₾"}
+                          </span>
+
+                          {/* Discounted price */}
+                          <span className="text-green-500 ml-1">
+                            {product.getDiscountedPrice()}{" "}
+                            {lang === "en" ? "GEL" : "₾"}
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          {product.price} {lang === "en" ? "GEL" : "₾"}
+                        </>
+                      )}
+                    </p>
+
+                    {cartItem ? (
+                      <div className="flex items-center">
+                        <ButtonGroup className="gap-2">
+                          <Button
+                            size="sm"
+                            isIconOnly
+                            onClick={() => handleDecreaseQuantity(product)}
+                            className="text-white text-3xl bg-red-600"
+                          >
+                            -
+                          </Button>
+                          <p className="text-lg">{cartItem.quantity}</p>
+                          <Button
+                            size="sm"
+                            isIconOnly
+                            onClick={() => handleIncreaseQuantity(product)}
+                            className="text-white text-3xl bg-green-600"
+                          >
+                            +
+                          </Button>
+                        </ButtonGroup>
+                      </div>
+                    ) : (
+                      <Button
+                        size="sm"
+                        onClick={() => handleAddToCart(product)}
+                        endContent={<AddToShoppingCart size={23} />}
+                        className="text-white text-sm bg-green-600"
+                      >
+                        {lang === "en" ? "Add" : "დამატება"}
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
-
       <Modal
         size="full"
         isOpen={isOpen}

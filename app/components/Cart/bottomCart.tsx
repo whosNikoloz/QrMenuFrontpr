@@ -15,7 +15,7 @@ import {
 import CartItem from "@/models/CartItem";
 
 interface ItemQuantities {
-  [key: number]: number;
+  [key: string]: number;
 }
 
 const BottomCart: React.FC<{ lng: string; CartItems: CartItem[] }> = ({
@@ -24,80 +24,92 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItem[] }> = ({
 }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [itemQuantities, setItemQuantities] = useState<ItemQuantities>({});
+
   useEffect(() => {
-    // Update cart items from props whenever they change
     if (CartItems.length > 0) {
       setCartItems(CartItems);
     }
   }, [CartItems]);
 
   useEffect(() => {
-    // Initialize itemQuantities based on cartItems
     const initialQuantities: ItemQuantities = {};
-    cartItems.forEach((cartitem) => {
-      initialQuantities[cartitem.product.id] = 1; // You can set a default quantity here
+    cartItems.forEach((cartItem) => {
+      const key = `${cartItem.product.id}-${cartItem.customDescription}`;
+      initialQuantities[key] = cartItem.quantity;
     });
     setItemQuantities(initialQuantities);
   }, [cartItems]);
 
-  // Function to handle incrementing item quantity
-  const handleIncrement = (itemId: number) => {
+  const handleIncrement = (productId: string, customDescription: string) => {
+    const key = `${productId}-${customDescription}`;
+
     setItemQuantities((prevQuantities) => {
       const updatedQuantities = {
         ...prevQuantities,
-        [itemId]: (prevQuantities[itemId] || 0) + 1,
+        [key]: (prevQuantities[key] || 0) + 1,
       };
-
       // Update cartItems with updated quantities
-      const updatedCartItems = cartItems.map((cartitem) => ({
-        ...cartitem,
-        quantity: updatedQuantities[cartitem.product.id] || 0,
-      }));
-
+      const updatedCartItems = cartItems.map((cartitem) =>
+        `${cartitem.product.id}-${cartitem.customDescription}` === key
+          ? { ...cartitem, quantity: updatedQuantities[key] }
+          : cartitem
+      );
       // Save updated cartItems to localStorage
       localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
-      console.log(updatedCartItems);
 
       return updatedQuantities;
     });
   };
 
-  // Function to handle decrementing item quantity
-  const handleDecrement = (itemId: number) => {
-    if (itemQuantities[itemId] > 0) {
-      // Decrease item quantity in itemQuantities
-      setItemQuantities((prevQuantities) => ({
+  const handleDecrement = (productId: string, customDescription: string) => {
+    const key = `${productId}-${customDescription}`;
+
+    setItemQuantities((prevQuantities) => {
+      const updatedQuantities = {
         ...prevQuantities,
-        [itemId]: prevQuantities[itemId] - 1,
-      }));
+        [key]: (prevQuantities[key] || 0) - 1,
+      };
 
-      // If item quantity reaches zero, remove the item from cartItems
-      if (itemQuantities[itemId] === 1) {
-        // Filter out the item with matching itemId
-        const updatedCartItems = cartItems.filter(
-          (cartitem) => cartitem.product.id !== itemId
+      let updatedCartItems;
+
+      if (updatedQuantities[key] <= 0) {
+        // If quantity is 0 or less, remove item from cartItems
+        updatedCartItems = cartItems.filter(
+          (cartitem) =>
+            `${cartitem.product.id}-${cartitem.customDescription}` !== key
         );
-
-        // Update cartItems state and localStorage
-        setCartItems(updatedCartItems);
-        localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
+      } else {
+        // Otherwise, update quantity in cartItems
+        updatedCartItems = cartItems.map((cartitem) =>
+          `${cartitem.product.id}-${cartitem.customDescription}` === key
+            ? { ...cartitem, quantity: updatedQuantities[key] }
+            : cartitem
+        ) as CartItem[]; // Cast to ensure all items are CartItem instances
       }
-    }
+
+      // Update cartItems state
+      setCartItems(updatedCartItems);
+      localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
+
+      // Filter out zero or negative quantities from updatedQuantities
+      const filteredQuantities = { ...updatedQuantities };
+      if (filteredQuantities[key] <= 0) {
+        delete filteredQuantities[key];
+      }
+
+      return filteredQuantities;
+    });
   };
 
   const getTotalPrice = (): number => {
     return cartItems.reduce((total, item) => {
-      if (item.product.discount !== 0) {
-        return (
-          total +
-          (item.product.price -
-            (item.product.price * item.product.discount) / 100) *
-            (itemQuantities[item.product.id] || 0)
-        );
-      }
-      return (
-        total + item.product.price * (itemQuantities[item.product.id] || 0)
-      );
+      const key = `${item.product.id}-${item.customDescription}`;
+      const price =
+        item.product.discount !== 0
+          ? item.product.price -
+            (item.product.price * item.product.discount) / 100
+          : item.product.price;
+      return total + price * (itemQuantities[key] || 0);
     }, 0);
   };
 
@@ -116,10 +128,7 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItem[] }> = ({
             </div>
           </div>
           <Badge
-            content={Object.values(itemQuantities).reduce(
-              (sum, qty) => sum + qty,
-              0
-            )}
+            content={cartItems.reduce((sum, item) => sum + item.quantity, 0)}
             shape="circle"
             color="danger"
           >
@@ -204,17 +213,33 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItem[] }> = ({
                           <Button
                             size="sm"
                             isIconOnly
-                            onClick={() => handleDecrement(cartitem.product.id)}
-                            className="text-white text-3xl bg-transparent"
+                            onClick={() =>
+                              handleDecrement(
+                                cartitem.product.id,
+                                cartitem.customDescription
+                              )
+                            }
+                            className="text-white text-3xl bg-red-600"
                           >
                             -
                           </Button>
-                          <p>{itemQuantities[cartitem.product.id]}</p>
+                          <p className="text-lg">
+                            {
+                              itemQuantities[
+                                `${cartitem.product.id}-${cartitem.customDescription}`
+                              ]
+                            }
+                          </p>
                           <Button
                             size="sm"
                             isIconOnly
-                            onClick={() => handleIncrement(cartitem.product.id)}
-                            className="text-white text-3xl bg-transparent"
+                            onClick={() =>
+                              handleIncrement(
+                                cartitem.product.id,
+                                cartitem.customDescription
+                              )
+                            }
+                            className="text-white text-3xl bg-green-600"
                           >
                             +
                           </Button>

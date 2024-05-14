@@ -106,11 +106,45 @@ export default function MenuPage({
     }
   }, []);
 
-  function handleAddToCart(cartitem: CartItem) {
-    setCartItems((prevCartItems) => {
-      const newCartItems = [...prevCartItems, cartitem];
+  function handleAddToCart(cartItem: CartItem) {
+    setCartItems((prevCartItems: CartItem[]) => {
+      const itemIndex = prevCartItems.findIndex(
+        (item) =>
+          item.product.id === cartItem.product.id &&
+          item.customDescription === cartItem.customDescription
+      );
+
+      let newCartItems: CartItem[];
+      if (itemIndex > -1) {
+        // Item exists, update the quantity
+        newCartItems = prevCartItems.map((item, index) =>
+          index === itemIndex
+            ? ({
+                ...item,
+                quantity: item.quantity + cartItem.quantity,
+              } as CartItem)
+            : item
+        );
+      } else {
+        // Item does not exist, add as new item
+        newCartItems = [...prevCartItems, cartItem];
+      }
+
       localStorage.setItem("cartItems", JSON.stringify(newCartItems)); // Store updated items in localStorage
       return newCartItems; // Update state with new items
+    });
+  }
+
+  function handleUpdateCartItemQuantity(product: Product, quantity: number) {
+    setCartItems((prevCartItems: CartItem[]) => {
+      const updatedCartItems = prevCartItems.map((cartItem) => {
+        if (cartItem.product.id === product.id) {
+          return { ...cartItem, quantity } as CartItem;
+        }
+        return cartItem;
+      });
+      localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
+      return updatedCartItems;
     });
   }
 
@@ -128,6 +162,7 @@ export default function MenuPage({
         lang={lang}
         onAddToCart={handleAddToCart}
         cartItems={cartItems}
+        onUpdateCartItemQuantity={handleUpdateCartItemQuantity}
       />
       <CategorySection
         cartItems={cartItems}
@@ -136,6 +171,7 @@ export default function MenuPage({
         products={secondstaticData.products}
         lang={lang}
         onAddToCart={handleAddToCart}
+        onUpdateCartItemQuantity={handleUpdateCartItemQuantity}
       />
       <div className="justify-center bg-transparent items-center flex mb-24">
         <BottomCart lng={lang} CartItems={cartItems} />{" "}
