@@ -15,7 +15,7 @@ export default function Home({
   return (
     <MainLayout lang={lang}>
       <AutoScrollCarousel lng={""} />
-      <ProductCategory items={[]} />
+      <ProductCategory items={[]} lang={lang} />
     </MainLayout>
   );
 }
