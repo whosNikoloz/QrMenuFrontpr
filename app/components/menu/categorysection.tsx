@@ -89,7 +89,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
   return (
     <>
       <div className="p-2">
-        <h1 className="ml-4 text-black dark:text-white font-bold text-xl">
+        <h1 className="ml-4 text-black dark:text-white font-bold text-3xl">
           {title}
         </h1>
 

@@ -134,7 +134,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div className="flex flex-row gap-2">
               <Link
                 href={`/${lng}`}
-                className={`p-0 bg-transparent data-[hover=true]:bg-transparent font-bold gap-1 text-md sm:text-xl dark:text-taso-lightgray text-black `}
+                className={`p-0 bg-transparent  data-[hover=true]:bg-transparent font-bold gap-1 text-md sm:text-xl dark:text-taso-lightgray text-black `}
               >
                 {Menupage
                   ? `${lng == "en" ? "Menu" : "მენიუ"}`
