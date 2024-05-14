@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { LockIcon } from "@/app/components/icons";
+import { ShoppingCart } from "@/app/components/icons";
 import {
   Modal,
   ModalContent,
@@ -12,7 +12,6 @@ import {
   Image,
   ButtonGroup,
 } from "@nextui-org/react";
-import Product from "@/models/Product";
 import CartItem from "@/models/CartItem";
 
 interface ItemQuantities {
@@ -25,23 +24,6 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItem[] }> = ({
 }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [itemQuantities, setItemQuantities] = useState<ItemQuantities>({});
-
-  useEffect(() => {
-    // Fetch cart items from localStorage when component mounts
-    const storedCartItems = localStorage.getItem("cartItems");
-
-    if (storedCartItems) {
-      try {
-        const parsedCartItems: CartItem[] = JSON.parse(storedCartItems);
-        console.log(parsedCartItems);
-        setCartItems(parsedCartItems); // Set cart items in state
-      } catch (error) {
-        console.error("Error parsing cart items from localStorage:", error);
-        // Handle error if needed
-      }
-    }
-  }, []);
-
   useEffect(() => {
     // Update cart items from props whenever they change
     if (CartItems.length > 0) {
@@ -144,11 +126,11 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItem[] }> = ({
             <Button
               color="success"
               size="md"
-              className="text-gray-800"
+              className="text-white"
               onClick={onOpen}
-              endContent={<LockIcon />}
+              endContent={<ShoppingCart size={30} />}
             >
-              {lng === "en" ? "Order" : "შეკვეთა"}
+              {lng === "en" ? "Cart" : "კალათა"}
             </Button>
           </Badge>
         </div>

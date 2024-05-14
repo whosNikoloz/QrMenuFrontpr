@@ -17,6 +17,7 @@ import {
 } from "@nextui-org/react";
 import Product from "@/models/Product";
 import CartItem from "@/models/CartItem";
+import { AddToShoppingCart } from "../icons";
 
 interface CategorySectionProps {
   title: string;
@@ -79,7 +80,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
           <div className="mt-4 grid  grid-cols-2 gap-4">
             {products.map((product, index) => (
               <div key={index} className="w-full">
-                <div className="max-w-[200px] h-[320px] rounded-3xl border bg-[#313638]/85 text-center font-semibold shadow-lg">
+                <div className="max-w-[200px] h-[350px] rounded-3xl border bg-[#313638]/85 text-center font-semibold shadow-lg">
                   <Image
                     src={product.imageUrl}
                     width={200}
@@ -113,9 +114,10 @@ const CategorySection: React.FC<CategorySectionProps> = ({
                   <Button
                     size="md"
                     onClick={() => handleAddToCart(product)}
+                    endContent={<AddToShoppingCart size={24} />}
                     className="text-white text-sm mb-4 mt-4  rounded-3xl px-8 py-2 font-bold  bg-green-600"
                   >
-                    დამატება
+                    {lang === "en" ? "Add" : "დამატება"}
                   </Button>
                 </div>
               </div>
@@ -138,7 +140,9 @@ const CategorySection: React.FC<CategorySectionProps> = ({
                 <h1 className="text-md font-bold text-black dark:text-white ">
                   {product.name}
                 </h1>
-                <p className="text-xs/3 text-white/70">{product.description}</p>
+                <p className="text-xs/3 mt-2 text-white/70">
+                  {product.description}
+                </p>
 
                 <div className="mt-auto flex items-center justify-between">
                   <p className="mr-2 text-sm text-black dark:text-white relative">
@@ -165,9 +169,10 @@ const CategorySection: React.FC<CategorySectionProps> = ({
                   <Button
                     size="sm"
                     onClick={() => handleAddToCart(product)}
-                    className="text-white text-xs bg-green-600"
+                    endContent={<AddToShoppingCart size={23} />}
+                    className="text-white text-sm bg-green-600"
                   >
-                    დამატება
+                    {lang === "en" ? "Add" : "დამატება"}
                   </Button>
                 </div>
               </div>
@@ -234,7 +239,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
                   variant="bordered"
                   size="lg"
                   onChange={(e) => setCustomDescription(e.target.value)}
-                  placeholder="ალერგია,მნისშვნელოვანი დეტალები"
+                  placeholder="ალერგია,მნიშვნელოვანი დეტალები"
                   className=" col-span-12 md:col-span-6 mb-64 "
                 />
               </>
@@ -244,6 +249,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
             <Button
               className="w-full bg-green-600"
               onClick={handleAddToCartModal}
+              endContent={<AddToShoppingCart size={23} />}
             >
               {lang === "en" ? "Add" : "დამატება"}
             </Button>

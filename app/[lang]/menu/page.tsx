@@ -19,7 +19,7 @@ export default function MenuPage({
         1,
         "6 ყველის ბურგერი",
         24,
-        "",
+        "This is item 1",
         "https://bonee.blob.core.windows.net/images/42fc72c2-596d-6dd6-ae10-b2a78c018d39_2.webp",
         50
       ),
@@ -27,22 +27,25 @@ export default function MenuPage({
         2,
         "ბეკონ ბურგერი",
         20,
-        "",
-        "https://bonee.blob.core.windows.net/images/3f2b9c52-9291-19d8-0ac7-6cd73b4bd9ef_2.webp"
+        "This is item 1",
+        "https://bonee.blob.core.windows.net/images/3f2b9c52-9291-19d8-0ac7-6cd73b4bd9ef_2.webp",
+        20
       ),
       new Product(
         3,
         "ჩიზბურგერი",
         10,
         "This is item 1",
-        "https://bonee.blob.core.windows.net/images/418df878-fdee-c1cf-5744-7139ed1b824a_3.webp"
+        "https://bonee.blob.core.windows.net/images/418df878-fdee-c1cf-5744-7139ed1b824a_3.webp",
+        30
       ),
       new Product(
         4,
         "გრანდ ბურგერი",
         27,
-        "",
-        "https://bonee.blob.core.windows.net/images/e7848a08-977f-a52d-fa23-fd1af15fb834_2.webp"
+        "This is item 1",
+        "https://bonee.blob.core.windows.net/images/e7848a08-977f-a52d-fa23-fd1af15fb834_2.webp",
+        15
       ),
     ],
   };
@@ -54,28 +57,30 @@ export default function MenuPage({
         5,
         "4 ყველის პიცა",
         15,
-        "",
-        "https://bonee.blob.core.windows.net/images/1dae5380-42a7-462f-ef6d-14d0a4d241db_2.webp"
+        "This is item 1",
+        "https://bonee.blob.core.windows.net/images/1dae5380-42a7-462f-ef6d-14d0a4d241db_2.webp",
+        80
       ),
       new Product(
         6,
         "კაპრიჩოზა",
         20,
-        "",
-        "https://bonee.blob.core.windows.net/images/3f2b9c52-9291-19d8-0ac7-6cd73b4bd9ef_2.webp"
+        "This is item 1",
+        "https://bonee.blob.core.windows.net/images/3f2b9c52-9291-19d8-0ac7-6cd73b4bd9ef_2.webp",
+        40
       ),
       new Product(
         7,
         "საფირმო პიცა",
         27,
-        "",
+        "This is item 1",
         "https://bonee.blob.core.windows.net/images/d5b064b5-2b24-f6f6-628f-855b9ea675fc_2.webp"
       ),
       new Product(
         8,
         "სამარხვო პიცა",
         14,
-        "",
+        "This is item 1",
         "https://bonee.blob.core.windows.net/images/2ae44866-0a4b-87ff-46d4-3184c522c178_2.webp"
       ),
     ],
@@ -87,6 +92,19 @@ export default function MenuPage({
   }
 
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
+  useEffect(() => {
+    const storedCartItems = localStorage.getItem("cartItems");
+
+    if (storedCartItems) {
+      try {
+        const parsedCartItems: CartItem[] = JSON.parse(storedCartItems);
+        setCartItems(parsedCartItems); // Set cart items in state
+      } catch (error) {
+        console.error("Error parsing cart items from localStorage:", error);
+      }
+    }
+  }, []);
 
   function handleAddToCart(cartitem: CartItem) {
     setCartItems((prevCartItems) => {
