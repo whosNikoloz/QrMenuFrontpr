@@ -122,9 +122,9 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItem[] }> = ({
       <div className="fixed z-50 bottom-4 left-1/2 transform -translate-x-1/2 inline-flex items-center w-11/12 max-w-screen-lg dark:bg-green-600 bg-white shadow-xl rounded-3xl p-2">
         {/* Display total price and order button */}
         <div className="flex justify-between w-full ml-3">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 dark:text-white text-black">
             <p className="font-bold">{lng === "en" ? "Total:" : "სულ:"}</p>
-            <div className="text-md  font-bold">
+            <div className="text-md  font-bold dark:text-white text-black">
               {getTotalPrice().toFixed(2)} {lng === "en" ? "GEL" : "₾"}
             </div>
           </div>
@@ -158,7 +158,7 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItem[] }> = ({
         shouldBlockScroll={true}
       >
         <ModalContent>
-          <ModalHeader className="flex flex-col gap-1">
+          <ModalHeader className="flex flex-col gap-1 dark:text-white text-black">
             {lng === "en" ? "Your Cart" : "თქვენი კალათა"}
           </ModalHeader>
           <ModalBody>
@@ -267,7 +267,7 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItem[] }> = ({
           <ModalFooter className="flex flex-col justify-center w-full">
             {cartItems.length != 0 ? (
               <>
-                <h1 className="font-bold text-lg flex justify-between p-1">
+                <h1 className="font-bold dark:text-white text-black text-lg flex justify-between p-1">
                   {lng === "en" ? "Total:" : "სულ:"}{" "}
                   <span>
                     {getTotalPrice().toFixed(2)} {lng === "en" ? "GEL" : "₾"}
@@ -283,7 +283,7 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItem[] }> = ({
             ) : (
               <>
                 <Button
-                  className="w-full bg-green-600 font-bold"
+                  className="w-full bg-green-600 font-bold text-white"
                   onClick={onClose}
                 >
                   {lng === "en" ? "Back To Menu" : "მენიუში გადასვლა"}

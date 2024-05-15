@@ -124,7 +124,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
 
                 return (
                   <div key={index} className="w-full">
-                    <div className="max-w-[200px] h-[350px] rounded-3xl border bg-[#313638]/85 text-center font-semibold shadow-lg">
+                    <div className="max-w-[200px] h-[350px] rounded-3xl border dark:bg-[#313638]/85 bg-white shadow-2xl text-center font-semibold ">
                       <Image
                         src={product.imageUrl}
                         width={200}
@@ -139,7 +139,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                         {product.discount !== 0 ? (
                           <>
                             {/* Original price */}
-                            <span className="line-through">
+                            <span className="line-through text-black dark:text-white">
                               {product.price} {lang === "en" ? "GEL" : "₾"}
                             </span>
 
@@ -151,7 +151,9 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                           </>
                         ) : (
                           <>
-                            {product.price} {lang === "en" ? "GEL" : "₾"}
+                            <p className="text-black dark:text-white">
+                              {product.price} {lang === "en" ? "GEL" : "₾"}
+                            </p>
                           </>
                         )}
                       </h3>
@@ -200,7 +202,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
 
               return (
                 <div
-                  className="flex justify-between bg-[#313638]/85 p-4 mt-2 rounded-2xl"
+                  className="flex justify-between dark:bg-[#313638]/85 bg-white shadow-2xl p-4 mt-2 rounded-2xl"
                   key={index}
                 >
                   <Image
@@ -214,7 +216,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                     <h1 className="text-md font-bold text-black dark:text-white ">
                       {product.name}
                     </h1>
-                    <p className="text-xs/3 mt-2 text-white/70">
+                    <p className="text-xs/3 mt-2  dark:text-white/70 text-black/70">
                       {product.description}
                     </p>
 
@@ -247,7 +249,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                               size="sm"
                               isIconOnly
                               onClick={() => handleDecreaseQuantity(product)}
-                              className="text-white text-3xl bg-red-600"
+                              className="text-white  text-3xl bg-red-600"
                             >
                               -
                             </Button>
@@ -256,7 +258,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                               size="sm"
                               isIconOnly
                               onClick={() => handleIncreaseQuantity(product)}
-                              className="text-white text-3xl bg-green-600"
+                              className="text-white  text-3xl bg-green-600"
                             >
                               +
                             </Button>
@@ -290,7 +292,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
           shouldBlockScroll={true}
         >
           <ModalContent>
-            <ModalHeader className="flex flex-col gap-1">
+            <ModalHeader className="flex flex-col gap-1 dark:text-white text-black">
               {lang === "en" ? "Detail" : "დეტალები"}
             </ModalHeader>
             <ModalBody>
@@ -330,7 +332,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                   </p>
                   <Divider className="my-3" />
 
-                  <h1 className="font-bold text-lg">
+                  <h1 className="font-bold text-lg dark:text-white text-black">
                     {lang === "en"
                       ? "Add special instructions"
                       : "დაამატეთ განსაკუთრებული მითითებები"}
@@ -351,7 +353,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
             </ModalBody>
             <ModalFooter className="flex flex-col justify-center w-full">
               <Button
-                className="w-full bg-green-600"
+                className="w-full bg-green-600 text-white"
                 onClick={handleAddToCartModal}
                 endContent={<AddToShoppingCart size={23} />}
               >

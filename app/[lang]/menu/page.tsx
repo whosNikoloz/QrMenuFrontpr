@@ -322,7 +322,7 @@ export default function MenuPage({
                   inputWrapper:
                     "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
                 }}
-                placeholder="Type to search..."
+                placeholder={lang === "en" ? "Search" : "ძებნა"}
                 size="sm"
                 startContent={<SearchIcon size={18} />}
                 type="search"
@@ -339,7 +339,7 @@ export default function MenuPage({
 
               return (
                 <div
-                  className="flex justify-between bg-[#313638]/85 p-4 mt-2 rounded-2xl"
+                  className="flex justify-between dark:bg-[#313638]/85 bg-white shadow-2xl p-4 mt-2 rounded-2xl"
                   key={index}
                 >
                   <Image
@@ -353,7 +353,7 @@ export default function MenuPage({
                     <h1 className="text-md font-bold text-black dark:text-white ">
                       {product.name}
                     </h1>
-                    <p className="text-xs/3 mt-2 text-white/70">
+                    <p className="text-xs/3 mt-2 dark:text-white/70 text-black/70">
                       {product.description}
                     </p>
 
