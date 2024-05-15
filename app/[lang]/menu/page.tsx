@@ -1,7 +1,9 @@
 "use client";
 import { Locale } from "@/i18n.config";
-import React, { useEffect, useState } from "react";
-import CategorySection from "@/app/components/menu/categorysection";
+import React, { useEffect, useRef, useState } from "react";
+import CategorySection, {
+  CategorySectionRef,
+} from "@/app/components/menu/categorysection";
 import { MenuLayout } from "../layouts/MenuLayout";
 import BottomCart from "@/app/components/Cart/bottomCart";
 import Product from "@/models/Product";
@@ -35,8 +37,7 @@ export default function MenuPage({
           "6 cheese burgers",
           24,
           "This is item 1",
-          "https://bonee.blob.core.windows.net/images/42fc72c2-596d-6dd6-ae10-b2a78c018d39_2.webp",
-          50
+          "https://bonee.blob.core.windows.net/images/42fc72c2-596d-6dd6-ae10-b2a78c018d39_2.webp"
         ),
         new Product(
           2,
@@ -72,8 +73,7 @@ export default function MenuPage({
           "6 ყველის ბურგერი",
           24,
           "This is item 1",
-          "https://bonee.blob.core.windows.net/images/42fc72c2-596d-6dd6-ae10-b2a78c018d39_2.webp",
-          50
+          "https://bonee.blob.core.windows.net/images/42fc72c2-596d-6dd6-ae10-b2a78c018d39_2.webp"
         ),
         new Product(
           2,
@@ -261,6 +261,16 @@ export default function MenuPage({
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const categorySectionRef = useRef<CategorySectionRef>(null);
+
+  const exonAddToCart = (product: Product) => {
+    if (product) {
+      if (categorySectionRef.current) {
+        categorySectionRef.current.handleAddToCartFromParent(product);
+      }
+    }
+  };
+
   return (
     <MenuLayout
       lang={lang}
@@ -268,6 +278,7 @@ export default function MenuPage({
       eopenSearch={() => onOpen()}
     >
       <CategorySection
+        ref={categorySectionRef}
         biglayout={changelayout}
         title={staticData[lang].title}
         products={staticData[lang].products}
@@ -277,6 +288,7 @@ export default function MenuPage({
         onUpdateCartItemQuantity={handleUpdateCartItemQuantity}
       />
       <CategorySection
+        ref={categorySectionRef}
         cartItems={cartItems}
         biglayout={changelayout}
         title={secondstaticData[lang].title}
@@ -382,7 +394,7 @@ export default function MenuPage({
                             <Button
                               size="sm"
                               isIconOnly
-                              //onClick={() => handleIncreaseQuantity(product)}
+                              onClick={() => exonAddToCart(product)}
                               className="text-white text-3xl bg-green-600"
                             >
                               +
@@ -392,7 +404,7 @@ export default function MenuPage({
                       ) : (
                         <Button
                           size="sm"
-                          //onClick={() => handleAddToCart(product)}
+                          onClick={() => exonAddToCart(product)}
                           endContent={<AddToShoppingCart size={23} />}
                           className="text-white text-sm bg-green-600"
                         >
