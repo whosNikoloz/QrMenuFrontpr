@@ -369,4 +369,6 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
   }
 );
 
+CategorySection.displayName = "CategorySection";
+
 export default CategorySection;
