@@ -310,13 +310,19 @@ const CategorySection: React.FC<CategorySectionProps> = ({
                 <Divider className="my-3" />
 
                 <h1 className="font-bold text-lg">
-                  დაამატეთ განსაკუთრებული მითითებები
+                  {lang === "en"
+                    ? "Add special instructions"
+                    : "დაამატეთ განსაკუთრებული მითითებები"}
                 </h1>
                 <Textarea
                   variant="bordered"
                   size="lg"
                   onChange={(e) => setCustomDescription(e.target.value)}
-                  placeholder="ალერგია,მნიშვნელოვანი დეტალები"
+                  placeholder={
+                    lang === "ka"
+                      ? "ალერგია,მნიშვნელოვანი დეტალები"
+                      : "Allergies, important details"
+                  }
                   className=" col-span-12 md:col-span-6 mb-64 "
                 />
               </>

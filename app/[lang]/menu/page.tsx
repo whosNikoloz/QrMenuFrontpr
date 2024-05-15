@@ -27,77 +27,153 @@ export default function MenuPage({
   params: { lang: Locale };
 }) {
   const staticData = {
-    title: "ბურგერი",
-    products: [
-      new Product(
-        1,
-        "6 ყველის ბურგერი",
-        24,
-        "This is item 1",
-        "https://bonee.blob.core.windows.net/images/42fc72c2-596d-6dd6-ae10-b2a78c018d39_2.webp",
-        50
-      ),
-      new Product(
-        2,
-        "ბეკონ ბურგერი",
-        20,
-        "This is item 1",
-        "https://bonee.blob.core.windows.net/images/3f2b9c52-9291-19d8-0ac7-6cd73b4bd9ef_2.webp",
-        20
-      ),
-      new Product(
-        3,
-        "ჩიზბურგერი",
-        10,
-        "This is item 1",
-        "https://bonee.blob.core.windows.net/images/418df878-fdee-c1cf-5744-7139ed1b824a_3.webp",
-        30
-      ),
-      new Product(
-        4,
-        "გრანდ ბურგერი",
-        27,
-        "This is item 1",
-        "https://bonee.blob.core.windows.net/images/e7848a08-977f-a52d-fa23-fd1af15fb834_2.webp",
-        15
-      ),
-    ],
+    en: {
+      title: "Burgers",
+      products: [
+        new Product(
+          1,
+          "6 cheese burgers",
+          24,
+          "This is item 1",
+          "https://bonee.blob.core.windows.net/images/42fc72c2-596d-6dd6-ae10-b2a78c018d39_2.webp",
+          50
+        ),
+        new Product(
+          2,
+          "Bacon burger",
+          20,
+          "This is item 1",
+          "https://bonee.blob.core.windows.net/images/3f2b9c52-9291-19d8-0ac7-6cd73b4bd9ef_2.webp",
+          20
+        ),
+        new Product(
+          3,
+          "Cheeseburger",
+          10,
+          "This is item 1",
+          "https://bonee.blob.core.windows.net/images/418df878-fdee-c1cf-5744-7139ed1b824a_3.webp",
+          30
+        ),
+        new Product(
+          4,
+          "Grand Burger",
+          27,
+          "This is item 1",
+          "https://bonee.blob.core.windows.net/images/e7848a08-977f-a52d-fa23-fd1af15fb834_2.webp",
+          15
+        ),
+      ],
+    },
+    ka: {
+      title: "ბურგერი",
+      products: [
+        new Product(
+          1,
+          "6 ყველის ბურგერი",
+          24,
+          "This is item 1",
+          "https://bonee.blob.core.windows.net/images/42fc72c2-596d-6dd6-ae10-b2a78c018d39_2.webp",
+          50
+        ),
+        new Product(
+          2,
+          "ბეკონ ბურგერი",
+          20,
+          "This is item 1",
+          "https://bonee.blob.core.windows.net/images/3f2b9c52-9291-19d8-0ac7-6cd73b4bd9ef_2.webp",
+          20
+        ),
+        new Product(
+          3,
+          "ჩიზბურგერი",
+          10,
+          "This is item 1",
+          "https://bonee.blob.core.windows.net/images/418df878-fdee-c1cf-5744-7139ed1b824a_3.webp",
+          30
+        ),
+        new Product(
+          4,
+          "გრანდ ბურგერი",
+          27,
+          "This is item 1",
+          "https://bonee.blob.core.windows.net/images/e7848a08-977f-a52d-fa23-fd1af15fb834_2.webp",
+          15
+        ),
+      ],
+    },
   };
 
   const secondstaticData = {
-    title: "პიცა",
-    products: [
-      new Product(
-        5,
-        "4 ყველის პიცა",
-        15,
-        "This is item 1",
-        "https://bonee.blob.core.windows.net/images/1dae5380-42a7-462f-ef6d-14d0a4d241db_2.webp",
-        80
-      ),
-      new Product(
-        6,
-        "კაპრიჩოზა",
-        20,
-        "This is item 1",
-        "https://bonee.blob.core.windows.net/images/3f2b9c52-9291-19d8-0ac7-6cd73b4bd9ef_2.webp",
-        40
-      ),
-      new Product(
-        7,
-        "საფირმო პიცა",
-        27,
-        "This is item 1",
-        "https://bonee.blob.core.windows.net/images/d5b064b5-2b24-f6f6-628f-855b9ea675fc_2.webp"
-      ),
-      new Product(
-        8,
-        "სამარხვო პიცა",
-        14,
-        "This is item 1",
-        "https://bonee.blob.core.windows.net/images/2ae44866-0a4b-87ff-46d4-3184c522c178_2.webp"
-      ),
-    ],
+    en: {
+      title: "Pizza",
+      products: [
+        new Product(
+          5,
+          "4 cheese pizza",
+          15,
+          "This is item 1",
+          "https://bonee.blob.core.windows.net/images/1dae5380-42a7-462f-ef6d-14d0a4d241db_2.webp",
+          80
+        ),
+        new Product(
+          6,
+          "Caprichosa",
+          20,
+          "This is item 1",
+          "https://bonee.blob.core.windows.net/images/3f2b9c52-9291-19d8-0ac7-6cd73b4bd9ef_2.webp",
+          40
+        ),
+        new Product(
+          7,
+          "Signature pizza",
+          27,
+          "This is item 1",
+          "https://bonee.blob.core.windows.net/images/d5b064b5-2b24-f6f6-628f-855b9ea675fc_2.webp"
+        ),
+        new Product(
+          8,
+          "Fasting pizza",
+          14,
+          "This is item 1",
+          "https://bonee.blob.core.windows.net/images/2ae44866-0a4b-87ff-46d4-3184c522c178_2.webp"
+        ),
+      ],
+    },
+    ka: {
+      title: "პიცა",
+      products: [
+        new Product(
+          5,
+          "4 ყველის პიცა",
+          15,
+          "This is item 1",
+          "https://bonee.blob.core.windows.net/images/1dae5380-42a7-462f-ef6d-14d0a4d241db_2.webp",
+          80
+        ),
+        new Product(
+          6,
+          "კაპრიჩოზა",
+          20,
+          "This is item 1",
+          "https://bonee.blob.core.windows.net/images/3f2b9c52-9291-19d8-0ac7-6cd73b4bd9ef_2.webp",
+          40
+        ),
+        new Product(
+          7,
+          "საფირმო პიცა",
+          27,
+          "This is item 1",
+          "https://bonee.blob.core.windows.net/images/d5b064b5-2b24-f6f6-628f-855b9ea675fc_2.webp"
+        ),
+        new Product(
+          8,
+          "სამარხვო პიცა",
+          14,
+          "This is item 1",
+          "https://bonee.blob.core.windows.net/images/2ae44866-0a4b-87ff-46d4-3184c522c178_2.webp"
+        ),
+      ],
+    },
   };
 
   const [changelayout, setChangelayout] = React.useState(false);
@@ -163,8 +239,8 @@ export default function MenuPage({
   }
 
   const combinedProducts = [
-    ...staticData.products,
-    ...secondstaticData.products,
+    ...staticData[lang].products,
+    ...secondstaticData[lang].products,
   ];
 
   combinedProducts.map((product, index) => {
@@ -193,8 +269,8 @@ export default function MenuPage({
     >
       <CategorySection
         biglayout={changelayout}
-        title={staticData.title}
-        products={staticData.products}
+        title={staticData[lang].title}
+        products={staticData[lang].products}
         lang={lang}
         onAddToCart={handleAddToCart}
         cartItems={cartItems}
@@ -203,8 +279,8 @@ export default function MenuPage({
       <CategorySection
         cartItems={cartItems}
         biglayout={changelayout}
-        title={secondstaticData.title}
-        products={secondstaticData.products}
+        title={secondstaticData[lang].title}
+        products={secondstaticData[lang].products}
         lang={lang}
         onAddToCart={handleAddToCart}
         onUpdateCartItemQuantity={handleUpdateCartItemQuantity}
