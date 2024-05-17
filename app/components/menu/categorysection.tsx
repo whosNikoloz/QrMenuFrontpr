@@ -126,7 +126,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
       }
     };
 
-    const handleOptionToggle = (optionId: number, valueId: number) => {
+    const handleOptionRadioToggle = (optionId: number, valueId: number) => {
       if (selectedProduct) {
         const newSelectedProduct = new ProductNew(
           selectedProduct.id,
@@ -185,6 +185,53 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
         // Increment the price of the newly selected value
         newSelectedProduct.incrementPrice(optionId, valueId);
 
+        setSelectedProduct(newSelectedProduct);
+      }
+    };
+
+    const handleOptionCheckboxToggle = (optionId: number, valueId: number) => {
+      if (selectedProduct) {
+        const newSelectedProduct = new ProductNew(
+          selectedProduct.id,
+          selectedProduct.name_En,
+          selectedProduct.name_Ka,
+          selectedProduct.price,
+          selectedProduct.imageUrl,
+          selectedProduct.discount,
+          selectedProduct.description_En,
+          selectedProduct.description_Ka,
+          selectedProduct.group_Id,
+          selectedProduct.options,
+          selectedProduct.tempDiscountedPrice ?? 0
+        );
+
+        const selectedOption = newSelectedProduct.options.find(
+          (option) => option.id === optionId
+        );
+        const selectedValue = selectedOption?.optionValues.find(
+          (value) => value.id === valueId
+        );
+        if (!selectedOption || !selectedValue) return;
+        newSelectedProduct.options = newSelectedProduct.options.map(
+          (option) => {
+            if (option.id === optionId) {
+              return {
+                ...option,
+                optionValues: option.optionValues.map((value) =>
+                  value.id === valueId
+                    ? { ...value, selected: !value.selected }
+                    : value
+                ),
+              };
+            }
+            return option;
+          }
+        );
+        if (selectedValue.selected) {
+          newSelectedProduct.decrementPrice(optionId, valueId);
+        } else {
+          newSelectedProduct.incrementPrice(optionId, valueId);
+        }
         setSelectedProduct(newSelectedProduct);
       }
     };
@@ -450,7 +497,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                                       : value.name_Ka
                                   }
                                   onChange={() =>
-                                    handleOptionToggle(option.id, value.id)
+                                    handleOptionRadioToggle(option.id, value.id)
                                   }
                                 >
                                   <div className="w-full flex justify-between gap-2">
@@ -481,7 +528,10 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                                   size="lg"
                                   color="success"
                                   onChange={() =>
-                                    handleOptionToggle(option.id, value.id)
+                                    handleOptionCheckboxToggle(
+                                      option.id,
+                                      value.id
+                                    )
                                   }
                                 >
                                   {lang === "en"
