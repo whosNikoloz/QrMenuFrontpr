@@ -24,6 +24,7 @@ import {
   RadioGroup,
   Radio,
   cn,
+  Chip,
 } from "@nextui-org/react";
 import Product from "@/models/Product";
 import toast, { Toaster } from "react-hot-toast";
@@ -430,7 +431,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                           ? option.optionValues.map((value, index) => (
                               <div
                                 key={value.id}
-                                className="flex items-center flex-col justify-between "
+                                className="flex items-center flex-col p-1 justify-between "
                               >
                                 <Radio
                                   color="success"
@@ -438,12 +439,11 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                                     base: cn(
                                       "inline-flex w-full max-w-md bg-content1",
                                       "hover:bg-content2 items-center justify-start",
-                                      "cursor-pointer rounded-lg gap-2 p-4 border-2 border-transparent",
-                                      "data-[selected=true]:border-green-600"
+                                      "cursor-pointer rounded-lg gap-2 p-3 border-2 border-transparent",
+                                      "data-[selected=true]:border-primary"
                                     ),
                                     label: "w-full",
                                   }}
-                                  description="არწერა შეიძლება"
                                   value={
                                     lang === "en"
                                       ? value.name_En
@@ -453,16 +453,28 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                                     handleOptionToggle(option.id, value.id)
                                   }
                                 >
-                                  {lang === "en"
-                                    ? value.name_En
-                                    : value.name_Ka}
+                                  <div className="w-full flex justify-between gap-2">
+                                    {lang === "en"
+                                      ? value.name_En
+                                      : value.name_Ka}
+                                    <div className="flex flex-col items-end gap-1">
+                                      <Chip
+                                        color="success"
+                                        size="sm"
+                                        variant="flat"
+                                      >
+                                        +{value.price}{" "}
+                                        {lang === "en" ? "GEL" : "₾"}
+                                      </Chip>
+                                    </div>
+                                  </div>
                                 </Radio>
                               </div>
                             ))
                           : option.optionValues.map((value) => (
                               <div
                                 key={value.id}
-                                className="flex items-center justify-between p-3"
+                                className="flex items-center  justify-between p-3"
                               >
                                 <Checkbox
                                   defaultSelected={value.selected}
@@ -476,9 +488,16 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                                     ? value.name_En
                                     : value.name_Ka}
                                 </Checkbox>
-                                <label className="ml-2 text-black dark:text-white">
-                                  +{value.price} {lang === "en" ? "GEL" : "₾"}
-                                </label>
+
+                                <div className="flex flex-col items-end gap-1">
+                                  <Chip
+                                    color="success"
+                                    size="sm"
+                                    variant="flat"
+                                  >
+                                    +{value.price} {lang === "en" ? "GEL" : "₾"}
+                                  </Chip>
+                                </div>
                               </div>
                             ))}
                       </RadioGroup>
@@ -507,13 +526,32 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
               )}
             </ModalBody>
             <ModalFooter className="flex flex-col justify-center w-full">
-              <Button
-                className="w-full bg-green-600 text-white"
-                onClick={handleAddToCartModal}
-                endContent={<AddToShoppingCart size={23} />}
-              >
-                {lang === "en" ? "Add" : "დამატება"}
-              </Button>
+              <div className="flex">
+                <h1 className="font-bold dark:text-white text-black text-sm flex flex-col justify-between p-1">
+                  {lang === "en" ? "Total:" : "სულ:"}{" "}
+                  <span>
+                    {selectedProduct?.discount !== 0 ? (
+                      <>
+                        <span className="text-green-500 text-md mr-4">
+                          {selectedProduct?.tempDiscountedPrice?.toFixed(2)}
+                          {lang === "en" ? "GEL" : "₾"}
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        {selectedProduct.price} {lang === "en" ? "GEL" : "₾"}
+                      </>
+                    )}
+                  </span>
+                </h1>
+                <Button
+                  className="w-full bg-green-600 text-white"
+                  onClick={handleAddToCartModal}
+                  endContent={<AddToShoppingCart size={23} />}
+                >
+                  {lang === "en" ? "Add" : "დამატება"}
+                </Button>
+              </div>
             </ModalFooter>
           </ModalContent>
         </Modal>
