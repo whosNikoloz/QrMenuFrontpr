@@ -9,7 +9,7 @@ const fetchProductGroups = async (): Promise<ProductGroup[]> => {
   try {
     const response = await fetch(`${mainAPI}/all-with-products`);
     const data = await response.json();
-    console.log(data);
+
     const productGroups: ProductGroup[] = data.map(
       (group: any) =>
         new ProductGroup(
@@ -35,8 +35,6 @@ const fetchProductGroups = async (): Promise<ProductGroup[]> => {
           )
         )
     );
-
-    console.log(productGroups);
     return productGroups;
   } catch (error) {
     console.error("Error fetching product groups:", error);

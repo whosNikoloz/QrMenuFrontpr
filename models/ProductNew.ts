@@ -36,15 +36,18 @@ class ProductNew {
     this.description_Ka = description_Ka;
     this.group_Id = group_Id;
     this.options = options;
-    this.tempDiscountedPrice = price - (price * discount) / 100;
+    this.tempDiscountedPrice =
+      tempDiscountedPrice ?? price - (price * discount) / 100;
   }
 
   incrementPrice(optionId: number, valueId: number): void {
     const option = this.options.find((option) => option.id === optionId);
+    console.log(this.tempDiscountedPrice);
     if (option) {
       const value = option.optionValues.find((value) => value.id === valueId);
       if (value) {
         if (this.discount !== 0) {
+          console.log(this.tempDiscountedPrice);
           this.tempDiscountedPrice =
             (this.tempDiscountedPrice ?? 0) + value.price;
         }
@@ -58,10 +61,11 @@ class ProductNew {
     if (option) {
       const value = option.optionValues.find((value) => value.id === valueId);
       if (value) {
-        // if (this.discount !== 0) {
-        //   this.tempDiscountedPrice = this.tempDiscountedPrice ?? 0 -=
-        //     value.price;
-        // }
+        if (this.discount !== 0) {
+          console.log(this.tempDiscountedPrice);
+          this.tempDiscountedPrice =
+            (this.tempDiscountedPrice ?? 0) - value.price;
+        }
       }
     }
   }

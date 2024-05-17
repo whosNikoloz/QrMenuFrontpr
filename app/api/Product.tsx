@@ -30,6 +30,7 @@ const fetchProductWithOptionsAndValues = async (
         option.name_En,
         option.name_Ka,
         option.product_Id,
+        option.type,
         optionValues
       );
     });

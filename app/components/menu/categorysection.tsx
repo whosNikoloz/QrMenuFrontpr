@@ -21,7 +21,8 @@ import {
   Textarea,
   Avatar,
   Checkbox,
-  Chip,
+  RadioGroup,
+  Radio,
   cn,
 } from "@nextui-org/react";
 import Product from "@/models/Product";
@@ -126,11 +127,6 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
 
     const handleOptionToggle = (optionId: number, valueId: number) => {
       if (selectedProduct) {
-        // Logic to decide whether to increment or decrement
-        const isOptionSelected = selectedProduct.options
-          .find((option) => option.id === optionId)
-          ?.optionValues.find((value) => value.id === valueId)?.selected;
-
         const newSelectedProduct = new ProductNew(
           selectedProduct.id,
           selectedProduct.name_En,
@@ -145,15 +141,20 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
           selectedProduct.tempDiscountedPrice ?? 0
         );
 
-        if (isOptionSelected) {
-          console.log("Decrementing price");
-          newSelectedProduct.decrementPrice(optionId, valueId);
-        } else {
-          console.log("Incrementing price");
-          newSelectedProduct.incrementPrice(optionId, valueId);
-        }
+        // Find the selected option and its value
+        const selectedOption = newSelectedProduct.options.find(
+          (option) => option.id === optionId
+        );
+        const selectedValue = selectedOption?.optionValues.find(
+          (value) => value.id === valueId
+        );
 
-        console.log(newSelectedProduct);
+        if (!selectedOption || !selectedValue) return; // Exit if option or value not found
+
+        // Find the previously selected value
+        const previouslySelectedValue = selectedOption.optionValues.find(
+          (value) => value.selected
+        );
 
         // Toggle the selection status
         newSelectedProduct.options = newSelectedProduct.options.map(
@@ -163,7 +164,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                 ...option,
                 optionValues: option.optionValues.map((value) =>
                   value.id === valueId
-                    ? { ...value, selected: !value.selected }
+                    ? { ...value, selected: true }
                     : { ...value, selected: false }
                 ),
               };
@@ -171,6 +172,17 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
             return option;
           }
         );
+
+        // Decrement the price of the previously selected value if exists
+        if (previouslySelectedValue) {
+          newSelectedProduct.decrementPrice(
+            optionId,
+            previouslySelectedValue.id
+          );
+        }
+
+        // Increment the price of the newly selected value
+        newSelectedProduct.incrementPrice(optionId, valueId);
 
         setSelectedProduct(newSelectedProduct);
       }
@@ -411,56 +423,65 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                   {selectedProduct.options.map((option) => (
                     <div key={option.id}>
                       <Divider className="my-3" />
-                      <h2 className="font-semibold text-black dark:text-white">
-                        {lang === "en" ? option.name_En : option.name_Ka}
-                      </h2>
-                      {option.name_En === "Portion"
-                        ? option.optionValues.map((value, index) => (
-                            <div
-                              key={value.id}
-                              className="flex items-center flex-col justify-between p-3"
-                            >
-                              <Checkbox
-                                color="success"
-                                data-selected={value.selected}
-                                defaultSelected={value.selected}
-                                classNames={{
-                                  base: cn(
-                                    "inline-flex w-full max-w-md bg-content1",
-                                    "hover:bg-content2 items-center justify-start",
-                                    "cursor-pointer rounded-lg gap-2 p-4 border-2 border-transparent",
-                                    "data-[selected=true]:border-green-600"
-                                  ),
-                                  label: "w-full",
-                                }}
-                                onChange={() =>
-                                  handleOptionToggle(option.id, value.id)
-                                }
+                      <RadioGroup
+                        label={lang === "en" ? option.name_En : option.name_Ka}
+                      >
+                        {option.type === "Radio"
+                          ? option.optionValues.map((value, index) => (
+                              <div
+                                key={value.id}
+                                className="flex items-center flex-col justify-between "
                               >
-                                {lang === "en" ? value.name_En : value.name_Ka}
-                              </Checkbox>
-                            </div>
-                          ))
-                        : option.optionValues.map((value) => (
-                            <div
-                              key={value.id}
-                              className="flex items-center justify-between p-3"
-                            >
-                              <Checkbox
-                                defaultSelected={value.selected}
-                                size="lg"
-                                color="success"
-                                onChange={() =>
-                                  handleOptionToggle(option.id, value.id)
-                                }
+                                <Radio
+                                  color="success"
+                                  classNames={{
+                                    base: cn(
+                                      "inline-flex w-full max-w-md bg-content1",
+                                      "hover:bg-content2 items-center justify-start",
+                                      "cursor-pointer rounded-lg gap-2 p-4 border-2 border-transparent",
+                                      "data-[selected=true]:border-green-600"
+                                    ),
+                                    label: "w-full",
+                                  }}
+                                  description="არწერა შეიძლება"
+                                  value={
+                                    lang === "en"
+                                      ? value.name_En
+                                      : value.name_Ka
+                                  }
+                                  onChange={() =>
+                                    handleOptionToggle(option.id, value.id)
+                                  }
+                                >
+                                  {lang === "en"
+                                    ? value.name_En
+                                    : value.name_Ka}
+                                </Radio>
+                              </div>
+                            ))
+                          : option.optionValues.map((value) => (
+                              <div
+                                key={value.id}
+                                className="flex items-center justify-between p-3"
                               >
-                                {lang === "en" ? value.name_En : value.name_Ka}
-                              </Checkbox>
-                              <label className="ml-2 text-black dark:text-white">
-                                +{value.price} {lang === "en" ? "GEL" : "₾"}
-                              </label>
-                            </div>
-                          ))}
+                                <Checkbox
+                                  defaultSelected={value.selected}
+                                  size="lg"
+                                  color="success"
+                                  onChange={() =>
+                                    handleOptionToggle(option.id, value.id)
+                                  }
+                                >
+                                  {lang === "en"
+                                    ? value.name_En
+                                    : value.name_Ka}
+                                </Checkbox>
+                                <label className="ml-2 text-black dark:text-white">
+                                  +{value.price} {lang === "en" ? "GEL" : "₾"}
+                                </label>
+                              </div>
+                            ))}
+                      </RadioGroup>
                     </div>
                   ))}
 
