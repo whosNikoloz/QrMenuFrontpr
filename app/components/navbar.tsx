@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
 
-import { SearchIcon } from "@/app/components/icons";
+import { SearchIcon, LayoutOne, LayoutSecond } from "@/app/components/icons";
 
 const SunFilledIcon = dynamic(
   () => import("@/app/components/icons").then((mod) => mod.SunFilledIcon),
@@ -155,13 +155,20 @@ export const Navbar: React.FC<NavbarProps> = ({
                       onClick={handleSerach}
                       isIconOnly
                     >
-                      <SearchIcon size={18} />
+                      <SearchIcon size={27} />
                     </Button>
                     <Switch
                       defaultSelected
                       size="lg"
                       onChange={handleToggle}
                       color="success"
+                      thumbIcon={({ isSelected, className }) =>
+                        isSelected ? (
+                          <LayoutOne className={className} />
+                        ) : (
+                          <LayoutSecond className={className} />
+                        )
+                      }
                     ></Switch>
                   </>
                 )}
@@ -173,9 +180,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                   isIconOnly
                 >
                   {resolvedTheme === "dark" ? (
-                    <SunFilledIcon />
+                    <SunFilledIcon size={27} />
                   ) : (
-                    <MoonFilledIcon />
+                    <MoonFilledIcon size={27} />
                   )}
                 </Button>
 

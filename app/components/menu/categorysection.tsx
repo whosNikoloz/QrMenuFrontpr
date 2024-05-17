@@ -20,17 +20,23 @@ import {
   Divider,
   Textarea,
   Avatar,
+  Checkbox,
+  Chip,
+  cn,
 } from "@nextui-org/react";
 import Product from "@/models/Product";
 import toast, { Toaster } from "react-hot-toast";
 import CartItem from "@/models/CartItem";
 import { AddToShoppingCart } from "../icons";
+import ProductNew from "@/models/ProductNew";
+import ProductData from "@/models/ProductData";
+import { fetchProductWithOptionsAndValues } from "@/app/api/Product";
 
 interface CategorySectionProps {
   title: string;
   lang: string;
   biglayout?: boolean;
-  products: Product[];
+  products: ProductNew[];
   cartItems: CartItem[];
   onAddToCart: (cartItem: CartItem) => void;
   onUpdateCartItemQuantity: (product: Product, quantity: number) => void;
@@ -53,19 +59,29 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
     },
     ref
   ) => {
-    const [selectedProduct, setSelectedProduct] = useState<Product | null>(
+    const [selectedProduct, setSelectedProduct] = useState<ProductNew | null>(
       null
     );
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [customDescription, setCustomDescription] = useState("");
-    const handleAddToCart = (product: Product) => {
-      setSelectedProduct(product); // Set the selected item
+    const handleAddToCart = (product: ProductData) => {
+      const fetchData = async () => {
+        try {
+          const data = await fetchProductWithOptionsAndValues(product.id);
+          console.log(data);
+          setSelectedProduct(data);
+        } catch (error) {
+          console.error("Error fetching product groups:", error);
+        }
+      };
+
+      fetchData();
       onOpen();
     };
 
     useImperativeHandle(ref, () => ({
       handleAddToCartFromParent(product: Product) {
-        handleAddToCart(product);
+        //handleAddToCart(product);
       },
     }));
 
@@ -95,7 +111,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
     };
 
     const handleIncreaseQuantity = async (product: Product) => {
-      setSelectedProduct(product); // Set the selected item
+      //setSelectedProduct(product); // Set the selected item
       onOpen();
     };
 
@@ -105,6 +121,58 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
       );
       if (existingCartItem && existingCartItem.quantity > 1) {
         onUpdateCartItemQuantity(product, existingCartItem.quantity - 1);
+      }
+    };
+
+    const handleOptionToggle = (optionId: number, valueId: number) => {
+      if (selectedProduct) {
+        // Logic to decide whether to increment or decrement
+        const isOptionSelected = selectedProduct.options
+          .find((option) => option.id === optionId)
+          ?.optionValues.find((value) => value.id === valueId)?.selected;
+
+        const newSelectedProduct = new ProductNew(
+          selectedProduct.id,
+          selectedProduct.name_En,
+          selectedProduct.name_Ka,
+          selectedProduct.price,
+          selectedProduct.imageUrl,
+          selectedProduct.discount,
+          selectedProduct.description_En,
+          selectedProduct.description_Ka,
+          selectedProduct.group_Id,
+          selectedProduct.options,
+          selectedProduct.tempDiscountedPrice ?? 0
+        );
+
+        if (isOptionSelected) {
+          console.log("Decrementing price");
+          newSelectedProduct.decrementPrice(optionId, valueId);
+        } else {
+          console.log("Incrementing price");
+          newSelectedProduct.incrementPrice(optionId, valueId);
+        }
+
+        console.log(newSelectedProduct);
+
+        // Toggle the selection status
+        newSelectedProduct.options = newSelectedProduct.options.map(
+          (option) => {
+            if (option.id === optionId) {
+              return {
+                ...option,
+                optionValues: option.optionValues.map((value) =>
+                  value.id === valueId
+                    ? { ...value, selected: !value.selected }
+                    : { ...value, selected: false }
+                ),
+              };
+            }
+            return option;
+          }
+        );
+
+        setSelectedProduct(newSelectedProduct);
       }
     };
 
@@ -121,38 +189,40 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                 const cartItem = cartItems.find(
                   (item) => item.product?.id === product.id
                 );
-
+                const formatedPr: ProductData = product.getProductData(
+                  lang === "en" ? "en" : "ka"
+                );
                 return (
                   <div key={index} className="w-full">
                     <div className="max-w-[200px] h-[350px] rounded-3xl border dark:bg-[#313638]/85 bg-white shadow-2xl text-center font-semibold ">
                       <Image
-                        src={product.imageUrl}
+                        src={formatedPr.imageUrl ?? ""}
                         width={200}
                         alt="Sample Image"
                         className="rounded-3xl"
                       />
-                      <h1 className="text-lg text-white">{product.name}</h1>
+                      <h1 className="text-lg text-white">{formatedPr.price}</h1>
                       <h3 className="text-sm text-gray-400">
-                        {product.description}
+                        {formatedPr.description}
                       </h3>
                       <h3 className="text-sm mt-5">
-                        {product.discount !== 0 ? (
+                        {formatedPr.discount !== 0 ? (
                           <>
                             {/* Original price */}
                             <span className="line-through text-black dark:text-white">
-                              {product.price} {lang === "en" ? "GEL" : "₾"}
+                              {formatedPr.price} {lang === "en" ? "GEL" : "₾"}
                             </span>
 
                             {/* Discounted price */}
                             <span className="text-green-500 ml-1">
-                              {product.getDiscountedPrice()}{" "}
+                              {formatedPr.discountedPrice}
                               {lang === "en" ? "GEL" : "₾"}
                             </span>
                           </>
                         ) : (
                           <>
                             <p className="text-black dark:text-white">
-                              {product.price} {lang === "en" ? "GEL" : "₾"}
+                              {formatedPr.price} {lang === "en" ? "GEL" : "₾"}
                             </p>
                           </>
                         )}
@@ -163,7 +233,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                             <Button
                               size="sm"
                               isIconOnly
-                              onClick={() => handleDecreaseQuantity(product)}
+                              //   onClick={() => handleDecreaseQuantity(product)}
                               className="text-white text-3xl bg-red-600"
                             >
                               -
@@ -172,7 +242,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                             <Button
                               size="sm"
                               isIconOnly
-                              onClick={() => handleIncreaseQuantity(product)}
+                              // onClick={() => handleIncreaseQuantity(product)}
                               className="text-white text-3xl bg-green-600"
                             >
                               +
@@ -182,7 +252,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                       ) : (
                         <Button
                           size="md"
-                          onClick={() => handleAddToCart(product)}
+                          //  onClick={() => handleAddToCart(product)}
                           endContent={<AddToShoppingCart size={24} />}
                           className="text-white text-sm mb-4 mt-4  rounded-3xl px-8 py-2 font-bold  bg-green-600"
                         >
@@ -200,13 +270,16 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                 (item) => item.product?.id === product.id
               );
 
+              const formatedPr: ProductData = product.getProductData(
+                lang === "en" ? "en" : "ka"
+              );
               return (
                 <div
                   className="flex justify-between dark:bg-[#313638]/85 bg-white shadow-2xl p-4 mt-2 rounded-2xl"
                   key={index}
                 >
                   <Image
-                    src={product.imageUrl}
+                    src={formatedPr.imageUrl ?? ""}
                     width={200}
                     alt="Sample Image"
                     className="rounded-lg"
@@ -214,30 +287,30 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
 
                   <div className="ml-4  flex w-full flex-col justify-between">
                     <h1 className="text-md font-bold text-black dark:text-white ">
-                      {product.name}
+                      {formatedPr.name}
                     </h1>
                     <p className="text-xs/3 mt-2  dark:text-white/70 text-black/70">
-                      {product.description}
+                      {formatedPr.description}
                     </p>
 
                     <div className="mt-auto flex items-center justify-between">
                       <p className="mr-2 text-sm text-black dark:text-white relative">
-                        {product.discount !== 0 ? (
+                        {formatedPr.discount !== 0 ? (
                           <>
                             {/* Original price */}
                             <span className="line-through">
-                              {product.price} {lang === "en" ? "GEL" : "₾"}
+                              {formatedPr.price} {lang === "en" ? "GEL" : "₾"}
                             </span>
 
                             {/* Discounted price */}
                             <span className="text-green-500 ml-1">
-                              {product.getDiscountedPrice()}{" "}
+                              {formatedPr.discountedPrice}
                               {lang === "en" ? "GEL" : "₾"}
                             </span>
                           </>
                         ) : (
                           <>
-                            {product.price} {lang === "en" ? "GEL" : "₾"}
+                            {formatedPr.price} {lang === "en" ? "GEL" : "₾"}
                           </>
                         )}
                       </p>
@@ -248,7 +321,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                             <Button
                               size="sm"
                               isIconOnly
-                              onClick={() => handleDecreaseQuantity(product)}
+                              // onClick={() => handleDecreaseQuantity(product)}
                               className="text-white  text-3xl bg-red-600"
                             >
                               -
@@ -257,7 +330,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                             <Button
                               size="sm"
                               isIconOnly
-                              onClick={() => handleIncreaseQuantity(product)}
+                              //onClick={() => handleIncreaseQuantity(product)}
                               className="text-white  text-3xl bg-green-600"
                             >
                               +
@@ -267,7 +340,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                       ) : (
                         <Button
                           size="sm"
-                          onClick={() => handleAddToCart(product)}
+                          onClick={() => handleAddToCart(formatedPr)}
                           endContent={<AddToShoppingCart size={23} />}
                           className="text-white text-sm bg-green-600"
                         >
@@ -299,16 +372,20 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
               {selectedProduct && (
                 <>
                   <Image
-                    src={selectedProduct.imageUrl}
+                    src={selectedProduct.imageUrl ?? ""}
                     width="100%"
                     alt="Sample Image"
                     className="rounded-3xl"
                   />
                   <h1 className="text-lg font-bold text-black dark:text-white">
-                    {selectedProduct.name}
+                    {lang === "en"
+                      ? selectedProduct.name_Ka
+                      : selectedProduct.name_Ka}
                   </h1>
                   <p className="text-sm text-black dark:text-white">
-                    {selectedProduct.description}
+                    {lang === "en"
+                      ? selectedProduct.description_En
+                      : selectedProduct.description_Ka}
                   </p>
                   <p className="text-sm text-black dark:text-white">
                     {selectedProduct.discount !== 0 ? (
@@ -320,7 +397,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
 
                         {/* Discounted price */}
                         <span className="text-green-500 ml-1">
-                          {selectedProduct.getDiscountedPrice()}{" "}
+                          {selectedProduct.tempDiscountedPrice?.toFixed(2)}
                           {lang === "en" ? "GEL" : "₾"}
                         </span>
                       </>
@@ -330,6 +407,63 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                       </>
                     )}
                   </p>
+
+                  {selectedProduct.options.map((option) => (
+                    <div key={option.id}>
+                      <Divider className="my-3" />
+                      <h2 className="font-semibold text-black dark:text-white">
+                        {lang === "en" ? option.name_En : option.name_Ka}
+                      </h2>
+                      {option.name_En === "Portion"
+                        ? option.optionValues.map((value, index) => (
+                            <div
+                              key={value.id}
+                              className="flex items-center flex-col justify-between p-3"
+                            >
+                              <Checkbox
+                                color="success"
+                                data-selected={value.selected}
+                                defaultSelected={value.selected}
+                                classNames={{
+                                  base: cn(
+                                    "inline-flex w-full max-w-md bg-content1",
+                                    "hover:bg-content2 items-center justify-start",
+                                    "cursor-pointer rounded-lg gap-2 p-4 border-2 border-transparent",
+                                    "data-[selected=true]:border-green-600"
+                                  ),
+                                  label: "w-full",
+                                }}
+                                onChange={() =>
+                                  handleOptionToggle(option.id, value.id)
+                                }
+                              >
+                                {lang === "en" ? value.name_En : value.name_Ka}
+                              </Checkbox>
+                            </div>
+                          ))
+                        : option.optionValues.map((value) => (
+                            <div
+                              key={value.id}
+                              className="flex items-center justify-between p-3"
+                            >
+                              <Checkbox
+                                defaultSelected={value.selected}
+                                size="lg"
+                                color="success"
+                                onChange={() =>
+                                  handleOptionToggle(option.id, value.id)
+                                }
+                              >
+                                {lang === "en" ? value.name_En : value.name_Ka}
+                              </Checkbox>
+                              <label className="ml-2 text-black dark:text-white">
+                                +{value.price} {lang === "en" ? "GEL" : "₾"}
+                              </label>
+                            </div>
+                          ))}
+                    </div>
+                  ))}
+
                   <Divider className="my-3" />
 
                   <h1 className="font-bold text-lg dark:text-white text-black">

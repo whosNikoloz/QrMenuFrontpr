@@ -22,12 +22,30 @@ import {
   ButtonGroup,
 } from "@nextui-org/react";
 import { AddToShoppingCart, SearchIcon } from "@/app/components/icons";
+import { fetchProductGroups } from "@/app/api/ProductGroup";
+import ProductGroup from "@/models/ProductGroup";
 
 export default function MenuPage({
   params: { lang },
 }: {
   params: { lang: Locale };
 }) {
+  const [productGroups, setProductGroups] = useState<ProductGroup[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchProductGroups();
+        setProductGroups(data);
+        console.log(data);
+      } catch (error) {
+        console.error("Error fetching product groups:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const staticData = {
     en: {
       title: "Burgers",
@@ -277,26 +295,25 @@ export default function MenuPage({
       toggleLayout={toggleLayout}
       eopenSearch={() => onOpen()}
     >
-      <CategorySection
-        ref={categorySectionRef}
-        biglayout={changelayout}
-        title={staticData[lang].title}
-        products={staticData[lang].products}
-        lang={lang}
-        onAddToCart={handleAddToCart}
-        cartItems={cartItems}
-        onUpdateCartItemQuantity={handleUpdateCartItemQuantity}
-      />
-      <CategorySection
-        ref={categorySectionRef}
-        cartItems={cartItems}
-        biglayout={changelayout}
-        title={secondstaticData[lang].title}
-        products={secondstaticData[lang].products}
-        lang={lang}
-        onAddToCart={handleAddToCart}
-        onUpdateCartItemQuantity={handleUpdateCartItemQuantity}
-      />
+      {Array.isArray(productGroups) &&
+        productGroups.map((group) => {
+          if (!group || !group.id || !group.products) {
+            return null; // Skip this iteration if group, group.id or group.products is undefined
+          }
+          return (
+            <CategorySection
+              key={group.id}
+              ref={categorySectionRef}
+              biglayout={changelayout}
+              title={lang === "en" ? group.name_En : group.name_Ka}
+              products={group.products}
+              lang={lang}
+              onAddToCart={handleAddToCart}
+              cartItems={cartItems}
+              onUpdateCartItemQuantity={handleUpdateCartItemQuantity}
+            />
+          );
+        })}
       <div className="justify-center bg-transparent items-center flex mb-24">
         <BottomCart lng={lang} CartItems={cartItems} />{" "}
       </div>
