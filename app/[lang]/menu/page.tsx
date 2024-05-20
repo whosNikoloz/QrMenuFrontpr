@@ -78,7 +78,6 @@ export default function MenuPage({
   };
 
   const handleAddToCart = (cartItem: CartItemNew) => {
-    console.log(cartItem);
     setCartItems((prevCartItems: CartItemNew[]) => {
       const itemIndex = prevCartItems.findIndex(
         (item) =>
@@ -129,7 +128,6 @@ export default function MenuPage({
       return group.products;
     })
     .flat();
-  console.log(combinedProducts);
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -148,7 +146,6 @@ export default function MenuPage({
   const categorySectionRef = useRef<CategorySectionRef>(null);
 
   const exonAddToCart = (product: ProductNew) => {
-    console.log(product);
     if (product) {
       if (categorySectionRef.current) {
         categorySectionRef.current.handleAddToCartFromParent(product);

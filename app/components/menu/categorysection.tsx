@@ -143,7 +143,6 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
       const existingCartItem = cartItems.find(
         (item) => item.product?.id === product.id
       );
-      console.log(existingCartItem);
       if (existingCartItem && existingCartItem.quantity > 1) {
         onUpdateCartItemQuantity(product, existingCartItem.quantity - 1);
       }
@@ -392,7 +391,6 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                 (item) => item.product?.id === product.id
               );
 
-              console.log(product);
               const formatedPr: ProductData = product.getProductData(
                 lang === "en" ? "en" : "ka"
               );

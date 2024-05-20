@@ -11,7 +11,6 @@ const fetchProductWithOptionsAndValues = async (
     const response = await fetch(`${mainAPI}/${productid}/OptionsAndValues`);
     const data = await response.json();
 
-    console.log(data);
     const options: Option[] = data.options.map((option: any) => {
       const optionValues: OptionValue[] = option.optionValues.map(
         (value: any) => {
