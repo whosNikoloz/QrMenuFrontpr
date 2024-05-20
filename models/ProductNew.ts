@@ -10,7 +10,8 @@ class ProductNew {
   description_En: string;
   description_Ka: string;
   group_Id: number;
-  tempDiscountedPrice?: number;
+  DiscountedPrice?: number;
+  StaticPrice?: number;
   options: Option[];
 
   constructor(
@@ -24,7 +25,7 @@ class ProductNew {
     description_Ka: string,
     group_Id: number,
     options: Option[] = [],
-    tempDiscountedPrice: number
+    DiscountedPrice: number
   ) {
     this.id = id;
     this.name_En = name_En;
@@ -36,8 +37,8 @@ class ProductNew {
     this.description_Ka = description_Ka;
     this.group_Id = group_Id;
     this.options = options;
-    this.tempDiscountedPrice =
-      tempDiscountedPrice ?? price - (price * discount) / 100;
+    this.DiscountedPrice = DiscountedPrice ?? price - (price * discount) / 100;
+    this.StaticPrice = price - (price * discount) / 100 ?? price;
   }
 
   incrementPrice(optionId: number, valueId: number): void {
@@ -46,8 +47,7 @@ class ProductNew {
       const value = option.optionValues.find((value) => value.id === valueId);
       if (value) {
         if (this.discount !== 0) {
-          this.tempDiscountedPrice =
-            (this.tempDiscountedPrice ?? 0) + value.price;
+          this.DiscountedPrice = (this.DiscountedPrice ?? 0) + value.price;
         } else {
           this.price = this.price + value.price;
         }
@@ -62,14 +62,14 @@ class ProductNew {
       const value = option.optionValues.find((value) => value.id === valueId);
       if (value) {
         if (this.discount !== 0) {
-          this.tempDiscountedPrice =
-            (this.tempDiscountedPrice ?? 0) - value.price;
+          this.DiscountedPrice = (this.DiscountedPrice ?? 0) - value.price;
         } else {
           this.price = this.price - value.price;
         }
       }
     }
   }
+
   getProductData(language: string): any {
     const {
       id,
@@ -86,9 +86,9 @@ class ProductNew {
     const description = language === "en" ? description_En : description_Ka;
     const formattedPrice = this.price.toFixed(2);
     const discountedPrice =
-      this.tempDiscountedPrice === 0
+      this.DiscountedPrice === 0
         ? (price - (price * discount) / 100).toFixed(2)
-        : this.tempDiscountedPrice?.toFixed(2);
+        : this.DiscountedPrice?.toFixed(2);
 
     return {
       id,

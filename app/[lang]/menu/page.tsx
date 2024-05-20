@@ -249,7 +249,7 @@ export default function MenuPage({
                             </span>
 
                             <span className="text-green-500 ml-1">
-                              {product?.tempDiscountedPrice}{" "}
+                              {product?.DiscountedPrice}{" "}
                               {lang === "en" ? "GEL" : "₾"}
                             </span>
                           </>

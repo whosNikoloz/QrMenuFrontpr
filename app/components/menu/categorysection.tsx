@@ -25,6 +25,7 @@ import {
   Radio,
   cn,
   Chip,
+  Input,
 } from "@nextui-org/react";
 import toast, { Toaster } from "react-hot-toast";
 import { AddToShoppingCart } from "../icons";
@@ -89,7 +90,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
             description:
               lang === "en" ? product.description_En : product.description_Ka,
             formattedPrice: product.price.toFixed(2),
-            discountedPrice: product.tempDiscountedPrice?.toFixed(2) ?? "",
+            discountedPrice: product.DiscountedPrice?.toFixed(2) ?? "",
             price: product.price,
             imageUrl: product.imageUrl ?? "",
             discount: product.discount,
@@ -111,9 +112,10 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
           extras: extras,
           finalPrice:
             selectedProduct.discount !== 0
-              ? selectedProduct.tempDiscountedPrice ?? 0
+              ? selectedProduct.DiscountedPrice ?? 0
               : selectedProduct.price,
         });
+        console.log("Selected Product:", selectedProduct);
         setCustomDescription("");
         setExtras({});
         onClose();
@@ -161,7 +163,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
           selectedProduct.description_Ka,
           selectedProduct.group_Id,
           selectedProduct.options,
-          selectedProduct.tempDiscountedPrice ?? 0
+          selectedProduct.DiscountedPrice ?? 0
         );
 
         // Find the selected option and its value
@@ -240,7 +242,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
           selectedProduct.description_Ka,
           selectedProduct.group_Id,
           selectedProduct.options,
-          selectedProduct.tempDiscountedPrice ?? 0
+          selectedProduct.DiscountedPrice ?? 0
         );
 
         const selectedOption = newSelectedProduct.options.find(
@@ -294,6 +296,46 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
 
         setSelectedProduct(newSelectedProduct);
       }
+    };
+
+    const [inputValues, setInputValues] = useState("");
+
+    const handleOptionNumFieldChange = (quantity: string) => {
+      setInputValues(quantity);
+      if (!selectedProduct) return;
+      const newSelectedProduct = new ProductNew(
+        selectedProduct.id,
+        selectedProduct.name_En,
+        selectedProduct.name_Ka,
+        selectedProduct.price,
+        selectedProduct.imageUrl,
+        selectedProduct.discount,
+        selectedProduct.description_En,
+        selectedProduct.description_Ka,
+        selectedProduct.group_Id,
+        selectedProduct.options,
+        selectedProduct.DiscountedPrice ?? 0
+      );
+
+      if (quantity === "") return;
+      var value = parseInt(quantity);
+      if (selectedProduct.discount !== 0) {
+        newSelectedProduct.DiscountedPrice =
+          (newSelectedProduct?.StaticPrice ?? 0) * value;
+      } else {
+        newSelectedProduct.price =
+          (newSelectedProduct?.StaticPrice ?? 0) * value;
+      }
+      setExtras((prevExtras) => ({
+        ...prevExtras,
+        en: prevExtras.en
+          ?.filter((extra) => !extra.endsWith("x"))
+          .concat([value.toString() + "x"]) || [value.toString() + "x"],
+        ka: prevExtras.ka
+          ?.filter((extra) => !extra.endsWith(" ცალი"))
+          .concat([value.toString() + " ცალი"]) || [value.toString() + " ცალი"],
+      }));
+      setSelectedProduct(newSelectedProduct);
     };
 
     return (
@@ -518,7 +560,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
 
                         {/* Discounted price */}
                         <span className="text-green-500 ml-1">
-                          {selectedProduct.tempDiscountedPrice?.toFixed(2)}
+                          {selectedProduct.DiscountedPrice?.toFixed(2)}
                           {lang === "en" ? "GEL" : "₾"}
                         </span>
                       </>
@@ -539,7 +581,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                           ? option.optionValues.map((value, index) => (
                               <div
                                 key={value.id}
-                                className="flex items-center flex-col p-1 justify-between "
+                                className="flex items-center flex-col p-1 justify-between"
                               >
                                 <Radio
                                   color="success"
@@ -579,10 +621,11 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                                 </Radio>
                               </div>
                             ))
-                          : option.optionValues.map((value) => (
+                          : option.type === "CheckBox"
+                          ? option.optionValues.map((value) => (
                               <div
                                 key={value.id}
-                                className="flex items-center  justify-between p-3"
+                                className="flex items-center justify-between p-3"
                               >
                                 <Checkbox
                                   defaultSelected={value.selected}
@@ -599,7 +642,6 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                                     ? value.name_En
                                     : value.name_Ka}
                                 </Checkbox>
-
                                 <div className="flex flex-col items-end gap-1">
                                   <Chip
                                     color="success"
@@ -610,7 +652,38 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                                   </Chip>
                                 </div>
                               </div>
-                            ))}
+                            ))
+                          : option.type === "NumField"
+                          ? option.optionValues.map((value) => (
+                              <div
+                                key={value.id}
+                                className="flex items-center justify-between p-3"
+                              >
+                                <Input
+                                  type="number"
+                                  placeholder="0"
+                                  className="mr-2"
+                                  value={inputValues}
+                                  onValueChange={(value) => {
+                                    handleOptionNumFieldChange(value);
+                                  }}
+                                />
+                                <div className="flex flex-col items-end gap-1">
+                                  <Chip
+                                    color="success"
+                                    size="sm"
+                                    variant="flat"
+                                  >
+                                    +
+                                    {(
+                                      selectedProduct?.StaticPrice ?? 0
+                                    ).toFixed(2)}
+                                    {lang === "en" ? "GEL" : "₾"}
+                                  </Chip>
+                                </div>
+                              </div>
+                            ))
+                          : null}
                       </RadioGroup>
                     </div>
                   ))}
@@ -644,13 +717,14 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                     {selectedProduct?.discount !== 0 ? (
                       <>
                         <span className="text-green-500 text-md mr-4">
-                          {selectedProduct?.tempDiscountedPrice?.toFixed(2)}
+                          {selectedProduct?.DiscountedPrice?.toFixed(2)}
                           {lang === "en" ? "GEL" : "₾"}
                         </span>
                       </>
                     ) : (
                       <>
                         {selectedProduct.price} {lang === "en" ? "GEL" : "₾"}
+                        <span className="mr-4"></span>
                       </>
                     )}
                   </span>

@@ -31,7 +31,7 @@ class ProductGroup {
           product.description_Ka,
           product.group_Id,
           product.options,
-          product.tempDiscountedPrice ?? 0
+          product.DiscountedPrice ?? 0
         )
     );
   }

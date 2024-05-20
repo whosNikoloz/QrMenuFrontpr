@@ -45,7 +45,7 @@ const fetchProductWithOptionsAndValues = async (
       data.description_Ka,
       data.group_Id,
       options,
-      data.tempDiscountedPrice
+      data.DiscountedPrice
     );
     return product;
   } catch (error) {
