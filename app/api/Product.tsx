@@ -93,4 +93,68 @@ const createProduct = async (
   }
 };
 
-export { fetchProductWithOptionsAndValues, createProduct };
+const editProduct = async (
+  productid: number,
+  name_en: string,
+  name_ka: string,
+  price: number,
+  imageUrl: string,
+  discount: number,
+  description_en: string,
+  description_ka: string,
+  group_Id: number
+) => {
+  try {
+    const bodyData = JSON.stringify({
+      name_En: name_en,
+      name_Ka: name_ka,
+      price: price,
+      imageUrl: imageUrl,
+      discount: discount,
+      description_En: description_en,
+      description_Ka: description_ka,
+      group_Id: group_Id,
+    });
+
+    const response = await fetch(`${mainAPI}/${productid}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: bodyData,
+    });
+    if (response.ok) {
+      var data = await response.json();
+      return data;
+    } else {
+      console.error("Error updating product:", response);
+    }
+  } catch (error) {
+    console.error("Error updating product:", error);
+    return null;
+  }
+};
+
+const deleteProduct = async (productid: number): Promise<boolean> => {
+  try {
+    const response = await fetch(`${mainAPI}/${productid}`, {
+      method: "DELETE",
+    });
+    if (response.ok) {
+      return true;
+    } else {
+      console.error("Error deleting product:", response);
+      return false;
+    }
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    return false;
+  }
+};
+
+export {
+  fetchProductWithOptionsAndValues,
+  createProduct,
+  editProduct,
+  deleteProduct,
+};

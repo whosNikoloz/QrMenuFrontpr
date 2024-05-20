@@ -31,7 +31,11 @@ import toast, { Toaster } from "react-hot-toast";
 import { AddIcon, AddToShoppingCart, EditIcon } from "../icons";
 import ProductNew from "@/models/ProductNew";
 import ProductData from "@/models/ProductData";
-import { fetchProductWithOptionsAndValues } from "@/app/api/Product";
+import {
+  deleteProduct,
+  editProduct,
+  fetchProductWithOptionsAndValues,
+} from "@/app/api/Product";
 import CartItemNew from "@/models/CartItemNew";
 import { editProductGroup } from "@/app/api/ProductGroup";
 import ProductGroup from "@/models/ProductGroup";
@@ -50,6 +54,7 @@ interface CategorySectionProps {
   onUpdateGroup: (group: ProductGroup) => void;
   onDeleteGroup: (groupid: number) => void;
   onUpdateCartItemQuantity: (product: ProductNew, quantity: number) => void;
+  onUpdateProduct: (product: ProductNew) => void;
 }
 
 export interface CategorySectionRef {
@@ -74,6 +79,7 @@ const CategorySectionAdmin = forwardRef<
       onUpdateGroup,
       onDeleteGroup,
       onUpdateCartItemQuantity,
+      onUpdateProduct,
     },
     ref
   ) => {
@@ -106,6 +112,14 @@ const CategorySectionAdmin = forwardRef<
         try {
           const data = await fetchProductWithOptionsAndValues(product.id);
           setSelectedProduct(data);
+          setImage(data?.imageUrl ?? "");
+          setEnglishNameProduct(data?.name_En ?? "");
+          setGeorgianNameProduct(data?.name_Ka ?? "");
+          setPrice(data?.price ?? 0);
+          setDiscount(data?.discount ?? 0);
+          setDescriptionEnglish(data?.description_En ?? "");
+          setDescriptionGeorgian(data?.description_Ka ?? "");
+          setGroupId(data?.group_Id ?? groupid);
         } catch (error) {
           console.error("Error fetching product groups:", error);
         }
@@ -414,6 +428,77 @@ const CategorySectionAdmin = forwardRef<
       onCloseGroupModal();
     };
 
+    const [englishNameProduct, setEnglishNameProduct] = useState("");
+    const [georgianNameProduct, setGeorgianNameProduct] = useState("");
+    const [price, setPrice] = useState(0);
+    const [discount, setDiscount] = useState(0);
+    const [descriptionEnglish, setDescriptionEnglish] = useState("");
+    const [descriptionGeorgian, setDescriptionGeorgian] = useState("");
+    const [image, setImage] = useState("");
+    const [groupId, setGroupId] = useState(groupid);
+
+    const handleSaveProduct = async () => {
+      const response = await editProduct(
+        selectedProduct?.id ?? 0,
+        englishNameProduct,
+        georgianNameProduct,
+        price,
+        image,
+        discount,
+        descriptionEnglish,
+        descriptionGeorgian,
+        groupId
+      );
+      if (response) {
+        const newproduct = new ProductNew(
+          response.id,
+          response.name_En,
+          response.name_Ka,
+          response.price,
+          response.imageUrl,
+          response.discount,
+          response.description_En,
+          response.description_Ka,
+          response.group_Id,
+          response.options,
+          response.DiscountedPrice ?? 0
+        );
+        onUpdateProduct(newproduct);
+        toast.success("Product Updated successfully");
+        onCloseProductModal();
+        return;
+      } else {
+        toast.error("Failed to update product");
+        onCloseProductModal();
+        return;
+      }
+    };
+
+    const handleProductDelete = async () => {
+      if (selectedProduct) {
+        const product = selectedProduct;
+
+        const reposnse = await deleteProduct(product.id);
+        if (!reposnse) {
+          toast.error("Failed to delete product");
+          onCloseProductModal();
+          return;
+        }
+        const index = products.findIndex((p) => p.id === product.id);
+        if (index !== -1) {
+          products.splice(index, 1);
+          onDeleteGroup(product.id);
+          toast.success("Product Deleted successfully");
+          onCloseProductModal();
+          return;
+        } else {
+          toast.error("Failed to delete product");
+          onCloseProductModal();
+          return;
+        }
+      }
+    };
+
     return (
       <>
         <div className="p-2">
@@ -437,7 +522,7 @@ const CategorySectionAdmin = forwardRef<
                 isIconOnly
                 onClick={hanldeAddProduct}
                 color="success"
-                className="dark:text-white text-black text-3xl bg-transparent"
+                className="dark:text-green-600 text-black text-3xl bg-transparent"
               >
                 <AddIcon size={26} />
               </Button>
@@ -531,7 +616,6 @@ const CategorySectionAdmin = forwardRef<
               const cartItem = cartItems.find(
                 (item) => item.product?.id === product.id
               );
-
               const formatedPr: ProductData = product.getProductData(
                 lang === "en" ? "en" : "ka"
               );
@@ -600,14 +684,26 @@ const CategorySectionAdmin = forwardRef<
                           </ButtonGroup>
                         </div>
                       ) : (
-                        <Button
-                          size="sm"
-                          onClick={() => handleAddToCart(formatedPr)}
-                          endContent={<AddToShoppingCart size={23} />}
-                          className="text-white text-sm bg-green-600"
-                        >
-                          {lang === "en" ? "Add" : "დამატება"}
-                        </Button>
+                        <>
+                          <div className="flex flex-row gap-2">
+                            <Button
+                              size="md"
+                              onClick={() => handleAddToCart(formatedPr)}
+                              className="text-white text-sm bg-transparent"
+                              isIconOnly
+                            >
+                              <EditIcon size={30} />
+                            </Button>
+                            <Button
+                              size="md"
+                              onClick={() => handleAddToCart(formatedPr)}
+                              isIconOnly
+                              className="text-green-600 text-sm bg-transparent"
+                            >
+                              <AddIcon size={30} />
+                            </Button>
+                          </div>
+                        </>
                       )}
                     </div>
                   </div>
@@ -684,44 +780,121 @@ const CategorySectionAdmin = forwardRef<
             <ModalBody>
               {selectedProduct && (
                 <>
-                  <Image
-                    src={selectedProduct.imageUrl ?? ""}
-                    width="100%"
-                    alt="Sample Image"
-                    className="rounded-3xl"
+                  {image && (
+                    <Image
+                      src={image ?? ""}
+                      width="100%"
+                      alt="Sample Image"
+                      className="rounded-3xl"
+                    />
+                  )}
+                  <Input
+                    label={lang === "en" ? "Image URL" : "სურათის URL"}
+                    placeholder={
+                      lang === "en"
+                        ? "Enter Image URL"
+                        : "შეიყვანეთ სურათის URL"
+                    }
+                    classNames={{
+                      input: ["text-[16px] "],
+                    }}
+                    value={image}
+                    onChange={(e) => setImage(e.target.value)}
                   />
-                  <h1 className="text-lg font-bold text-black dark:text-white">
-                    {lang === "en"
-                      ? selectedProduct.name_Ka
-                      : selectedProduct.name_Ka}
-                  </h1>
-                  <p className="text-sm text-black dark:text-white">
-                    {lang === "en"
-                      ? selectedProduct.description_En
-                      : selectedProduct.description_Ka}
-                  </p>
-                  <p className="text-sm text-black dark:text-white">
-                    {selectedProduct.discount !== 0 ? (
-                      <>
-                        {/* Original price */}
-                        <span className="line-through">
-                          {selectedProduct.price} {lang === "en" ? "GEL" : "₾"}
-                        </span>
+                  <Input
+                    label={lang === "en" ? "English Name" : "ინგლისური სახელი"}
+                    placeholder={
+                      lang === "en"
+                        ? "Enter English Name"
+                        : "შეიყვანეთ ინგლისური სახელი"
+                    }
+                    classNames={{
+                      input: ["text-[16px] "],
+                    }}
+                    value={englishNameProduct}
+                    onChange={(e) => setEnglishNameProduct(e.target.value)}
+                  />
+                  <Input
+                    label={lang === "en" ? "Georgian Name" : "ქართული სახელი"}
+                    placeholder={
+                      lang === "en"
+                        ? "Enter Georgian Name"
+                        : "შეიყვანეთ ქართული სახელი"
+                    }
+                    classNames={{
+                      input: ["text-[16px] "],
+                    }}
+                    value={georgianNameProduct}
+                    onChange={(e) => setGeorgianNameProduct(e.target.value)}
+                  />
+                  <Input
+                    label={lang === "en" ? "Price" : "ფასი"}
+                    placeholder={
+                      lang === "en" ? "Enter Price" : "შეიყვანეთ ფასი"
+                    }
+                    endContent={
+                      <div className="pointer-events-none flex items-center">
+                        <span className="text-default-400 text-small">$</span>
+                      </div>
+                    }
+                    classNames={{
+                      input: ["text-[16px] "],
+                    }}
+                    type="number"
+                    value={price.toString()}
+                    onChange={(e) => setPrice(Number(e.target.value))}
+                  />
 
-                        {/* Discounted price */}
-                        <span className="text-green-500 ml-1">
-                          {selectedProduct.DiscountedPrice?.toFixed(2)}
-                          {lang === "en" ? "GEL" : "₾"}
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        {selectedProduct.price} {lang === "en" ? "GEL" : "₾"}
-                      </>
-                    )}
-                  </p>
-
-                  {selectedProduct.options.map((option) => (
+                  <Input
+                    label={lang === "en" ? "Discount" : "ფასდაკლება"}
+                    placeholder="0.00"
+                    endContent={
+                      <div className="pointer-events-none flex items-center">
+                        <span className="text-default-400 text-small">%</span>
+                      </div>
+                    }
+                    classNames={{
+                      input: ["text-[16px] "],
+                    }}
+                    type="number"
+                    value={discount.toString()}
+                    onChange={(e) => setDiscount(Number(e.target.value))}
+                  />
+                  <Textarea
+                    label={
+                      lang === "en"
+                        ? "Description (English)"
+                        : "აღწერა (ინგლისურად)"
+                    }
+                    classNames={{
+                      input: ["text-[16px] "],
+                    }}
+                    placeholder={
+                      lang === "en"
+                        ? "Enter English Description"
+                        : "შეიყვანეთ ინგლისური აღწერა"
+                    }
+                    value={descriptionEnglish}
+                    onChange={(e) => setDescriptionEnglish(e.target.value)}
+                  />
+                  <Textarea
+                    label={
+                      lang === "en"
+                        ? "Description (Georgian)"
+                        : "აღწერა (ქართულად)"
+                    }
+                    classNames={{
+                      input: ["text-[16px] "],
+                    }}
+                    placeholder={
+                      lang === "en"
+                        ? "Enter Georgian Description"
+                        : "შეიყვანეთ ქართული აღწერა"
+                    }
+                    value={descriptionGeorgian}
+                    onChange={(e) => setDescriptionGeorgian(e.target.value)}
+                  />
+                  {/* {selectedProduct.options.map((option) => (
                     <div key={option.id}>
                       <Divider className="my-3" />
                       <RadioGroup
@@ -836,57 +1009,21 @@ const CategorySectionAdmin = forwardRef<
                           : null}
                       </RadioGroup>
                     </div>
-                  ))}
-
-                  <Divider className="my-3" />
-
-                  <h1 className="font-bold text-lg dark:text-white text-black">
-                    {lang === "en"
-                      ? "Add special instructions"
-                      : "დაამატეთ განსაკუთრებული მითითებები"}
-                  </h1>
-                  <Textarea
-                    variant="bordered"
-                    size="lg"
-                    onChange={(e) => setCustomDescription(e.target.value)}
-                    placeholder={
-                      lang === "ka"
-                        ? "ალერგია,მნიშვნელოვანი დეტალები"
-                        : "Allergies, important details"
-                    }
-                    className=" col-span-12 md:col-span-6 mb-64 "
-                  />
+                  ))} */}
                 </>
               )}
             </ModalBody>
-            <ModalFooter className="flex flex-col justify-center w-full">
-              <div className="flex">
-                <h1 className="font-bold dark:text-white text-black text-sm flex flex-col justify-between p-1">
-                  {lang === "en" ? "Total:" : "სულ:"}{" "}
-                  <span>
-                    {selectedProduct?.discount !== 0 ? (
-                      <>
-                        <span className="text-green-500 text-md mr-4">
-                          {selectedProduct?.DiscountedPrice?.toFixed(2)}
-                          {lang === "en" ? "GEL" : "₾"}
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        {selectedProduct.price} {lang === "en" ? "GEL" : "₾"}
-                        <span className="mr-4"></span>
-                      </>
-                    )}
-                  </span>
-                </h1>
-                <Button
-                  className="w-full bg-green-600 text-white"
-                  onClick={handleAddToCartModal}
-                  endContent={<AddToShoppingCart size={23} />}
-                >
-                  {lang === "en" ? "Add" : "დამატება"}
-                </Button>
-              </div>
+            <ModalFooter>
+              <Button
+                color="danger"
+                variant="flat"
+                onPress={handleProductDelete}
+              >
+                Delete
+              </Button>
+              <Button color="success" onClick={handleSaveProduct}>
+                Save
+              </Button>
             </ModalFooter>
           </ModalContent>
         </Modal>

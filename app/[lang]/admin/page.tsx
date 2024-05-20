@@ -181,6 +181,21 @@ export default function AdminPage({
       return updatedGroups;
     });
   };
+
+  const updateProduct = (updatedProduct: ProductNew) => {
+    setProductGroups((prevProductGroups) => {
+      const updatedGroups = prevProductGroups.map((group) => {
+        if (group.id === updatedProduct.group_Id) {
+          const updatedProducts = group.products.map((product) =>
+            product.id === updatedProduct.id ? updatedProduct : product
+          );
+          return { ...group, products: updatedProducts };
+        }
+        return group;
+      });
+      return updatedGroups;
+    });
+  };
   const onDeleteGroup = (groupId: number) => {
     setProductGroups((prevProductGroups) =>
       prevProductGroups.filter((group) => group.id !== groupId)
@@ -213,6 +228,7 @@ export default function AdminPage({
               cartItems={cartItems}
               onDeleteGroup={onDeleteGroup}
               onUpdateGroup={updateGroup}
+              onUpdateProduct={updateProduct}
               onUpdateCartItemQuantity={handleUpdateCartItemQuantity}
             />
           );
