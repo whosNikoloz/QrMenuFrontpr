@@ -95,6 +95,8 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
             discount: product.discount,
             options: product.options,
           };
+          setCustomDescription("");
+          setExtras({});
           handleAddToCart(ConvertProductData);
         }
       },
@@ -112,6 +114,8 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
               ? selectedProduct.tempDiscountedPrice ?? 0
               : selectedProduct.price,
         });
+        setCustomDescription("");
+        setExtras({});
         onClose();
         if (lang === "en") {
           toast.success("Successfully Added to Cart!");
@@ -122,7 +126,16 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
     };
 
     const handleIncreaseQuantity = async (product: ProductNew) => {
-      //setSelectedProduct(product); // Set the selected item
+      const fetchData = async () => {
+        try {
+          const data = await fetchProductWithOptionsAndValues(product.id);
+          setSelectedProduct(data); // Set the selected item
+        } catch (error) {
+          console.error("Error fetching product groups:", error);
+        }
+      };
+
+      fetchData();
       onOpen();
     };
 
@@ -130,6 +143,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
       const existingCartItem = cartItems.find(
         (item) => item.product?.id === product.id
       );
+      console.log(existingCartItem);
       if (existingCartItem && existingCartItem.quantity > 1) {
         onUpdateCartItemQuantity(product, existingCartItem.quantity - 1);
       }
@@ -299,6 +313,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                 const formatedPr: ProductData = product.getProductData(
                   lang === "en" ? "en" : "ka"
                 );
+
                 return (
                   <div key={index} className="w-full">
                     <div className="max-w-[200px] h-[350px] rounded-3xl border dark:bg-[#313638]/85 bg-white shadow-2xl text-center font-semibold ">
@@ -340,7 +355,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                             <Button
                               size="sm"
                               isIconOnly
-                              //   onClick={() => handleDecreaseQuantity(product)}
+                              onClick={() => handleDecreaseQuantity(product)}
                               className="text-white text-3xl bg-red-600"
                             >
                               -
@@ -349,7 +364,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                             <Button
                               size="sm"
                               isIconOnly
-                              // onClick={() => handleIncreaseQuantity(product)}
+                              onClick={() => handleIncreaseQuantity(product)}
                               className="text-white text-3xl bg-green-600"
                             >
                               +
@@ -377,6 +392,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                 (item) => item.product?.id === product.id
               );
 
+              console.log(product);
               const formatedPr: ProductData = product.getProductData(
                 lang === "en" ? "en" : "ka"
               );
@@ -428,7 +444,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                             <Button
                               size="sm"
                               isIconOnly
-                              // onClick={() => handleDecreaseQuantity(product)}
+                              onClick={() => handleDecreaseQuantity(product)}
                               className="text-white  text-3xl bg-red-600"
                             >
                               -
@@ -437,7 +453,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                             <Button
                               size="sm"
                               isIconOnly
-                              //onClick={() => handleIncreaseQuantity(product)}
+                              onClick={() => handleIncreaseQuantity(product)}
                               className="text-white  text-3xl bg-green-600"
                             >
                               +

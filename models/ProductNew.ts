@@ -46,7 +46,6 @@ class ProductNew {
       const value = option.optionValues.find((value) => value.id === valueId);
       if (value) {
         if (this.discount !== 0) {
-          console.log(this.tempDiscountedPrice);
           this.tempDiscountedPrice =
             (this.tempDiscountedPrice ?? 0) + value.price;
         } else {
@@ -63,7 +62,6 @@ class ProductNew {
       const value = option.optionValues.find((value) => value.id === valueId);
       if (value) {
         if (this.discount !== 0) {
-          console.log(this.tempDiscountedPrice);
           this.tempDiscountedPrice =
             (this.tempDiscountedPrice ?? 0) - value.price;
         } else {
