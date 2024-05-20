@@ -54,4 +54,43 @@ const fetchProductWithOptionsAndValues = async (
   }
 };
 
-export { fetchProductWithOptionsAndValues };
+const createProduct = async (
+  product: ProductCreateDto
+): Promise<ProductNew | null> => {
+  try {
+    const response = await fetch(mainAPI, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(product),
+    });
+    const data = await response.json();
+
+    var newproduct = new ProductNew(
+      data.id,
+      data.name_En,
+      data.name_Ka,
+      data.price,
+      data.imageUrl,
+      data.discount,
+      data.description_En,
+      data.description_Ka,
+      data.group_Id,
+      data.options,
+      data.DiscountedPrice ?? 0
+    );
+
+    if (response.ok) {
+      return newproduct;
+    } else {
+      console.error("Error creating product:", data);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error creating product:", error);
+    return null;
+  }
+};
+
+export { fetchProductWithOptionsAndValues, createProduct };

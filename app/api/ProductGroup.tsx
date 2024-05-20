@@ -42,4 +42,61 @@ const fetchProductGroups = async (): Promise<ProductGroup[]> => {
   }
 };
 
-export { fetchProductGroups };
+const createProductGroup = async (name_en: string, name_ka: string) => {
+  try {
+    const bodyData = JSON.stringify({ name_En: name_en, name_Ka: name_ka });
+
+    const response = await fetch(`${mainAPI}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: bodyData,
+    });
+    return response.json();
+  } catch (error) {
+    console.error("Error creating product group:", error);
+    return null;
+  }
+};
+
+const editProductGroup = async (
+  groupid: number,
+  name_en: string,
+  name_ka: string
+) => {
+  try {
+    const bodyData = JSON.stringify({ name_En: name_en, name_Ka: name_ka });
+
+    const response = await fetch(`${mainAPI}/${groupid}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: bodyData,
+    });
+    return response.json();
+  } catch (error) {
+    console.error("Error creating product group:", error);
+    return null;
+  }
+};
+
+const GetProductGroup = async () => {
+  try {
+    const response = await fetch(`${mainAPI}`, {
+      method: "GET",
+    });
+    return response.json();
+  } catch (error) {
+    console.error("Error deleting product group:", error);
+    return null;
+  }
+};
+
+export {
+  fetchProductGroups,
+  createProductGroup,
+  editProductGroup,
+  GetProductGroup,
+};
