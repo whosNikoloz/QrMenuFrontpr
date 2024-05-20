@@ -6,8 +6,6 @@ import CategorySection, {
 } from "@/app/components/menu/categorysection";
 import { MenuLayout } from "../layouts/MenuLayout";
 import BottomCart from "@/app/components/Cart/bottomCart";
-import Product from "@/models/Product";
-import CartItem from "@/models/CartItem";
 import {
   Avatar,
   Input,
@@ -24,6 +22,8 @@ import {
 import { AddToShoppingCart, SearchIcon } from "@/app/components/icons";
 import { fetchProductGroups } from "@/app/api/ProductGroup";
 import ProductGroup from "@/models/ProductGroup";
+import CartItemNew from "@/models/CartItemNew";
+import ProductNew from "@/models/ProductNew";
 
 export default function MenuPage({
   params: { lang },
@@ -37,7 +37,6 @@ export default function MenuPage({
       try {
         const data = await fetchProductGroups();
         setProductGroups(data);
-        console.log(data);
       } catch (error) {
         console.error("Error fetching product groups:", error);
       }
@@ -46,168 +45,20 @@ export default function MenuPage({
     fetchData();
   }, []);
 
-  const staticData = {
-    en: {
-      title: "Burgers",
-      products: [
-        new Product(
-          1,
-          "6 cheese burgers",
-          24,
-          "This is item 1",
-          "https://bonee.blob.core.windows.net/images/42fc72c2-596d-6dd6-ae10-b2a78c018d39_2.webp"
-        ),
-        new Product(
-          2,
-          "Bacon burger",
-          20,
-          "This is item 1",
-          "https://bonee.blob.core.windows.net/images/3f2b9c52-9291-19d8-0ac7-6cd73b4bd9ef_2.webp",
-          20
-        ),
-        new Product(
-          3,
-          "Cheeseburger",
-          10,
-          "This is item 1",
-          "https://bonee.blob.core.windows.net/images/418df878-fdee-c1cf-5744-7139ed1b824a_3.webp",
-          30
-        ),
-        new Product(
-          4,
-          "Grand Burger",
-          27,
-          "This is item 1",
-          "https://bonee.blob.core.windows.net/images/e7848a08-977f-a52d-fa23-fd1af15fb834_2.webp",
-          15
-        ),
-      ],
-    },
-    ka: {
-      title: "ბურგერი",
-      products: [
-        new Product(
-          1,
-          "6 ყველის ბურგერი",
-          24,
-          "This is item 1",
-          "https://bonee.blob.core.windows.net/images/42fc72c2-596d-6dd6-ae10-b2a78c018d39_2.webp"
-        ),
-        new Product(
-          2,
-          "ბეკონ ბურგერი",
-          20,
-          "This is item 1",
-          "https://bonee.blob.core.windows.net/images/3f2b9c52-9291-19d8-0ac7-6cd73b4bd9ef_2.webp",
-          20
-        ),
-        new Product(
-          3,
-          "ჩიზბურგერი",
-          10,
-          "This is item 1",
-          "https://bonee.blob.core.windows.net/images/418df878-fdee-c1cf-5744-7139ed1b824a_3.webp",
-          30
-        ),
-        new Product(
-          4,
-          "გრანდ ბურგერი",
-          27,
-          "This is item 1",
-          "https://bonee.blob.core.windows.net/images/e7848a08-977f-a52d-fa23-fd1af15fb834_2.webp",
-          15
-        ),
-      ],
-    },
-  };
-
-  const secondstaticData = {
-    en: {
-      title: "Pizza",
-      products: [
-        new Product(
-          5,
-          "4 cheese pizza",
-          15,
-          "This is item 1",
-          "https://bonee.blob.core.windows.net/images/1dae5380-42a7-462f-ef6d-14d0a4d241db_2.webp",
-          80
-        ),
-        new Product(
-          6,
-          "Caprichosa",
-          20,
-          "This is item 1",
-          "https://bonee.blob.core.windows.net/images/3f2b9c52-9291-19d8-0ac7-6cd73b4bd9ef_2.webp",
-          40
-        ),
-        new Product(
-          7,
-          "Signature pizza",
-          27,
-          "This is item 1",
-          "https://bonee.blob.core.windows.net/images/d5b064b5-2b24-f6f6-628f-855b9ea675fc_2.webp"
-        ),
-        new Product(
-          8,
-          "Fasting pizza",
-          14,
-          "This is item 1",
-          "https://bonee.blob.core.windows.net/images/2ae44866-0a4b-87ff-46d4-3184c522c178_2.webp"
-        ),
-      ],
-    },
-    ka: {
-      title: "პიცა",
-      products: [
-        new Product(
-          5,
-          "4 ყველის პიცა",
-          15,
-          "This is item 1",
-          "https://bonee.blob.core.windows.net/images/1dae5380-42a7-462f-ef6d-14d0a4d241db_2.webp",
-          80
-        ),
-        new Product(
-          6,
-          "კაპრიჩოზა",
-          20,
-          "This is item 1",
-          "https://bonee.blob.core.windows.net/images/3f2b9c52-9291-19d8-0ac7-6cd73b4bd9ef_2.webp",
-          40
-        ),
-        new Product(
-          7,
-          "საფირმო პიცა",
-          27,
-          "This is item 1",
-          "https://bonee.blob.core.windows.net/images/d5b064b5-2b24-f6f6-628f-855b9ea675fc_2.webp"
-        ),
-        new Product(
-          8,
-          "სამარხვო პიცა",
-          14,
-          "This is item 1",
-          "https://bonee.blob.core.windows.net/images/2ae44866-0a4b-87ff-46d4-3184c522c178_2.webp"
-        ),
-      ],
-    },
-  };
-
   const [changelayout, setChangelayout] = React.useState(false);
   function toggleLayout(arg: boolean) {
     setChangelayout(arg);
   }
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartItems, setCartItems] = useState<CartItemNew[]>([]);
 
   useEffect(() => {
     const storedCartItems = localStorage.getItem("cartItems");
 
     if (storedCartItems) {
       try {
-        const parsedCartItems: CartItem[] = JSON.parse(storedCartItems);
+        const parsedCartItems: CartItemNew[] = JSON.parse(storedCartItems);
         setCartItems(parsedCartItems); // Set cart items in state
       } catch (error) {
         console.error("Error parsing cart items from localStorage:", error);
@@ -215,22 +66,36 @@ export default function MenuPage({
     }
   }, []);
 
-  function handleAddToCart(cartItem: CartItem) {
-    setCartItems((prevCartItems: CartItem[]) => {
+  const sortExtras = (extras: { [key: string]: string[] }): string => {
+    const sortedExtras: { [key: string]: string[] } = {};
+    const keys = Object.keys(extras).sort();
+
+    keys.forEach((key) => {
+      sortedExtras[key] = [...extras[key]].sort();
+    });
+
+    return JSON.stringify(sortedExtras);
+  };
+
+  const handleAddToCart = (cartItem: CartItemNew) => {
+    console.log(cartItem);
+    setCartItems((prevCartItems: CartItemNew[]) => {
       const itemIndex = prevCartItems.findIndex(
         (item) =>
-          item.product?.id === cartItem.product?.id &&
-          item.customDescription === cartItem.customDescription
+          item.product.id === cartItem.product.id &&
+          item.comment === cartItem.comment &&
+          sortExtras(item.extras) === sortExtras(cartItem.extras)
       );
-      let newCartItems: CartItem[];
+
+      let newCartItems: CartItemNew[];
       if (itemIndex > -1) {
         // Item exists, update the quantity
         newCartItems = prevCartItems.map((item, index) =>
           index === itemIndex
-            ? ({
+            ? {
                 ...item,
                 quantity: item.quantity + cartItem.quantity,
-              } as CartItem)
+              }
             : item
         );
       } else {
@@ -241,13 +106,13 @@ export default function MenuPage({
       localStorage.setItem("cartItems", JSON.stringify(newCartItems)); // Store updated items in localStorage
       return newCartItems; // Update state with new items
     });
-  }
+  };
 
-  function handleUpdateCartItemQuantity(product: Product, quantity: number) {
-    setCartItems((prevCartItems: CartItem[]) => {
+  function handleUpdateCartItemQuantity(product: ProductNew, quantity: number) {
+    setCartItems((prevCartItems: CartItemNew[]) => {
       const updatedCartItems = prevCartItems.map((cartItem) => {
         if (cartItem.product?.id === product.id) {
-          return { ...cartItem, quantity } as CartItem;
+          return { ...cartItem, quantity } as CartItemNew;
         }
         return cartItem;
       });
@@ -256,16 +121,15 @@ export default function MenuPage({
     });
   }
 
-  const combinedProducts = [
-    ...staticData[lang].products,
-    ...secondstaticData[lang].products,
-  ];
-
-  combinedProducts.map((product, index) => {
-    const cartItem = cartItems.find((item) => item.product?.id === product.id);
-
-    // ... rest of your code
-  });
+  const combinedProducts = productGroups
+    .map((group) => {
+      if (!group || !group.id || !group.products) {
+        return null; // Skip this iteration if group, group.id, or group.products is undefined
+      }
+      return group.products;
+    })
+    .flat();
+  console.log(combinedProducts);
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -275,13 +139,16 @@ export default function MenuPage({
     setSearchTerm(event.target.value);
   };
 
-  const filteredProducts = combinedProducts.filter((product) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredProducts = combinedProducts.filter(
+    (product) =>
+      product?.name_En.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product?.name_Ka.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const categorySectionRef = useRef<CategorySectionRef>(null);
 
-  const exonAddToCart = (product: Product) => {
+  const exonAddToCart = (product: ProductNew) => {
+    console.log(product);
     if (product) {
       if (categorySectionRef.current) {
         categorySectionRef.current.handleAddToCartFromParent(product);
@@ -351,7 +218,7 @@ export default function MenuPage({
           <ModalBody>
             {filteredProducts.map((product, index) => {
               const cartItem = cartItems.find(
-                (item) => item.product?.id === product.id
+                (item) => item.product?.id === product?.id
               );
 
               return (
@@ -360,7 +227,7 @@ export default function MenuPage({
                   key={index}
                 >
                   <Image
-                    src={product.imageUrl}
+                    src={product?.imageUrl ?? ""}
                     width={200}
                     alt="Sample Image"
                     className="rounded-lg"
@@ -368,24 +235,24 @@ export default function MenuPage({
 
                   <div className="ml-4  flex w-full flex-col justify-between">
                     <h1 className="text-md font-bold text-black dark:text-white ">
-                      {product.name}
+                      {lang === "en" ? product?.name_En : product?.name_Ka}
                     </h1>
                     <p className="text-xs/3 mt-2 dark:text-white/70 text-black/70">
-                      {product.description}
+                      {lang === "en"
+                        ? product?.description_En
+                        : product?.description_Ka}
                     </p>
 
                     <div className="mt-auto flex items-center justify-between">
                       <p className="mr-2 text-sm text-black dark:text-white relative">
-                        {product.discount !== 0 ? (
+                        {product?.discount !== 0 ? (
                           <>
-                            {/* Original price */}
                             <span className="line-through">
-                              {product.price} {lang === "en" ? "GEL" : "₾"}
+                              {product?.price} {lang === "en" ? "GEL" : "₾"}
                             </span>
 
-                            {/* Discounted price */}
                             <span className="text-green-500 ml-1">
-                              {product.getDiscountedPrice()}{" "}
+                              {product?.tempDiscountedPrice}{" "}
                               {lang === "en" ? "GEL" : "₾"}
                             </span>
                           </>
@@ -411,7 +278,7 @@ export default function MenuPage({
                             <Button
                               size="sm"
                               isIconOnly
-                              onClick={() => exonAddToCart(product)}
+                              onClick={() => product && exonAddToCart(product)}
                               className="text-white text-3xl bg-green-600"
                             >
                               +
@@ -421,7 +288,7 @@ export default function MenuPage({
                       ) : (
                         <Button
                           size="sm"
-                          onClick={() => exonAddToCart(product)}
+                          onClick={() => product && exonAddToCart(product)}
                           endContent={<AddToShoppingCart size={23} />}
                           className="text-white text-sm bg-green-600"
                         >

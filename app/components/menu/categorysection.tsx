@@ -26,26 +26,25 @@ import {
   cn,
   Chip,
 } from "@nextui-org/react";
-import Product from "@/models/Product";
 import toast, { Toaster } from "react-hot-toast";
-import CartItem from "@/models/CartItem";
 import { AddToShoppingCart } from "../icons";
 import ProductNew from "@/models/ProductNew";
 import ProductData from "@/models/ProductData";
 import { fetchProductWithOptionsAndValues } from "@/app/api/Product";
+import CartItemNew from "@/models/CartItemNew";
 
 interface CategorySectionProps {
   title: string;
   lang: string;
   biglayout?: boolean;
   products: ProductNew[];
-  cartItems: CartItem[];
-  onAddToCart: (cartItem: CartItem) => void;
-  onUpdateCartItemQuantity: (product: Product, quantity: number) => void;
+  cartItems: CartItemNew[];
+  onAddToCart: (cartItem: CartItemNew) => void;
+  onUpdateCartItemQuantity: (product: ProductNew, quantity: number) => void;
 }
 
 export interface CategorySectionRef {
-  handleAddToCartFromParent: (product: Product) => void;
+  handleAddToCartFromParent: (product: ProductNew) => void;
 }
 
 const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
@@ -66,11 +65,11 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
     );
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [customDescription, setCustomDescription] = useState("");
+    const [extras, setExtras] = useState<{ [key: string]: string[] }>({});
     const handleAddToCart = (product: ProductData) => {
       const fetchData = async () => {
         try {
           const data = await fetchProductWithOptionsAndValues(product.id);
-          console.log(data);
           setSelectedProduct(data);
         } catch (error) {
           console.error("Error fetching product groups:", error);
@@ -82,8 +81,22 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
     };
 
     useImperativeHandle(ref, () => ({
-      handleAddToCartFromParent(product: Product) {
-        //handleAddToCart(product);
+      handleAddToCartFromParent(product: ProductNew) {
+        if (product) {
+          const ConvertProductData: ProductData = {
+            id: product.id,
+            name: lang === "en" ? product.name_En : product.name_Ka,
+            description:
+              lang === "en" ? product.description_En : product.description_Ka,
+            formattedPrice: product.price.toFixed(2),
+            discountedPrice: product.tempDiscountedPrice?.toFixed(2) ?? "",
+            price: product.price,
+            imageUrl: product.imageUrl ?? "",
+            discount: product.discount,
+            options: product.options,
+          };
+          handleAddToCart(ConvertProductData);
+        }
       },
     }));
 
@@ -92,16 +105,12 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
         onAddToCart({
           product: selectedProduct,
           quantity: 1,
-          customDescription: customDescription,
-          extraItems: [],
-          getItemInfo: function (): {
-            product: any;
-            quantity: number;
-            customDescription: string;
-            extraItems: any[];
-          } {
-            throw new Error("Function not implemented.");
-          },
+          comment: customDescription,
+          extras: extras,
+          finalPrice:
+            selectedProduct.discount !== 0
+              ? selectedProduct.tempDiscountedPrice ?? 0
+              : selectedProduct.price,
         });
         onClose();
         if (lang === "en") {
@@ -112,12 +121,12 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
       }
     };
 
-    const handleIncreaseQuantity = async (product: Product) => {
+    const handleIncreaseQuantity = async (product: ProductNew) => {
       //setSelectedProduct(product); // Set the selected item
       onOpen();
     };
 
-    const handleDecreaseQuantity = (product: Product) => {
+    const handleDecreaseQuantity = (product: ProductNew) => {
       const existingCartItem = cartItems.find(
         (item) => item.product?.id === product.id
       );
@@ -149,7 +158,6 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
         const selectedValue = selectedOption?.optionValues.find(
           (value) => value.id === valueId
         );
-
         if (!selectedOption || !selectedValue) return; // Exit if option or value not found
 
         // Find the previously selected value
@@ -180,10 +188,27 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
             optionId,
             previouslySelectedValue.id
           );
+          // Remove the previously selected value from extras
+          setExtras((prevExtras) => ({
+            ...prevExtras,
+            ["en"]: prevExtras["en"]?.filter(
+              (extra) => extra !== previouslySelectedValue.name_En
+            ),
+            ["ka"]: prevExtras["ka"]?.filter(
+              (extra) => extra !== previouslySelectedValue.name_Ka
+            ),
+          }));
         }
 
         // Increment the price of the newly selected value
         newSelectedProduct.incrementPrice(optionId, valueId);
+
+        // Add the newly selected value to extras
+        setExtras((prevExtras) => ({
+          ...prevExtras,
+          ["en"]: [...(prevExtras["en"] || []), selectedValue.name_En],
+          ["ka"]: [...(prevExtras["ka"] || []), selectedValue.name_Ka],
+        }));
 
         setSelectedProduct(newSelectedProduct);
       }
@@ -211,7 +236,11 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
         const selectedValue = selectedOption?.optionValues.find(
           (value) => value.id === valueId
         );
+
         if (!selectedOption || !selectedValue) return;
+
+        const isCurrentlySelected = selectedValue.selected;
+
         newSelectedProduct.options = newSelectedProduct.options.map(
           (option) => {
             if (option.id === optionId) {
@@ -227,11 +256,29 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
             return option;
           }
         );
-        if (selectedValue.selected) {
+
+        if (isCurrentlySelected) {
           newSelectedProduct.decrementPrice(optionId, valueId);
+          // Remove the deselected value from extras
+          setExtras((prevExtras) => ({
+            ...prevExtras,
+            ["en"]: prevExtras["en"]?.filter(
+              (extra) => extra !== selectedValue.name_En
+            ),
+            ["ka"]: prevExtras["ka"]?.filter(
+              (extra) => extra !== selectedValue.name_Ka
+            ),
+          }));
         } else {
           newSelectedProduct.incrementPrice(optionId, valueId);
+          // Add the newly selected value to extras
+          setExtras((prevExtras) => ({
+            ...prevExtras,
+            ["en"]: [...(prevExtras["en"] || []), selectedValue.name_En],
+            ["ka"]: [...(prevExtras["ka"] || []), selectedValue.name_Ka],
+          }));
         }
+
         setSelectedProduct(newSelectedProduct);
       }
     };
@@ -312,7 +359,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                       ) : (
                         <Button
                           size="md"
-                          //  onClick={() => handleAddToCart(product)}
+                          onClick={() => handleAddToCart(formatedPr)}
                           endContent={<AddToShoppingCart size={24} />}
                           className="text-white text-sm mb-4 mt-4  rounded-3xl px-8 py-2 font-bold  bg-green-600"
                         >

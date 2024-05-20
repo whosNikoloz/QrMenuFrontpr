@@ -12,17 +12,18 @@ import {
   Image,
   ButtonGroup,
 } from "@nextui-org/react";
-import CartItem from "@/models/CartItem";
+// import ProductNew from "@models/ProductNew";
+import CartItemNew from "@/models/CartItemNew";
 
 interface ItemQuantities {
   [key: string]: number;
 }
 
-const BottomCart: React.FC<{ lng: string; CartItems: CartItem[] }> = ({
+const BottomCart: React.FC<{ lng: string; CartItems: CartItemNew[] }> = ({
   lng,
   CartItems,
 }) => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartItems, setCartItems] = useState<CartItemNew[]>([]);
   const [itemQuantities, setItemQuantities] = useState<ItemQuantities>({});
 
   useEffect(() => {
@@ -31,38 +32,65 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItem[] }> = ({
     }
   }, [CartItems]);
 
+  const sortExtras = (extras: { [key: string]: string[] }): string => {
+    const sortedExtras: { [key: string]: string[] } = {};
+    const keys = Object.keys(extras).sort();
+
+    keys.forEach((key) => {
+      sortedExtras[key] = [...extras[key]].sort();
+    });
+
+    return JSON.stringify(sortedExtras);
+  };
+
   useEffect(() => {
     const initialQuantities: ItemQuantities = {};
     cartItems.forEach((cartItem) => {
-      const key = `${cartItem.product?.id}-${cartItem.customDescription}`;
+      const sortedExtras = sortExtras(cartItem.extras);
+      const key = `${cartItem.product.id}-${sortedExtras}-${cartItem.comment}`;
       initialQuantities[key] = cartItem.quantity;
     });
     setItemQuantities(initialQuantities);
   }, [cartItems]);
 
-  const handleIncrement = (productId: string, customDescription: string) => {
-    const key = `${productId}-${customDescription}`;
+  const handleIncrement = (
+    productId: string,
+    extras: { [key: string]: string[] },
+    comment: string
+  ) => {
+    const sortedExtras = sortExtras(extras);
+    const key = `${productId}-${sortedExtras}-${comment}`;
 
     setItemQuantities((prevQuantities) => {
       const updatedQuantities = {
         ...prevQuantities,
         [key]: (prevQuantities[key] || 0) + 1,
       };
+
       // Update cartItems with updated quantities
-      const updatedCartItems = cartItems.map((cartitem) =>
-        `${cartitem.product?.id}-${cartitem.customDescription}` === key
-          ? { ...cartitem, quantity: updatedQuantities[key] }
-          : cartitem
+      const updatedCartItems = cartItems.map((cartItem) =>
+        `${cartItem.product.id}-${sortExtras(cartItem.extras)}-${
+          cartItem.comment
+        }` === key
+          ? { ...cartItem, quantity: updatedQuantities[key] }
+          : cartItem
       );
+
       // Save updated cartItems to localStorage
       localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
+      setCartItems(updatedCartItems);
 
       return updatedQuantities;
     });
   };
 
-  const handleDecrement = (productId: string, customDescription: string) => {
-    const key = `${productId}-${customDescription}`;
+  const handleDecrement = (
+    productId: string,
+    extras: { [key: string]: string[] },
+    comment: string
+  ) => {
+    const sortedExtras = sortExtras(extras);
+    const key = `${productId}-${sortedExtras}-${comment}`;
 
     setItemQuantities((prevQuantities) => {
       const updatedQuantities = {
@@ -75,16 +103,20 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItem[] }> = ({
       if (updatedQuantities[key] <= 0) {
         // If quantity is 0 or less, remove item from cartItems
         updatedCartItems = cartItems.filter(
-          (cartitem) =>
-            `${cartitem.product?.id}-${cartitem.customDescription}` !== key
+          (cartItem) =>
+            `${cartItem.product.id}-${sortExtras(cartItem.extras)}-${
+              cartItem.comment
+            }` !== key
         );
       } else {
         // Otherwise, update quantity in cartItems
-        updatedCartItems = cartItems.map((cartitem) =>
-          `${cartitem.product?.id}-${cartitem.customDescription}` === key
-            ? { ...cartitem, quantity: updatedQuantities[key] }
-            : cartitem
-        ) as CartItem[]; // Cast to ensure all items are CartItem instances
+        updatedCartItems = cartItems.map((cartItem) =>
+          `${cartItem.product.id}-${sortExtras(cartItem.extras)}-${
+            cartItem.comment
+          }` === key
+            ? { ...cartItem, quantity: updatedQuantities[key] }
+            : cartItem
+        ) as CartItemNew[]; // Cast to ensure all items are CartItemNew instances
       }
 
       // Update cartItems state
@@ -103,13 +135,9 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItem[] }> = ({
 
   const getTotalPrice = (): number => {
     return cartItems.reduce((total, item) => {
-      const key = `${item.product?.id}-${item.customDescription}`;
-
-      const price =
-        item.product?.discount !== 0
-          ? item.product?.price -
-            (item.product?.price * item.product?.discount) / 100
-          : item.product?.price;
+      const sortedExtras = sortExtras(item.extras);
+      const key = `${item.product?.id}-${sortedExtras}-${item.comment}`;
+      const price = item.finalPrice ?? item.product?.price;
       return total + price * (itemQuantities[key] || 0);
     }, 0);
   };
@@ -170,45 +198,35 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItem[] }> = ({
                     key={index}
                   >
                     <Image
-                      src={cartitem.product?.imageUrl}
+                      src={cartitem.product?.imageUrl ?? ""}
                       width={150}
                       alt="Sample Image"
                       className="rounded-lg"
                     />
                     <div className="ml-4 flex w-full flex-col justify-between">
                       <h1 className="text-md font-bold text-black dark:text-white">
-                        {cartitem.product?.name}
+                        {lng === "en"
+                          ? cartitem.product?.name_En
+                          : cartitem.product?.name_Ka}
                       </h1>
                       <p className="text-xs text-white dark:text-white/70">
-                        {cartitem.product?.description}
+                        {Object.entries(cartitem.extras).map(
+                          ([key, values]: [string, string[]]) =>
+                            key === lng && (
+                              <div key={key}>{values.join(", ")}</div>
+                            )
+                        )}
                       </p>
                       <p className="text-xs mt-3 text-white dark:text-white/70">
-                        {cartitem.customDescription}
+                        {cartitem.comment}
                       </p>
                       <div className="mt-auto flex items-center justify-between">
                         <p className="mr-2 text-sm text-black dark:text-white">
-                          {cartitem.product?.discount !== 0 ? (
-                            <>
-                              {/* Original price */}
-                              <span className="line-through">
-                                {cartitem.product?.price}{" "}
-                                {lng === "en" ? "GEL" : "₾"}
-                              </span>
-
-                              {/* Discounted price */}
-                              <span className="text-green-500 ml-1">
-                                {(cartitem.product?.price *
-                                  cartitem.product?.discount) /
-                                  100}{" "}
-                                {lng === "en" ? "GEL" : "₾"}
-                              </span>
-                            </>
-                          ) : (
-                            <>
-                              {cartitem.product?.price}{" "}
-                              {lng === "en" ? "GEL" : "₾"}
-                            </>
-                          )}
+                          <span className="text-white ml-1">
+                            {cartitem.finalPrice?.toFixed(2) ??
+                              cartitem.product?.price.toFixed(2)}
+                            {lng === "en" ? "GEL" : "₾"}
+                          </span>
                         </p>
                         <ButtonGroup className="gap-2">
                           <Button
@@ -216,8 +234,9 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItem[] }> = ({
                             isIconOnly
                             onClick={() =>
                               handleDecrement(
-                                cartitem.product?.id,
-                                cartitem.customDescription
+                                cartitem.product?.id.toString(),
+                                cartitem.extras,
+                                cartitem.comment
                               )
                             }
                             className="text-white text-3xl bg-red-600"
@@ -227,7 +246,9 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItem[] }> = ({
                           <p className="text-lg">
                             {
                               itemQuantities[
-                                `${cartitem.product?.id}-${cartitem.customDescription}`
+                                `${cartitem.product?.id}-${sortExtras(
+                                  cartitem.extras
+                                )}-${cartitem.comment}`
                               ]
                             }
                           </p>
@@ -236,8 +257,9 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItem[] }> = ({
                             isIconOnly
                             onClick={() =>
                               handleIncrement(
-                                cartitem.product?.id,
-                                cartitem.customDescription
+                                cartitem.product?.id.toString(),
+                                cartitem.extras,
+                                cartitem.comment
                               )
                             }
                             className="text-white text-3xl bg-green-600"
