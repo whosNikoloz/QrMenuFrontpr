@@ -28,16 +28,18 @@ const createOptionValue = async (
   }
 };
 
-const editOption = async (option: OptionCreateDto, optionid: number) => {
+const editOptionValue = async (
+  option: OptionValueCreateDto,
+  OptionValueId: number
+) => {
   try {
-    const response = await fetch(`${mainAPI}/${optionid}`, {
+    const response = await fetch(`${mainAPI}/${OptionValueId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(option),
     });
-    console.log(response);
     if (response.ok) {
       var data = await response.json();
       return data;
@@ -50,9 +52,9 @@ const editOption = async (option: OptionCreateDto, optionid: number) => {
   }
 };
 
-const deleteOption = async (optionid: number): Promise<boolean> => {
+const deleteOptionValue = async (optionValueid: number): Promise<boolean> => {
   try {
-    const response = await fetch(`${mainAPI}/${optionid}`, {
+    const response = await fetch(`${mainAPI}/${optionValueid}`, {
       method: "DELETE",
     });
     if (response.ok) {
@@ -67,4 +69,4 @@ const deleteOption = async (optionid: number): Promise<boolean> => {
   }
 };
 
-export { createOptionValue, editOption, deleteOption };
+export { createOptionValue, editOptionValue, deleteOptionValue };

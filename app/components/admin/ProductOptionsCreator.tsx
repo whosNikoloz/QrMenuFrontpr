@@ -27,7 +27,11 @@ import ProductNew from "@/models/ProductNew";
 import { Locale } from "@/i18n.config";
 import { Image } from "@nextui-org/react";
 import { createOption, editOption } from "@/app/api/Options";
-import { createOptionValue } from "@/app/api/OptionValue";
+import {
+  createOptionValue,
+  editOptionValue,
+  deleteOptionValue,
+} from "@/app/api/OptionValue";
 import toast from "react-hot-toast";
 
 interface ProductOptionsCreatorProps {
@@ -75,6 +79,13 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
     onOpenChange: onOpenOptionValueChange,
   } = useDisclosure();
 
+  const {
+    isOpen: isOpenOptionValueEditModal,
+    onOpen: onOpenOptionValueEditModal,
+    onClose: onCloseOptionValueEditModal,
+    onOpenChange: onOpenOptionValueEditChange,
+  } = useDisclosure();
+
   useEffect(() => {
     if (open) {
       setSelectedProduct(product);
@@ -90,6 +101,8 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
   const [valueEnglishName, setValueEnglishName] = useState("");
   const [valueGeorgianName, setValueGeorgianName] = useState("");
   const [valueprice, setValueprice] = useState(0);
+
+  const [optionValueId, setOptionValueId] = useState(0);
 
   const handleAddOption = (value: string) => {
     setType(value);
@@ -198,8 +211,6 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
       option_Id: optionid,
     });
 
-    console.log(response);
-
     if (response) {
       setSelectedProduct((prevProduct) => {
         if (!prevProduct) return null;
@@ -247,6 +258,128 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
     }
   };
 
+  const handleEditOptionValue = (optionid: number, valueid: number) => {
+    const option = selectedProduct?.options.find(
+      (option) => option.id === optionid
+    );
+
+    if (option) {
+      const value = option.optionValues.find((value) => value.id === valueid);
+      if (value) {
+        setOptionValueId(value.id);
+        setValueEnglishName(value.name_En);
+        setValueGeorgianName(value.name_Ka);
+        setValueprice(value.price);
+        setOptionId(optionid);
+        onOpenOptionValueEditModal();
+      }
+    }
+  };
+
+  const handleOptionValueUpdate = async () => {
+    const response = await editOptionValue(
+      {
+        name_En: valueEnglishName,
+        name_Ka: valueGeorgianName,
+        price: valueprice,
+        option_Id: optionid,
+      },
+      optionValueId
+    );
+
+    if (response) {
+      setSelectedProduct((prevProduct) => {
+        if (!prevProduct) return null;
+
+        const optionIndex = prevProduct.options.findIndex(
+          (option) => option.id === optionid
+        );
+
+        if (optionIndex !== -1) {
+          const updatedOptions = prevProduct.options.map((option, idx) => {
+            if (idx === optionIndex) {
+              const updatedOptionValues = option.optionValues.map((value) => {
+                if (value.id === response.id) {
+                  return {
+                    ...value,
+                    name_En: response.name_En,
+                    name_Ka: response.name_Ka,
+                    price: response.price,
+                  };
+                }
+                return value;
+              });
+
+              return {
+                ...option,
+                optionValues: updatedOptionValues,
+              };
+            }
+            return option;
+          });
+
+          return {
+            ...prevProduct,
+            options: updatedOptions,
+            incrementPrice: prevProduct.incrementPrice,
+            decrementPrice: prevProduct.decrementPrice,
+            getProductData: prevProduct.getProductData,
+          };
+        }
+        return prevProduct;
+      });
+
+      toast.success("Option Value Updated Successfully");
+      onCloseOptionValueEditModal();
+    } else {
+      toast.error("Option Value Update Failed");
+    }
+  };
+
+  const handledeleteOptionValue = async () => {
+    const response = await deleteOptionValue(optionValueId);
+
+    if (response) {
+      setSelectedProduct((prevProduct) => {
+        if (!prevProduct) return null;
+
+        const optionIndex = prevProduct.options.findIndex(
+          (option) => option.id === optionid
+        );
+
+        if (optionIndex !== -1) {
+          const updatedOptions = prevProduct.options.map((option, idx) => {
+            if (idx === optionIndex) {
+              const updatedOptionValues = option.optionValues.filter(
+                (value) => value.id !== optionValueId
+              );
+
+              return {
+                ...option,
+                optionValues: updatedOptionValues,
+              };
+            }
+            return option;
+          });
+
+          return {
+            ...prevProduct,
+            options: updatedOptions,
+            incrementPrice: prevProduct.incrementPrice,
+            decrementPrice: prevProduct.decrementPrice,
+            getProductData: prevProduct.getProductData,
+          };
+        }
+        return prevProduct;
+      });
+
+      toast.success("Option Value Deleted Successfully");
+      onCloseOptionValueEditModal();
+    } else {
+      toast.error("Option Value Delete Failed");
+    }
+  };
+
   return (
     <>
       <Modal
@@ -273,7 +406,7 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
                         ? selectedProduct.name_Ka
                         : selectedProduct.name_Ka
                     }
-                    // description="Product Designer"
+                    description={selectedProduct.price.toString()}
                     avatarProps={{
                       size: "lg",
                       src: selectedProduct.imageUrl ?? "",
@@ -319,11 +452,12 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
                 {selectedProduct.options.map((option) => (
                   <div key={option.id}>
                     <Divider className="my-3" />
-                    <RadioGroup
-                      label={lang === "en" ? option.name_En : option.name_Ka}
-                    >
+                    <RadioGroup>
                       <>
-                        <div className="flex justify-end">
+                        <div className="flex font-bold text-md justify-between ">
+                          <h1>
+                            {lang === "en" ? option.name_En : option.name_Ka}
+                          </h1>
                           <Button
                             className="flex bg-transparent"
                             onClick={() => handleEditOption(option.id)}
@@ -337,7 +471,7 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
                           ? option.optionValues.map((value, index) => (
                               <div
                                 key={value.id}
-                                className="flex items-center flex-col p-1 justify-between"
+                                className="flex items-center flex-row p-1  justify-between"
                               >
                                 <Radio
                                   color="success"
@@ -375,13 +509,22 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
                                     </div>
                                   </div>
                                 </Radio>
+                                <Button
+                                  className="flex bg-transparent ml-5"
+                                  onClick={() =>
+                                    handleEditOptionValue(option.id, value.id)
+                                  }
+                                  isIconOnly
+                                >
+                                  <EditIcon size={25} />
+                                </Button>
                               </div>
                             ))
                           : option.type === "CheckBox"
                           ? option.optionValues.map((value) => (
                               <div
                                 key={value.id}
-                                className="flex items-center justify-between p-3"
+                                className="flex items-center justify-between p-2"
                               >
                                 <Checkbox
                                   defaultSelected={value.selected}
@@ -398,14 +541,24 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
                                     ? value.name_En
                                     : value.name_Ka}
                                 </Checkbox>
-                                <div className="flex flex-col items-end gap-1">
+                                <div className="flex flex-row items-end ">
                                   <Chip
                                     color="success"
                                     size="sm"
                                     variant="flat"
+                                    className="mb-2"
                                   >
                                     +{value.price} {lang === "en" ? "GEL" : "₾"}
                                   </Chip>
+                                  <Button
+                                    className="flex bg-transparents "
+                                    onClick={() =>
+                                      handleEditOptionValue(option.id, value.id)
+                                    }
+                                    isIconOnly
+                                  >
+                                    <EditIcon size={25} />
+                                  </Button>
                                 </div>
                               </div>
                             ))
@@ -413,7 +566,7 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
                           ? option.optionValues.map((value) => (
                               <div
                                 key={value.id}
-                                className="flex items-center justify-between p-3"
+                                className="flex flex-row items-end"
                               >
                                 <Input
                                   type="number"
@@ -429,6 +582,7 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
                                     color="success"
                                     size="sm"
                                     variant="flat"
+                                    className="mb-2"
                                   >
                                     +
                                     {(
@@ -436,6 +590,15 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
                                     ).toFixed(2)}
                                     {lang === "en" ? "GEL" : "₾"}
                                   </Chip>
+                                  <Button
+                                    className="flex bg-transparents "
+                                    onClick={() =>
+                                      handleEditOptionValue(option.id, value.id)
+                                    }
+                                    isIconOnly
+                                  >
+                                    <EditIcon size={25} />
+                                  </Button>
                                 </div>
                               </div>
                             ))
@@ -444,8 +607,9 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
                       <div className="flex items-center justify-center ">
                         <Button
                           color="success"
+                          isIconOnly
                           onClick={() => hanldeAddValueButton(option.id)}
-                          className="flex w-1/2 "
+                          className="flex w-1/4 mt-2 text-white bg-green-600"
                         >
                           <AddIcon size={25} />
                         </Button>
@@ -655,6 +819,77 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
                 </Button>
                 <Button color="success" onClick={handleOptionValueAdd}>
                   Save
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
+      <Modal
+        isOpen={isOpenOptionValueEditModal}
+        onOpenChange={onCloseOptionValueEditModal}
+        placement="center"
+      >
+        <ModalContent>
+          {(onCloseOptionValueEditModal) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                {lang === "en" ? "Edit Option" : "ვარიანტის რედაქტირება"}
+              </ModalHeader>
+              <ModalBody>
+                <div className="flex flex-col gap-2">
+                  <Input
+                    autoFocus
+                    label="English"
+                    classNames={{
+                      input: ["text-[16px] "],
+                    }}
+                    placeholder="Enter English"
+                    value={valueEnglishName}
+                    onChange={(e) => setValueEnglishName(e.target.value)}
+                    required
+                  />
+                  <Input
+                    autoFocus
+                    label="ქართულად"
+                    value={valueGeorgianName}
+                    classNames={{
+                      input: ["text-[16px] "],
+                    }}
+                    onChange={(e) => setValueGeorgianName(e.target.value)}
+                    placeholder="Enter ქართულად"
+                    required
+                  />
+                  <Input
+                    autoFocus
+                    type="number"
+                    label="Price"
+                    value={valueprice.toString()}
+                    classNames={{
+                      input: ["text-[16px] "],
+                    }}
+                    endContent={
+                      <div className="pointer-events-none flex items-center">
+                        <span className="text-default-400 text-small">$</span>
+                      </div>
+                    }
+                    onChange={(e) => setValueprice(Number(e.target.value))}
+                    placeholder="0.00"
+                    required
+                  />
+                </div>
+              </ModalBody>
+              <ModalFooter>
+                <Button
+                  color="danger"
+                  variant="flat"
+                  onPress={handledeleteOptionValue}
+                >
+                  {lang === "en" ? "Delete" : "წაშლა"}
+                </Button>
+                <Button color="success" onClick={handleOptionValueUpdate}>
+                  {lang === "en" ? "Save" : "შენახვა"}
                 </Button>
               </ModalFooter>
             </>
