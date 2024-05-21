@@ -2,7 +2,7 @@
 import { Locale } from "@/i18n.config";
 import React, { useEffect, useRef, useState } from "react";
 import CategorySectionAdmin, {
-  CategorySectionRef,
+  CategorySectionAdminRef,
 } from "@/app/components/admin/admincategorysection";
 import { MenuLayout } from "../layouts/MenuLayout";
 import BottomCart from "@/app/components/Cart/bottomCart";
@@ -19,7 +19,12 @@ import {
   Button,
   ButtonGroup,
 } from "@nextui-org/react";
-import { AddToShoppingCart, SearchIcon } from "@/app/components/icons";
+import {
+  AddIcon,
+  AddToShoppingCart,
+  EditIcon,
+  SearchIcon,
+} from "@/app/components/icons";
 import { fetchProductGroups } from "@/app/api/ProductGroup";
 import ProductGroup from "@/models/ProductGroup";
 import CartItemNew from "@/models/CartItemNew";
@@ -78,49 +83,6 @@ export default function AdminPage({
     return JSON.stringify(sortedExtras);
   };
 
-  const handleAddToCart = (cartItem: CartItemNew) => {
-    setCartItems((prevCartItems: CartItemNew[]) => {
-      const itemIndex = prevCartItems.findIndex(
-        (item) =>
-          item.product.id === cartItem.product.id &&
-          item.comment === cartItem.comment &&
-          sortExtras(item.extras) === sortExtras(cartItem.extras)
-      );
-
-      let newCartItems: CartItemNew[];
-      if (itemIndex > -1) {
-        // Item exists, update the quantity
-        newCartItems = prevCartItems.map((item, index) =>
-          index === itemIndex
-            ? {
-                ...item,
-                quantity: item.quantity + cartItem.quantity,
-              }
-            : item
-        );
-      } else {
-        // Item does not exist, add as new item
-        newCartItems = [...prevCartItems, cartItem];
-      }
-
-      localStorage.setItem("cartItems", JSON.stringify(newCartItems)); // Store updated items in localStorage
-      return newCartItems; // Update state with new items
-    });
-  };
-
-  function handleUpdateCartItemQuantity(product: ProductNew, quantity: number) {
-    setCartItems((prevCartItems: CartItemNew[]) => {
-      const updatedCartItems = prevCartItems.map((cartItem) => {
-        if (cartItem.product?.id === product.id) {
-          return { ...cartItem, quantity } as CartItemNew;
-        }
-        return cartItem;
-      });
-      localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
-      return updatedCartItems;
-    });
-  }
-
   const combinedProducts = productGroups
     .map((group) => {
       if (!group || !group.id || !group.products) {
@@ -144,12 +106,20 @@ export default function AdminPage({
       product?.name_Ka.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const categorySectionRef = useRef<CategorySectionRef>(null);
+  const categorySectionRef = useRef<CategorySectionAdminRef>(null);
 
-  const exonAddToCart = (product: ProductNew) => {
+  const exonEditProduct = (product: ProductNew) => {
     if (product) {
       if (categorySectionRef.current) {
-        categorySectionRef.current.handleAddToCartFromParent(product);
+        categorySectionRef.current.onEditProductOptions(product);
+      }
+    }
+  };
+
+  const exonEditProductOptions = (product: ProductNew) => {
+    if (product) {
+      if (categorySectionRef.current) {
+        categorySectionRef.current.onEditProduct(product);
       }
     }
   };
@@ -214,12 +184,9 @@ export default function AdminPage({
               name_ka={group.name_Ka}
               products={group.products}
               lang={lang}
-              onAddToCart={handleAddToCart}
-              cartItems={cartItems}
               onDeleteGroup={onDeleteGroup}
               onUpdateGroup={updateGroup}
               onUpdateProduct={updateProduct}
-              onUpdateCartItemQuantity={handleUpdateCartItemQuantity}
             />
           );
         })}
@@ -258,10 +225,6 @@ export default function AdminPage({
           </ModalHeader>
           <ModalBody>
             {filteredProducts.map((product, index) => {
-              const cartItem = cartItems.find(
-                (item) => item.product?.id === product?.id
-              );
-
               return (
                 <div
                   className="flex justify-between dark:bg-[#313638]/85 bg-white shadow-2xl p-4 mt-2 rounded-2xl"
@@ -304,38 +267,26 @@ export default function AdminPage({
                         )}
                       </p>
 
-                      {cartItem ? (
-                        <div className="flex items-center">
-                          <ButtonGroup className="gap-2">
-                            <Button
-                              size="sm"
-                              isIconOnly
-                              //onClick={() => handleDecreaseQuantity(product)}
-                              className="text-white text-3xl bg-red-600"
-                            >
-                              -
-                            </Button>
-                            <p className="text-lg">{cartItem.quantity}</p>
-                            <Button
-                              size="sm"
-                              isIconOnly
-                              onClick={() => product && exonAddToCart(product)}
-                              className="text-white text-3xl bg-green-600"
-                            >
-                              +
-                            </Button>
-                          </ButtonGroup>
-                        </div>
-                      ) : (
+                      <div className="flex flex-row gap-2">
                         <Button
-                          size="sm"
-                          onClick={() => product && exonAddToCart(product)}
-                          endContent={<AddToShoppingCart size={23} />}
-                          className="text-white text-sm bg-green-600"
+                          size="md"
+                          onClick={() => product && exonEditProduct(product)}
+                          className="text-white text-sm bg-transparent"
+                          isIconOnly
                         >
-                          {lang === "en" ? "Add" : "დამატება"}
+                          <EditIcon size={30} />
                         </Button>
-                      )}
+                        <Button
+                          size="md"
+                          onClick={() =>
+                            product && exonEditProductOptions(product)
+                          }
+                          isIconOnly
+                          className="text-green-600 text-sm bg-transparent"
+                        >
+                          <AddIcon size={30} />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -1,38 +1,19 @@
 "use client";
-import React, {
-  useState,
-  useImperativeHandle,
-  forwardRef,
-  useRef,
-} from "react";
+import React, { useState, useImperativeHandle, forwardRef } from "react";
 import {
   Image,
   Button,
-  Card,
-  CardHeader,
-  ButtonGroup,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
   useDisclosure,
-  Divider,
   Textarea,
-  Avatar,
-  Checkbox,
-  RadioGroup,
-  Radio,
-  cn,
-  Chip,
   Input,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
 } from "@nextui-org/react";
 import toast, { Toaster } from "react-hot-toast";
-import { AddIcon, AddToShoppingCart, EditIcon } from "../icons";
+import { AddIcon, EditIcon } from "../icons";
 import ProductNew from "@/models/ProductNew";
 import ProductData from "@/models/ProductData";
 import {
@@ -40,14 +21,10 @@ import {
   editProduct,
   fetchProductWithOptionsAndValues,
 } from "@/app/api/Product";
-import CartItemNew from "@/models/CartItemNew";
 import { deleteProductGroup, editProductGroup } from "@/app/api/ProductGroup";
 import ProductGroup from "@/models/ProductGroup";
 import AddProduct from "./AddProductFunc";
-import { CLIENT_STATIC_FILES_PATH } from "next/dist/shared/lib/constants";
-import { color } from "framer-motion";
 import ProductOptionsCreator from "./ProductOptionsCreator";
-import { isCompositeComponent } from "react-dom/test-utils";
 
 interface CategorySectionProps {
   groupid: number;
@@ -57,20 +34,18 @@ interface CategorySectionProps {
   lang: string;
   biglayout?: boolean;
   products: ProductNew[];
-  cartItems: CartItemNew[];
-  onAddToCart: (cartItem: CartItemNew) => void;
   onUpdateGroup: (group: ProductGroup) => void;
   onDeleteGroup: (groupid: number) => void;
-  onUpdateCartItemQuantity: (product: ProductNew, quantity: number) => void;
   onUpdateProduct: (product: ProductNew) => void;
 }
 
-export interface CategorySectionRef {
-  handleAddToCartFromParent: (product: ProductNew) => void;
+export interface CategorySectionAdminRef {
+  onEditProductOptions: (product: ProductNew) => void;
+  onEditProduct: (product: ProductNew) => void;
 }
 
 const CategorySectionAdmin = forwardRef<
-  CategorySectionRef,
+  CategorySectionAdminRef,
   CategorySectionProps
 >(
   (
@@ -81,16 +56,28 @@ const CategorySectionAdmin = forwardRef<
       title,
       products,
       biglayout,
-      cartItems,
       lang,
-      onAddToCart,
       onUpdateGroup,
       onDeleteGroup,
-      onUpdateCartItemQuantity,
       onUpdateProduct,
     },
     ref
   ) => {
+    useImperativeHandle(ref, () => ({
+      onEditProductOptions: (product: ProductNew) => {
+        var formatedProduct = product.getProductData(
+          lang === "en" ? "en" : "ka"
+        );
+        handleProductEditModel(formatedProduct);
+      },
+      onEditProduct: (product: ProductNew) => {
+        var formatedProduct = product.getProductData(
+          lang === "en" ? "en" : "ka"
+        );
+        handleEditProductOptionsModal(formatedProduct);
+      },
+    }));
+
     const [selectedProduct, setSelectedProduct] = useState<ProductNew | null>(
       null
     );
@@ -314,9 +301,6 @@ const CategorySectionAdmin = forwardRef<
           {biglayout ? (
             <div className="mt-4 grid  grid-cols-2 gap-4">
               {products.map((product, index) => {
-                const cartItem = cartItems.find(
-                  (item) => item.product?.id === product.id
-                );
                 const formatedPr: ProductData = product.getProductData(
                   lang === "en" ? "en" : "ka"
                 );
@@ -382,9 +366,6 @@ const CategorySectionAdmin = forwardRef<
             </div>
           ) : (
             products.map((product, index) => {
-              const cartItem = cartItems.find(
-                (item) => item.product?.id === product.id
-              );
               const formatedPr: ProductData = product.getProductData(
                 lang === "en" ? "en" : "ka"
               );
