@@ -5,7 +5,7 @@ export interface Option {
   name_En: string;
   name_Ka: string;
   product_Id: number;
-  type?: string;
+  type: string;
   optionValues: OptionValue[];
 }
 
@@ -14,7 +14,7 @@ export class OptionClass implements Option {
   name_En: string;
   name_Ka: string;
   product_Id: number;
-  type?: string | undefined;
+  type: string;
   optionValues: OptionValue[];
 
   constructor(

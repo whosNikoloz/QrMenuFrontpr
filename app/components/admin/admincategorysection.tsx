@@ -26,6 +26,10 @@ import {
   cn,
   Chip,
   Input,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
 } from "@nextui-org/react";
 import toast, { Toaster } from "react-hot-toast";
 import { AddIcon, AddToShoppingCart, EditIcon } from "../icons";
@@ -40,6 +44,10 @@ import CartItemNew from "@/models/CartItemNew";
 import { editProductGroup } from "@/app/api/ProductGroup";
 import ProductGroup from "@/models/ProductGroup";
 import AddProduct from "./AddProductFunc";
+import { CLIENT_STATIC_FILES_PATH } from "next/dist/shared/lib/constants";
+import { color } from "framer-motion";
+import ProductOptionsCreator from "./ProductOptionsCreator";
+import { isCompositeComponent } from "react-dom/test-utils";
 
 interface CategorySectionProps {
   groupid: number;
@@ -105,9 +113,26 @@ const CategorySectionAdmin = forwardRef<
       onOpenChange: onOpenProductAddChange,
     } = useDisclosure();
 
-    const [customDescription, setCustomDescription] = useState("");
-    const [extras, setExtras] = useState<{ [key: string]: string[] }>({});
-    const handleAddToCart = (product: ProductData) => {
+    const {
+      isOpen: isOpenProductOptionsModal,
+      onOpen: onOpenProductOptionsModal,
+      onClose: onCloseProductOptionsModal,
+      onOpenChange: onOpenProductOptionsChange,
+    } = useDisclosure();
+
+    const handleEditProductOptionsModal = (product: ProductData) => {
+      const fetchData = async () => {
+        try {
+          const data = await fetchProductWithOptionsAndValues(product.id);
+          setSelectedProduct(data);
+          onOpenProductOptionsModal();
+        } catch (error) {
+          console.error("Error fetching product groups:", error);
+        }
+      };
+      fetchData();
+    };
+    const handleProductEditModel = (product: ProductData) => {
       const fetchData = async () => {
         try {
           const data = await fetchProductWithOptionsAndValues(product.id);
@@ -128,265 +153,9 @@ const CategorySectionAdmin = forwardRef<
       fetchData();
       onOpenProductModal();
     };
+
     const AddeddProduct = (product: ProductNew) => {
       products.push(product);
-    };
-
-    useImperativeHandle(ref, () => ({
-      handleAddToCartFromParent(product: ProductNew) {
-        if (product) {
-          const ConvertProductData: ProductData = {
-            id: product.id,
-            name: lang === "en" ? product.name_En : product.name_Ka,
-            description:
-              lang === "en" ? product.description_En : product.description_Ka,
-            formattedPrice: product.price.toFixed(2),
-            discountedPrice: product.DiscountedPrice?.toFixed(2) ?? "",
-            price: product.price,
-            imageUrl: product.imageUrl ?? "",
-            discount: product.discount,
-            options: product.options,
-          };
-          setCustomDescription("");
-          setExtras({});
-          handleAddToCart(ConvertProductData);
-        }
-      },
-    }));
-
-    const handleAddToCartModal = () => {
-      if (selectedProduct) {
-        onAddToCart({
-          product: selectedProduct,
-          quantity: 1,
-          comment: customDescription,
-          extras: extras,
-          finalPrice:
-            selectedProduct.discount !== 0
-              ? selectedProduct.DiscountedPrice ?? 0
-              : selectedProduct.price,
-        });
-        console.log("Selected Product:", selectedProduct);
-        setCustomDescription("");
-        setExtras({});
-        onCloseProductModal();
-        if (lang === "en") {
-          toast.success("Successfully Added to Cart!");
-        } else {
-          toast.success("დამატებულია კალათში !");
-        }
-      }
-    };
-
-    const handleIncreaseQuantity = async (product: ProductNew) => {
-      const fetchData = async () => {
-        try {
-          const data = await fetchProductWithOptionsAndValues(product.id);
-          setSelectedProduct(data); // Set the selected item
-        } catch (error) {
-          console.error("Error fetching product groups:", error);
-        }
-      };
-
-      fetchData();
-      onOpenProductModal();
-    };
-
-    const handleDecreaseQuantity = (product: ProductNew) => {
-      const existingCartItem = cartItems.find(
-        (item) => item.product?.id === product.id
-      );
-      if (existingCartItem && existingCartItem.quantity > 1) {
-        onUpdateCartItemQuantity(product, existingCartItem.quantity - 1);
-      }
-    };
-
-    const handleOptionRadioToggle = (optionId: number, valueId: number) => {
-      if (selectedProduct) {
-        const newSelectedProduct = new ProductNew(
-          selectedProduct.id,
-          selectedProduct.name_En,
-          selectedProduct.name_Ka,
-          selectedProduct.price,
-          selectedProduct.imageUrl,
-          selectedProduct.discount,
-          selectedProduct.description_En,
-          selectedProduct.description_Ka,
-          selectedProduct.group_Id,
-          selectedProduct.options,
-          selectedProduct.DiscountedPrice ?? 0
-        );
-
-        // Find the selected option and its value
-        const selectedOption = newSelectedProduct.options.find(
-          (option) => option.id === optionId
-        );
-        const selectedValue = selectedOption?.optionValues.find(
-          (value) => value.id === valueId
-        );
-        if (!selectedOption || !selectedValue) return; // Exit if option or value not found
-
-        // Find the previously selected value
-        const previouslySelectedValue = selectedOption.optionValues.find(
-          (value) => value.selected
-        );
-
-        // Toggle the selection status
-        newSelectedProduct.options = newSelectedProduct.options.map(
-          (option) => {
-            if (option.id === optionId) {
-              return {
-                ...option,
-                optionValues: option.optionValues.map((value) =>
-                  value.id === valueId
-                    ? { ...value, selected: true }
-                    : { ...value, selected: false }
-                ),
-              };
-            }
-            return option;
-          }
-        );
-
-        // Decrement the price of the previously selected value if exists
-        if (previouslySelectedValue) {
-          newSelectedProduct.decrementPrice(
-            optionId,
-            previouslySelectedValue.id
-          );
-          // Remove the previously selected value from extras
-          setExtras((prevExtras) => ({
-            ...prevExtras,
-            ["en"]: prevExtras["en"]?.filter(
-              (extra) => extra !== previouslySelectedValue.name_En
-            ),
-            ["ka"]: prevExtras["ka"]?.filter(
-              (extra) => extra !== previouslySelectedValue.name_Ka
-            ),
-          }));
-        }
-
-        // Increment the price of the newly selected value
-        newSelectedProduct.incrementPrice(optionId, valueId);
-
-        // Add the newly selected value to extras
-        setExtras((prevExtras) => ({
-          ...prevExtras,
-          ["en"]: [...(prevExtras["en"] || []), selectedValue.name_En],
-          ["ka"]: [...(prevExtras["ka"] || []), selectedValue.name_Ka],
-        }));
-
-        setSelectedProduct(newSelectedProduct);
-      }
-    };
-
-    const handleOptionCheckboxToggle = (optionId: number, valueId: number) => {
-      if (selectedProduct) {
-        const newSelectedProduct = new ProductNew(
-          selectedProduct.id,
-          selectedProduct.name_En,
-          selectedProduct.name_Ka,
-          selectedProduct.price,
-          selectedProduct.imageUrl,
-          selectedProduct.discount,
-          selectedProduct.description_En,
-          selectedProduct.description_Ka,
-          selectedProduct.group_Id,
-          selectedProduct.options,
-          selectedProduct.DiscountedPrice ?? 0
-        );
-
-        const selectedOption = newSelectedProduct.options.find(
-          (option) => option.id === optionId
-        );
-        const selectedValue = selectedOption?.optionValues.find(
-          (value) => value.id === valueId
-        );
-
-        if (!selectedOption || !selectedValue) return;
-
-        const isCurrentlySelected = selectedValue.selected;
-
-        newSelectedProduct.options = newSelectedProduct.options.map(
-          (option) => {
-            if (option.id === optionId) {
-              return {
-                ...option,
-                optionValues: option.optionValues.map((value) =>
-                  value.id === valueId
-                    ? { ...value, selected: !value.selected }
-                    : value
-                ),
-              };
-            }
-            return option;
-          }
-        );
-
-        if (isCurrentlySelected) {
-          newSelectedProduct.decrementPrice(optionId, valueId);
-          // Remove the deselected value from extras
-          setExtras((prevExtras) => ({
-            ...prevExtras,
-            ["en"]: prevExtras["en"]?.filter(
-              (extra) => extra !== selectedValue.name_En
-            ),
-            ["ka"]: prevExtras["ka"]?.filter(
-              (extra) => extra !== selectedValue.name_Ka
-            ),
-          }));
-        } else {
-          newSelectedProduct.incrementPrice(optionId, valueId);
-          // Add the newly selected value to extras
-          setExtras((prevExtras) => ({
-            ...prevExtras,
-            ["en"]: [...(prevExtras["en"] || []), selectedValue.name_En],
-            ["ka"]: [...(prevExtras["ka"] || []), selectedValue.name_Ka],
-          }));
-        }
-
-        setSelectedProduct(newSelectedProduct);
-      }
-    };
-
-    const [inputValues, setInputValues] = useState("");
-
-    const handleOptionNumFieldChange = (quantity: string) => {
-      setInputValues(quantity);
-      if (!selectedProduct) return;
-      const newSelectedProduct = new ProductNew(
-        selectedProduct.id,
-        selectedProduct.name_En,
-        selectedProduct.name_Ka,
-        selectedProduct.price,
-        selectedProduct.imageUrl,
-        selectedProduct.discount,
-        selectedProduct.description_En,
-        selectedProduct.description_Ka,
-        selectedProduct.group_Id,
-        selectedProduct.options,
-        selectedProduct.DiscountedPrice ?? 0
-      );
-
-      if (quantity === "") return;
-      var value = parseInt(quantity);
-      if (selectedProduct.discount !== 0) {
-        newSelectedProduct.DiscountedPrice =
-          (newSelectedProduct?.StaticPrice ?? 0) * value;
-      } else {
-        newSelectedProduct.price =
-          (newSelectedProduct?.StaticPrice ?? 0) * value;
-      }
-      setExtras((prevExtras) => ({
-        ...prevExtras,
-        en: prevExtras.en
-          ?.filter((extra) => !extra.endsWith("x"))
-          .concat([value.toString() + "x"]) || [value.toString() + "x"],
-        ka: prevExtras.ka
-          ?.filter((extra) => !extra.endsWith(" ცალი"))
-          .concat([value.toString() + " ცალი"]) || [value.toString() + " ცალი"],
-      }));
-      setSelectedProduct(newSelectedProduct);
     };
 
     const [georgianName, setGeorgianName] = useState(name_ka);
@@ -574,38 +343,15 @@ const CategorySectionAdmin = forwardRef<
                           </>
                         )}
                       </h3>
-                      {cartItem ? (
-                        <div className="flex justify-center mt-4">
-                          <ButtonGroup className="gap-2">
-                            <Button
-                              size="sm"
-                              isIconOnly
-                              onClick={() => handleDecreaseQuantity(product)}
-                              className="text-white text-3xl bg-red-600"
-                            >
-                              -
-                            </Button>
-                            <p className="text-lg">{cartItem.quantity}</p>
-                            <Button
-                              size="sm"
-                              isIconOnly
-                              onClick={() => handleIncreaseQuantity(product)}
-                              className="text-white text-3xl bg-green-600"
-                            >
-                              +
-                            </Button>
-                          </ButtonGroup>
-                        </div>
-                      ) : (
-                        <Button
-                          size="md"
-                          onClick={() => handleAddToCart(formatedPr)}
-                          endContent={<AddToShoppingCart size={24} />}
-                          className="text-white text-sm mb-4 mt-4  rounded-3xl px-8 py-2 font-bold  bg-green-600"
-                        >
-                          {lang === "en" ? "Add" : "დამატება"}
-                        </Button>
-                      )}
+
+                      <Button
+                        size="md"
+                        onClick={() => handleProductEditModel(formatedPr)}
+                        endContent={<AddToShoppingCart size={24} />}
+                        className="text-white text-sm mb-4 mt-4  rounded-3xl px-8 py-2 font-bold  bg-green-600"
+                      >
+                        {lang === "en" ? "Add" : "დამატება"}
+                      </Button>
                     </div>
                   </div>
                 );
@@ -660,51 +406,26 @@ const CategorySectionAdmin = forwardRef<
                           </>
                         )}
                       </p>
-
-                      {cartItem ? (
-                        <div className="flex items-center">
-                          <ButtonGroup className="gap-2">
-                            <Button
-                              size="sm"
-                              isIconOnly
-                              onClick={() => handleDecreaseQuantity(product)}
-                              className="text-white  text-3xl bg-red-600"
-                            >
-                              -
-                            </Button>
-                            <p className="text-lg">{cartItem.quantity}</p>
-                            <Button
-                              size="sm"
-                              isIconOnly
-                              onClick={() => handleIncreaseQuantity(product)}
-                              className="text-white  text-3xl bg-green-600"
-                            >
-                              +
-                            </Button>
-                          </ButtonGroup>
-                        </div>
-                      ) : (
-                        <>
-                          <div className="flex flex-row gap-2">
-                            <Button
-                              size="md"
-                              onClick={() => handleAddToCart(formatedPr)}
-                              className="text-white text-sm bg-transparent"
-                              isIconOnly
-                            >
-                              <EditIcon size={30} />
-                            </Button>
-                            <Button
-                              size="md"
-                              onClick={() => handleAddToCart(formatedPr)}
-                              isIconOnly
-                              className="text-green-600 text-sm bg-transparent"
-                            >
-                              <AddIcon size={30} />
-                            </Button>
-                          </div>
-                        </>
-                      )}
+                      <div className="flex flex-row gap-2">
+                        <Button
+                          size="md"
+                          onClick={() => handleProductEditModel(formatedPr)}
+                          className="text-white text-sm bg-transparent"
+                          isIconOnly
+                        >
+                          <EditIcon size={30} />
+                        </Button>
+                        <Button
+                          size="md"
+                          onClick={() =>
+                            handleEditProductOptionsModal(formatedPr)
+                          }
+                          isIconOnly
+                          className="text-green-600 text-sm bg-transparent"
+                        >
+                          <AddIcon size={30} />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -894,122 +615,6 @@ const CategorySectionAdmin = forwardRef<
                     value={descriptionGeorgian}
                     onChange={(e) => setDescriptionGeorgian(e.target.value)}
                   />
-                  {/* {selectedProduct.options.map((option) => (
-                    <div key={option.id}>
-                      <Divider className="my-3" />
-                      <RadioGroup
-                        label={lang === "en" ? option.name_En : option.name_Ka}
-                      >
-                        {option.type === "Radio"
-                          ? option.optionValues.map((value, index) => (
-                              <div
-                                key={value.id}
-                                className="flex items-center flex-col p-1 justify-between"
-                              >
-                                <Radio
-                                  color="success"
-                                  classNames={{
-                                    base: cn(
-                                      "inline-flex w-full max-w-md bg-content1",
-                                      "hover:bg-content2 items-center justify-start",
-                                      "cursor-pointer rounded-lg gap-2 p-3 border-2 border-transparent",
-                                      "data-[selected=true]:border-primary"
-                                    ),
-                                    label: "w-full",
-                                  }}
-                                  value={
-                                    lang === "en"
-                                      ? value.name_En
-                                      : value.name_Ka
-                                  }
-                                  onChange={() =>
-                                    handleOptionRadioToggle(option.id, value.id)
-                                  }
-                                >
-                                  <div className="w-full flex justify-between gap-2">
-                                    {lang === "en"
-                                      ? value.name_En
-                                      : value.name_Ka}
-                                    <div className="flex flex-col items-end gap-1">
-                                      <Chip
-                                        color="success"
-                                        size="sm"
-                                        variant="flat"
-                                      >
-                                        +{value.price}{" "}
-                                        {lang === "en" ? "GEL" : "₾"}
-                                      </Chip>
-                                    </div>
-                                  </div>
-                                </Radio>
-                              </div>
-                            ))
-                          : option.type === "CheckBox"
-                          ? option.optionValues.map((value) => (
-                              <div
-                                key={value.id}
-                                className="flex items-center justify-between p-3"
-                              >
-                                <Checkbox
-                                  defaultSelected={value.selected}
-                                  size="lg"
-                                  color="success"
-                                  onChange={() =>
-                                    handleOptionCheckboxToggle(
-                                      option.id,
-                                      value.id
-                                    )
-                                  }
-                                >
-                                  {lang === "en"
-                                    ? value.name_En
-                                    : value.name_Ka}
-                                </Checkbox>
-                                <div className="flex flex-col items-end gap-1">
-                                  <Chip
-                                    color="success"
-                                    size="sm"
-                                    variant="flat"
-                                  >
-                                    +{value.price} {lang === "en" ? "GEL" : "₾"}
-                                  </Chip>
-                                </div>
-                              </div>
-                            ))
-                          : option.type === "NumField"
-                          ? option.optionValues.map((value) => (
-                              <div
-                                key={value.id}
-                                className="flex items-center justify-between p-3"
-                              >
-                                <Input
-                                  type="number"
-                                  placeholder="0"
-                                  className="mr-2"
-                                  value={inputValues}
-                                  onValueChange={(value) => {
-                                    handleOptionNumFieldChange(value);
-                                  }}
-                                />
-                                <div className="flex flex-col items-end gap-1">
-                                  <Chip
-                                    color="success"
-                                    size="sm"
-                                    variant="flat"
-                                  >
-                                    +
-                                    {(
-                                      selectedProduct?.StaticPrice ?? 0
-                                    ).toFixed(2)}
-                                    {lang === "en" ? "GEL" : "₾"}
-                                  </Chip>
-                                </div>
-                              </div>
-                            ))
-                          : null}
-                      </RadioGroup>
-                    </div>
-                  ))} */}
                 </>
               )}
             </ModalBody>
@@ -1027,6 +632,13 @@ const CategorySectionAdmin = forwardRef<
             </ModalFooter>
           </ModalContent>
         </Modal>
+
+        <ProductOptionsCreator
+          lang={lang}
+          product={selectedProduct}
+          open={isOpenProductOptionsModal}
+          productid={selectedProduct?.id ?? 0}
+        />
 
         <AddProduct
           lang={lang}

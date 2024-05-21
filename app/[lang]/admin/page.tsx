@@ -26,16 +26,6 @@ import CartItemNew from "@/models/CartItemNew";
 import ProductNew from "@/models/ProductNew";
 import AddGroup from "@/app/components/admin/addgroup";
 
-interface CategorySectionProps {
-  title: string;
-  lang: string;
-  biglayout?: boolean;
-  products: ProductNew[];
-  cartItems: CartItemNew[];
-  onAddToCart: (cartItem: CartItemNew) => void;
-  onUpdateCartItemQuantity: (product: ProductNew, quantity: number) => void;
-}
-
 export default function AdminPage({
   params: { lang },
 }: {
