@@ -50,21 +50,21 @@ const editOption = async (option: OptionCreateDto, optionid: number) => {
   }
 };
 
-const deleteProduct = async (productid: number): Promise<boolean> => {
+const deleteOption = async (optionid: number): Promise<boolean> => {
   try {
-    const response = await fetch(`${mainAPI}/${productid}`, {
+    const response = await fetch(`${mainAPI}/${optionid}`, {
       method: "DELETE",
     });
     if (response.ok) {
       return true;
     } else {
-      console.error("Error deleting product:", response);
+      console.error("Error deleting option:", response);
       return false;
     }
   } catch (error) {
-    console.error("Error deleting product:", error);
+    console.error("Error deleting option:", error);
     return false;
   }
 };
 
-export { createOption, editOption, deleteProduct };
+export { createOption, editOption, deleteOption };
