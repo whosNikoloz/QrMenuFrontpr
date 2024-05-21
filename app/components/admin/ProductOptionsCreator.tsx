@@ -199,6 +199,7 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
   };
 
   const hanldeAddValueButton = (optionid: number) => {
+    console.log(optionid);
     setOptionId(optionid);
     onOpenOptionValueModal();
   };

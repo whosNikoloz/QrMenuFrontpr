@@ -1,5 +1,3 @@
-import ProductNew from "@/models/ProductNew";
-import { OptionClass, Option } from "@/models/Option";
 import { OptionValueClass, OptionValue } from "@/models/OptionValue";
 
 const mainAPI = "https://localhost:44380/api/OptionValue";

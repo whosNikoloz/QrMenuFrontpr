@@ -323,7 +323,7 @@ const CategorySectionAdmin = forwardRef<
 
                 return (
                   <div key={index} className="w-full">
-                    <div className="max-w-[200px] h-[350px] rounded-3xl border dark:bg-[#313638]/85 bg-white shadow-2xl text-center font-semibold ">
+                    <div className="max-w-[200px] h-auto rounded-3xl border dark:bg-[#313638]/85 bg-white shadow-2xl text-center font-semibold ">
                       <Image
                         src={formatedPr.imageUrl ?? ""}
                         width={200}
@@ -360,8 +360,18 @@ const CategorySectionAdmin = forwardRef<
                       <Button
                         size="md"
                         onClick={() => handleProductEditModel(formatedPr)}
-                        endContent={<AddToShoppingCart size={24} />}
-                        className="text-white text-sm mb-4 mt-4  rounded-3xl px-8 py-2 font-bold  bg-green-600"
+                        endContent={<EditIcon size={24} />}
+                        className="text-white text-sm  mt-4  rounded-3xl px-8 py-2 font-bold  bg-green-600"
+                      >
+                        {lang === "en" ? "Edit" : "რედაქტირ"}
+                      </Button>
+                      <Button
+                        size="md"
+                        onClick={() =>
+                          handleEditProductOptionsModal(formatedPr)
+                        }
+                        endContent={<AddIcon size={24} />}
+                        className="text-white text-sm mb-4 mt-4   rounded-3xl px-8 py-2 font-bold  bg-green-600"
                       >
                         {lang === "en" ? "Add" : "დამატება"}
                       </Button>
