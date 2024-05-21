@@ -60,6 +60,27 @@ const createProductGroup = async (name_en: string, name_ka: string) => {
   }
 };
 
+const deleteProductGroup = async (groupId: number): Promise<boolean> => {
+  try {
+    const response = await fetch(`${mainAPI}/${groupId}`, {
+      method: "DELETE",
+    });
+
+    if (response.ok) {
+      return true;
+    } else {
+      const errorText = await response.text();
+      console.error(
+        `Failed to delete product group. Status: ${response.status}, Message: ${errorText}`
+      );
+      return false;
+    }
+  } catch (error) {
+    console.error("Error deleting product group:", error);
+    return false;
+  }
+};
+
 const editProductGroup = async (
   groupid: number,
   name_en: string,
@@ -99,4 +120,5 @@ export {
   createProductGroup,
   editProductGroup,
   GetProductGroup,
+  deleteProductGroup,
 };

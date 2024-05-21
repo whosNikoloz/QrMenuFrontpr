@@ -2,7 +2,7 @@ import { Button } from "@nextui-org/react";
 import React, { useState } from "react";
 import { AddToShoppingCart, AddIcon } from "../icons";
 import toast, { Toaster } from "react-hot-toast";
-import { createProductGroup } from "@/app/api/ProductGroup";
+import { createProductGroup, deleteProductGroup } from "@/app/api/ProductGroup";
 import {
   Avatar,
   Input,
@@ -48,6 +48,15 @@ const AddGroup = ({ lang, onAddnewGroup }: AddGroupInterface) => {
     onClose();
   };
 
+  const handleDeleteGroup = async (id: number) => {
+    const response = await deleteProductGroup(id);
+
+    if (response) {
+    } else {
+      console.log("Failed to delete product group.");
+    }
+  };
+
   return (
     <>
       <div className="flex w-full justify-center mt-10">
@@ -66,7 +75,7 @@ const AddGroup = ({ lang, onAddnewGroup }: AddGroupInterface) => {
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                Add Group
+                {lang === "en" ? "Create Group" : "ჯგუფის შექმნა"}
               </ModalHeader>
               <ModalBody>
                 <div className="flex flex-col gap-2">
@@ -98,10 +107,10 @@ const AddGroup = ({ lang, onAddnewGroup }: AddGroupInterface) => {
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="flat" onPress={onClose}>
-                  Close
+                  {lang === "en" ? "Close" : "დახურვა"}
                 </Button>
                 <Button color="success" onPress={handleSave}>
-                  Save
+                  {lang === "en" ? "Save" : "შენახვა"}
                 </Button>
               </ModalFooter>
             </>

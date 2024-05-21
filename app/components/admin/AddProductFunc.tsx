@@ -122,7 +122,7 @@ const AddProduct = ({
     >
       <ModalContent>
         <ModalHeader className="flex flex-col gap-1 dark:text-white text-black">
-          {lang === "en" ? "Detail" : "დეტალები"}
+          {lang === "en" ? "Create Product" : "პროდუქტის დამატება"}
         </ModalHeader>
         <ModalBody>
           <div className="flex flex-col gap-2">

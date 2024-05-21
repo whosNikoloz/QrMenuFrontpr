@@ -19,6 +19,7 @@ import {
   Input,
   Select,
   SelectItem,
+  User,
 } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 import { AddIcon, EditIcon } from "../icons";
@@ -26,6 +27,8 @@ import ProductNew from "@/models/ProductNew";
 import { Locale } from "@/i18n.config";
 import { Image } from "@nextui-org/react";
 import { createOption, editOption } from "@/app/api/Options";
+import { createOptionValue } from "@/app/api/OptionValue";
+import toast from "react-hot-toast";
 
 interface ProductOptionsCreatorProps {
   open: boolean;
@@ -65,6 +68,13 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
     onOpenChange: onOpenAddChange,
   } = useDisclosure();
 
+  const {
+    isOpen: isOpenOptionValueModal,
+    onOpen: onOpenOptionValueModal,
+    onClose: onCloseOptionValueModal,
+    onOpenChange: onOpenOptionValueChange,
+  } = useDisclosure();
+
   useEffect(() => {
     if (open) {
       setSelectedProduct(product);
@@ -77,7 +87,9 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
   const [type, setType] = useState("");
   const [optionid, setOptionId] = useState(0);
 
-  const [editType, setEditType] = useState("");
+  const [valueEnglishName, setValueEnglishName] = useState("");
+  const [valueGeorgianName, setValueGeorgianName] = useState("");
+  const [valueprice, setValueprice] = useState(0);
 
   const handleAddOption = (value: string) => {
     setType(value);
@@ -173,22 +185,65 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
     onCloseEditModal();
   };
 
-  const handleOptionRadioToggle = (optionId: number, valueId: number) => {
-    if (selectedProduct) {
-      const option = selectedProduct.options.find(
-        (option) => option.id === optionId
-      );
-      if (option) {
-        const value = option.optionValues.find((value) => value.id === valueId);
-        if (value) {
-          value.selected = !value.selected;
-          if (value.selected) {
-            selectedProduct.incrementPrice(optionId, valueId);
-          } else {
-            selectedProduct.decrementPrice(optionId, valueId);
-          }
+  const hanldeAddValueButton = (optionid: number) => {
+    setOptionId(optionid);
+    onOpenOptionValueModal();
+  };
+
+  const handleOptionValueAdd = async () => {
+    const response = await createOptionValue({
+      name_En: valueEnglishName,
+      name_Ka: valueGeorgianName,
+      price: valueprice,
+      option_Id: optionid,
+    });
+
+    console.log(response);
+
+    if (response) {
+      setSelectedProduct((prevProduct) => {
+        if (!prevProduct) return null;
+
+        const optionIndex = prevProduct.options.findIndex(
+          (option) => option.id === optionid
+        );
+
+        if (optionIndex !== -1) {
+          // Create a copy of the options array and update the specific option directly inside the map function
+          const updatedOptions = prevProduct.options.map((option, idx) => {
+            if (idx === optionIndex) {
+              return {
+                ...option,
+                optionValues: [
+                  ...option.optionValues,
+                  {
+                    id: response.id,
+                    name_En: response.name_En,
+                    name_Ka: response.name_Ka,
+                    selected: undefined,
+                    price: response.price,
+                    option_Id: response.option_Id,
+                  },
+                ],
+              };
+            }
+            return option;
+          });
+          return {
+            ...prevProduct,
+            options: updatedOptions,
+            incrementPrice: prevProduct.incrementPrice,
+            decrementPrice: prevProduct.decrementPrice,
+            getProductData: prevProduct.getProductData,
+          };
         }
-      }
+        return prevProduct;
+      });
+
+      toast.success("Option Value Added Successfully");
+      onCloseOptionValueModal();
+    } else {
+      toast.error("Option Value Added Failed");
     }
   };
 
@@ -206,17 +261,23 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
       >
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1 dark:text-white text-black">
-            {lang === "en" ? "Detail" : "დეტალები"}
+            {lang === "en" ? "Manage Options" : "ვარიანტების მართვა"}
           </ModalHeader>
           <ModalBody>
             {selectedProduct && (
               <>
                 <div className="flex justify-between">
-                  <Image
-                    src={selectedProduct.imageUrl ?? ""}
-                    width="50%"
-                    alt="Sample Image"
-                    className="rounded-3xl"
+                  <User
+                    name={
+                      lang === "en"
+                        ? selectedProduct.name_Ka
+                        : selectedProduct.name_Ka
+                    }
+                    // description="Product Designer"
+                    avatarProps={{
+                      size: "lg",
+                      src: selectedProduct.imageUrl ?? "",
+                    }}
                   />
                   <Dropdown>
                     <DropdownTrigger>
@@ -269,10 +330,6 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
                             isIconOnly
                           >
                             <EditIcon size={25} />
-                          </Button>
-
-                          <Button isIconOnly className="flex bg-transparent">
-                            <AddIcon size={25} />
                           </Button>
                         </div>
 
@@ -384,6 +441,15 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
                             ))
                           : null}
                       </>
+                      <div className="flex items-center justify-center ">
+                        <Button
+                          color="success"
+                          onClick={() => hanldeAddValueButton(option.id)}
+                          className="flex w-1/2 "
+                        >
+                          <AddIcon size={25} />
+                        </Button>
+                      </div>
                     </RadioGroup>
                   </div>
                 ))}
@@ -517,6 +583,77 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
                   Close
                 </Button>
                 <Button color="success" onClick={EditOption}>
+                  Save
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
+      <Modal
+        isOpen={isOpenOptionValueModal}
+        onOpenChange={onCloseOptionValueModal}
+        placement="center"
+      >
+        <ModalContent>
+          {(onCloseOptionValueModal) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                Add Option
+              </ModalHeader>
+              <ModalBody>
+                <div className="flex flex-col gap-2">
+                  <Input
+                    autoFocus
+                    label="English"
+                    classNames={{
+                      input: ["text-[16px] "],
+                    }}
+                    placeholder="Enter English"
+                    value={valueEnglishName}
+                    onChange={(e) => setValueEnglishName(e.target.value)}
+                    required
+                  />
+                  <Input
+                    autoFocus
+                    label="ქართულად"
+                    value={valueGeorgianName}
+                    classNames={{
+                      input: ["text-[16px] "],
+                    }}
+                    onChange={(e) => setValueGeorgianName(e.target.value)}
+                    placeholder="Enter ქართულად"
+                    required
+                  />
+                  <Input
+                    autoFocus
+                    type="number"
+                    label="Price"
+                    value={valueprice.toString()}
+                    classNames={{
+                      input: ["text-[16px] "],
+                    }}
+                    endContent={
+                      <div className="pointer-events-none flex items-center">
+                        <span className="text-default-400 text-small">$</span>
+                      </div>
+                    }
+                    onChange={(e) => setValueprice(Number(e.target.value))}
+                    placeholder="0.00"
+                    required
+                  />
+                </div>
+              </ModalBody>
+              <ModalFooter>
+                <Button
+                  color="danger"
+                  variant="flat"
+                  onPress={onCloseOptionValueModal}
+                >
+                  Close
+                </Button>
+                <Button color="success" onClick={handleOptionValueAdd}>
                   Save
                 </Button>
               </ModalFooter>

@@ -41,7 +41,7 @@ import {
   fetchProductWithOptionsAndValues,
 } from "@/app/api/Product";
 import CartItemNew from "@/models/CartItemNew";
-import { editProductGroup } from "@/app/api/ProductGroup";
+import { deleteProductGroup, editProductGroup } from "@/app/api/ProductGroup";
 import ProductGroup from "@/models/ProductGroup";
 import AddProduct from "./AddProductFunc";
 import { CLIENT_STATIC_FILES_PATH } from "next/dist/shared/lib/constants";
@@ -133,6 +133,7 @@ const CategorySectionAdmin = forwardRef<
       fetchData();
     };
     const handleProductEditModel = (product: ProductData) => {
+      onCloseProductOptionsModal();
       const fetchData = async () => {
         try {
           const data = await fetchProductWithOptionsAndValues(product.id);
@@ -265,6 +266,18 @@ const CategorySectionAdmin = forwardRef<
           onCloseProductModal();
           return;
         }
+      }
+    };
+
+    const handleDeleteGroup = async (id: number) => {
+      const response = await deleteProductGroup(id);
+
+      if (response) {
+        toast.success("Group Deleted successfully");
+        onDeleteGroup(id);
+        onCloseGroupModal();
+      } else {
+        console.log("Failed to delete product group.");
       }
     };
 
@@ -443,7 +456,7 @@ const CategorySectionAdmin = forwardRef<
             {(onCloseGroupModal) => (
               <>
                 <ModalHeader className="flex flex-col gap-1">
-                  Edit Group
+                  {lang === "en" ? "Edit Group" : "ჯგუფის რედაქტირება"}
                 </ModalHeader>
                 <ModalBody>
                   <div className="flex flex-col gap-2">
@@ -471,12 +484,12 @@ const CategorySectionAdmin = forwardRef<
                   <Button
                     color="danger"
                     variant="flat"
-                    onPress={onCloseGroupModal}
+                    onClick={() => handleDeleteGroup(groupid)}
                   >
-                    Close
+                    {lang === "en" ? "Delete" : "წაშლა"}
                   </Button>
                   <Button color="success" onClick={handleSaveGroup}>
-                    Save
+                    {lang === "en" ? "Save" : "შენახვა"}
                   </Button>
                 </ModalFooter>
               </>
@@ -496,7 +509,7 @@ const CategorySectionAdmin = forwardRef<
         >
           <ModalContent>
             <ModalHeader className="flex flex-col gap-1 dark:text-white text-black">
-              {lang === "en" ? "Detail" : "დეტალები"}
+              {lang === "en" ? "Edit Product" : "პროდუქტის რედაქტირება"}
             </ModalHeader>
             <ModalBody>
               {selectedProduct && (
