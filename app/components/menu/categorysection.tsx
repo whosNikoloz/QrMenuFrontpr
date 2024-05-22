@@ -372,6 +372,9 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                         width={200}
                         className="rounded-3xl"
                       />
+                      <h1 className="text-md uppercase font-bold mt-3 mx-1">
+                        {formatedPr.name}
+                      </h1>
                       <h3 className="text-sm mt-3 mx-3 text-gray-400">
                         {formatedPr.description}
                       </h3>
@@ -465,7 +468,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                   />
 
                   <div className="ml-4  flex w-full flex-col justify-between">
-                    <h1 className="text-md font-bold text-black dark:text-white ">
+                    <h1 className="text-md uppercase font-bold text-black dark:text-white ">
                       {formatedPr.name}
                     </h1>
                     <p className="text-xs/3 mt-2  dark:text-white/70 text-black/70">
