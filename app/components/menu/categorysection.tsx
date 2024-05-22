@@ -28,7 +28,7 @@ import {
   Input,
 } from "@nextui-org/react";
 import toast, { Toaster } from "react-hot-toast";
-import { AddToShoppingCart } from "../icons";
+import { AddToShoppingCart, MinusIcon, PlusIcon } from "../icons";
 import ProductNew from "@/models/ProductNew";
 import ProductData from "@/models/ProductData";
 import { fetchProductWithOptionsAndValues } from "@/app/api/Product";
@@ -142,11 +142,20 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
     };
 
     const handleDecreaseQuantity = (product: ProductNew) => {
-      const existingCartItem = cartItems.find(
+      const cartItem = cartItems.find(
         (item) => item.product?.id === product.id
       );
-      if (existingCartItem && existingCartItem.quantity > 1) {
-        onUpdateCartItemQuantity(product, existingCartItem.quantity - 1);
+
+      if (cartItem) {
+        if (cartItem.quantity > 1) {
+          onUpdateCartItemQuantity(product, cartItem.quantity - 1);
+        } else {
+          // If quantity is 1, removing the item
+          const updatedCartItems = cartItems.filter(
+            (item) => item.product?.id !== product.id
+          );
+          localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
+        }
       }
     };
 
@@ -361,56 +370,64 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                       <Image
                         src={formatedPr.imageUrl ?? ""}
                         width={200}
-                        alt="Sample Image"
                         className="rounded-3xl"
                       />
-                      <h1 className="text-lg text-white">{formatedPr.price}</h1>
-                      <h3 className="text-sm text-gray-400">
+                      <h3 className="text-sm mt-3 mx-3 text-gray-400">
                         {formatedPr.description}
                       </h3>
-                      <h3 className="text-sm mt-5">
+                      <h3 className=" mt-5">
                         {formatedPr.discount !== 0 ? (
                           <>
                             {/* Original price */}
-                            <span className="line-through text-black dark:text-white">
-                              {formatedPr.price} {lang === "en" ? "GEL" : "₾"}
+                            <span className="line-through text-sm text-slate-400">
+                              {formatedPr.price.toFixed(2)}
+                              <span className="">
+                                {lang === "en" ? " GEL" : " ₾"}
+                              </span>
                             </span>
 
                             {/* Discounted price */}
                             <span className="text-green-500 ml-1">
                               {formatedPr.discountedPrice}
-                              {lang === "en" ? "GEL" : "₾"}
+                              <span className="text-xs">
+                                {lang === "en" ? " GEL" : " ₾"}
+                              </span>
                             </span>
                           </>
                         ) : (
                           <>
                             <p className="text-black dark:text-white">
-                              {formatedPr.price} {lang === "en" ? "GEL" : "₾"}
+                              {formatedPr.price.toFixed(2)}
+                              <span className="text-xs">
+                                {lang === "en" ? " GEL" : " ₾"}
+                              </span>
                             </p>
                           </>
                         )}
                       </h3>
                       {cartItem ? (
                         <div className="flex justify-center mt-4">
-                          <ButtonGroup className="gap-2">
+                          <div className="flex flex-row gap-4 items-center bg-white rounded-lg mt-4">
                             <Button
                               size="sm"
                               isIconOnly
                               onClick={() => handleDecreaseQuantity(product)}
-                              className="text-white text-3xl bg-red-600"
+                              className="text-white text-3xl bg-green-600"
                             >
-                              -
+                              <MinusIcon size={20} />
                             </Button>
-                            <p className="text-lg">{cartItem.quantity}</p>
+                            <p className="text-lg text-black">
+                              {cartItem.quantity}
+                            </p>
                             <Button
                               size="sm"
                               isIconOnly
                               onClick={() => handleIncreaseQuantity(product)}
-                              className="text-white text-3xl bg-green-600"
+                              className="text-white  text-3xl bg-green-600"
                             >
-                              +
+                              <PlusIcon size={20} />
                             </Button>
-                          </ButtonGroup>
+                          </div>
                         </div>
                       ) : (
                         <Button
@@ -432,7 +449,6 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
               const cartItem = cartItems.find(
                 (item) => item.product?.id === product.id
               );
-
               const formatedPr: ProductData = product.getProductData(
                 lang === "en" ? "en" : "ka"
               );
@@ -443,7 +459,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                 >
                   <Image
                     src={formatedPr.imageUrl ?? ""}
-                    width={200}
+                    width={270}
                     alt="Sample Image"
                     className="rounded-lg"
                   />
@@ -457,48 +473,60 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                     </p>
 
                     <div className="mt-auto flex items-center justify-between">
-                      <p className="mr-2 text-sm text-black dark:text-white relative">
+                      <p className="mr-2 mt-4 text-black dark:text-white relative">
                         {formatedPr.discount !== 0 ? (
                           <>
                             {/* Original price */}
-                            <span className="line-through">
-                              {formatedPr.price} {lang === "en" ? "GEL" : "₾"}
+                            <span className="line-through text-slate-400">
+                              <span className="text-sm">
+                                {formatedPr.price.toFixed(2)}
+                              </span>
+                              <span className="text-sm">
+                                {lang === "en" ? " GEL" : " ₾"}
+                              </span>
                             </span>
 
                             {/* Discounted price */}
                             <span className="text-green-500 ml-1">
-                              {formatedPr.discountedPrice}
-                              {lang === "en" ? "GEL" : "₾"}
+                              {Number(formatedPr.discountedPrice).toFixed(2)}
+                              <span className="text-xs">
+                                {lang === "en" ? " GEL" : " ₾"}
+                              </span>
                             </span>
                           </>
                         ) : (
                           <>
-                            {formatedPr.price} {lang === "en" ? "GEL" : "₾"}
+                            <span className="text-md">
+                              {formatedPr.price.toFixed(2)}
+                            </span>{" "}
+                            <span className="text-xs">
+                              {lang === "en" ? "GEL" : "₾"}
+                            </span>
                           </>
                         )}
                       </p>
 
                       {cartItem ? (
-                        <div className="flex items-center">
-                          <ButtonGroup className="gap-2">
-                            <Button
-                              size="sm"
-                              isIconOnly
-                              onClick={() => handleDecreaseQuantity(product)}
-                              className="text-white  text-3xl bg-red-600"
-                            >
-                              -
-                            </Button>
-                            <p className="text-lg">{cartItem.quantity}</p>
-                            <Button
-                              size="sm"
-                              isIconOnly
-                              onClick={() => handleIncreaseQuantity(product)}
-                              className="text-white  text-3xl bg-green-600"
-                            >
-                              +
-                            </Button>
-                          </ButtonGroup>
+                        <div className="flex flex-row gap-4 items-center bg-white rounded-lg mt-4">
+                          <Button
+                            size="sm"
+                            isIconOnly
+                            onClick={() => handleDecreaseQuantity(product)}
+                            className="text-white text-3xl bg-green-600"
+                          >
+                            <MinusIcon size={20} />
+                          </Button>
+                          <p className="text-lg text-black">
+                            {cartItem.quantity}
+                          </p>
+                          <Button
+                            size="sm"
+                            isIconOnly
+                            onClick={() => handleIncreaseQuantity(product)}
+                            className="text-white  text-3xl bg-green-600"
+                          >
+                            <PlusIcon size={20} />
+                          </Button>
                         </div>
                       ) : (
                         <Button
@@ -554,8 +582,9 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                     {selectedProduct.discount !== 0 ? (
                       <>
                         {/* Original price */}
-                        <span className="line-through">
-                          {selectedProduct.price} {lang === "en" ? "GEL" : "₾"}
+                        <span className="line-through text-slate-400">
+                          {selectedProduct.price.toFixed(2)}{" "}
+                          {lang === "en" ? "GEL" : "₾"}
                         </span>
 
                         {/* Discounted price */}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ShoppingCart } from "@/app/components/icons";
+import { MinusIcon, PlusIcon, ShoppingCart } from "@/app/components/icons";
 import {
   Modal,
   ModalContent,
@@ -19,17 +19,22 @@ interface ItemQuantities {
   [key: string]: number;
 }
 
-const BottomCart: React.FC<{ lng: string; CartItems: CartItemNew[] }> = ({
+interface BottomCartProps {
+  lng: string;
+  CartItems: CartItemNew[];
+  onCartItemsChange: (newCartItems: CartItemNew[]) => void;
+}
+
+const BottomCart: React.FC<BottomCartProps> = ({
   lng,
   CartItems,
+  onCartItemsChange,
 }) => {
   const [cartItems, setCartItems] = useState<CartItemNew[]>([]);
   const [itemQuantities, setItemQuantities] = useState<ItemQuantities>({});
 
   useEffect(() => {
-    if (CartItems.length > 0) {
-      setCartItems(CartItems);
-    }
+    setCartItems(CartItems);
   }, [CartItems]);
 
   const sortExtras = (extras: { [key: string]: string[] }): string => {
@@ -81,6 +86,12 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItemNew[] }> = ({
       setCartItems(updatedCartItems);
 
       return updatedQuantities;
+    });
+
+    // Ensure onCartItemsChange is called after updating cartItems
+    setCartItems((currentCartItems) => {
+      onCartItemsChange(currentCartItems);
+      return currentCartItems;
     });
   };
 
@@ -153,7 +164,8 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItemNew[] }> = ({
           <div className="flex items-center gap-2 dark:text-white text-black">
             <p className="font-bold">{lng === "en" ? "Total:" : "სულ:"}</p>
             <div className="text-md  font-bold dark:text-white text-black">
-              {getTotalPrice().toFixed(2)} {lng === "en" ? "GEL" : "₾"}
+              {getTotalPrice().toFixed(2)}{" "}
+              <span className="text-xs">{lng === "en" ? " GEL" : " ₾"}</span>
             </div>
           </div>
           <Badge
@@ -225,10 +237,12 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItemNew[] }> = ({
                           <span className="text-white ml-1">
                             {cartitem.finalPrice?.toFixed(2) ??
                               cartitem.product?.price.toFixed(2)}
-                            {lng === "en" ? "GEL" : "₾"}
+                          </span>
+                          <span className="text-[11px]">
+                            {lng === "en" ? " GEL" : " ₾"}
                           </span>
                         </p>
-                        <ButtonGroup className="gap-2">
+                        <div className="flex flex-row gap-4 items-center bg-white rounded-lg">
                           <Button
                             size="sm"
                             isIconOnly
@@ -239,11 +253,11 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItemNew[] }> = ({
                                 cartitem.comment
                               )
                             }
-                            className="text-white text-3xl bg-red-600"
+                            className="text-white text-3xl bg-green-600"
                           >
-                            -
+                            <MinusIcon size={20} />
                           </Button>
-                          <p className="text-lg">
+                          <p className="text-lg text-black">
                             {
                               itemQuantities[
                                 `${cartitem.product?.id}-${sortExtras(
@@ -264,9 +278,9 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItemNew[] }> = ({
                             }
                             className="text-white text-3xl bg-green-600"
                           >
-                            +
+                            <PlusIcon size={20} />
                           </Button>
-                        </ButtonGroup>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -291,9 +305,12 @@ const BottomCart: React.FC<{ lng: string; CartItems: CartItemNew[] }> = ({
               <>
                 <h1 className="font-bold dark:text-white text-black text-lg flex justify-between p-1">
                   {lng === "en" ? "Total:" : "სულ:"}{" "}
-                  <span>
-                    {getTotalPrice().toFixed(2)} {lng === "en" ? "GEL" : "₾"}
-                  </span>
+                  <p>
+                    <span>{getTotalPrice().toFixed(2)}</span>
+                    <span className="text-sm">
+                      {lng === "en" ? " GEL" : " ₾"}
+                    </span>
+                  </p>
                 </h1>
                 <Button
                   className="w-full font-bold bg-green-600"

@@ -161,6 +161,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                       defaultSelected
                       size="lg"
                       onChange={handleToggle}
+                      classNames={{
+                        wrapper: "bg-green-900 ",
+                      }}
                       color="success"
                       thumbIcon={({ isSelected, className }) =>
                         isSelected ? (

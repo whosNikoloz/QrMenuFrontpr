@@ -322,14 +322,14 @@ const CategorySectionAdmin = forwardRef<
                         {formatedPr.discount !== 0 ? (
                           <>
                             {/* Original price */}
-                            <span className="line-through text-black dark:text-white">
-                              {formatedPr.price} {lang === "en" ? "GEL" : "₾"}
+                            <span className="line-through text-slate-400">
+                              {formatedPr.price} {lang === "en" ? " GEL" : " ₾"}
                             </span>
 
                             {/* Discounted price */}
                             <span className="text-green-500 ml-1">
                               {formatedPr.discountedPrice}
-                              {lang === "en" ? "GEL" : "₾"}
+                              {lang === "en" ? " GEL" : " ₾"}
                             </span>
                           </>
                         ) : (
@@ -376,7 +376,7 @@ const CategorySectionAdmin = forwardRef<
                 >
                   <Image
                     src={formatedPr.imageUrl ?? ""}
-                    width={200}
+                    width={211}
                     alt="Sample Image"
                     className="rounded-lg"
                   />
@@ -394,19 +394,24 @@ const CategorySectionAdmin = forwardRef<
                         {formatedPr.discount !== 0 ? (
                           <>
                             {/* Original price */}
-                            <span className="line-through">
-                              {formatedPr.price} {lang === "en" ? "GEL" : "₾"}
+                            <span className="line-through text-slate-400">
+                              {formatedPr.price} {lang === "en" ? " GEL" : " ₾"}
                             </span>
 
                             {/* Discounted price */}
                             <span className="text-green-500 ml-1">
                               {formatedPr.discountedPrice}
-                              {lang === "en" ? "GEL" : "₾"}
+                              <span className="text-xs">
+                                {lang === "en" ? " GEL" : " ₾"}
+                              </span>
                             </span>
                           </>
                         ) : (
                           <>
-                            {formatedPr.price} {lang === "en" ? "GEL" : "₾"}
+                            {formatedPr.price}
+                            <span className="text-xs">
+                              {lang === "en" ? " GEL" : " ₾"}
+                            </span>
                           </>
                         )}
                       </p>
@@ -457,7 +462,6 @@ const CategorySectionAdmin = forwardRef<
                       placeholder="Enter English"
                       value={englishName}
                       onChange={(e) => setEnglishName(e.target.value)}
-                      variant="bordered"
                       required
                     />
                     <Input
@@ -466,7 +470,6 @@ const CategorySectionAdmin = forwardRef<
                       value={georgianName}
                       onChange={(e) => setGeorgianName(e.target.value)}
                       placeholder="Enter ქართულად"
-                      variant="bordered"
                       required
                     />
                   </div>

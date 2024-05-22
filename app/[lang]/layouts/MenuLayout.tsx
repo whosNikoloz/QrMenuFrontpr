@@ -21,6 +21,7 @@ export const MenuLayout: React.FC<MenuLayoutProps> = ({
   function openSearch() {
     if (eopenSearch) eopenSearch();
   }
+
   return (
     <div className="relative  flex flex-col h-full ">
       <div className="justify-center items-center flex mb-24">

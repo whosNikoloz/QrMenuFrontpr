@@ -17,7 +17,6 @@ import {
   useDisclosure,
   Image,
   Button,
-  ButtonGroup,
 } from "@nextui-org/react";
 import {
   AddIcon,
@@ -232,7 +231,7 @@ export default function AdminPage({
                 >
                   <Image
                     src={product?.imageUrl ?? ""}
-                    width={200}
+                    width={270}
                     alt="Sample Image"
                     className="rounded-lg"
                   />
@@ -251,18 +250,24 @@ export default function AdminPage({
                       <p className="mr-2 text-sm text-black dark:text-white relative">
                         {product?.discount !== 0 ? (
                           <>
-                            <span className="line-through">
-                              {product?.price} {lang === "en" ? "GEL" : "₾"}
+                            <span className="line-through text-slate-400">
+                              {product?.price}
+                              {lang === "en" ? "GEL" : "₾"}
                             </span>
 
                             <span className="text-green-500 ml-1">
-                              {product?.DiscountedPrice}{" "}
-                              {lang === "en" ? "GEL" : "₾"}
+                              {product?.DiscountedPrice}
+                              <span className="text-xs">
+                                {lang === "en" ? " GEL" : " ₾"}
+                              </span>
                             </span>
                           </>
                         ) : (
                           <>
-                            {product.price} {lang === "en" ? "GEL" : "₾"}
+                            {product.price}
+                            <span className="text-xs">
+                              {lang === "en" ? " GEL" : " ₾"}
+                            </span>
                           </>
                         )}
                       </p>

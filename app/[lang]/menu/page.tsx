@@ -18,8 +18,15 @@ import {
   Image,
   Button,
   ButtonGroup,
+  Card,
+  CardHeader,
 } from "@nextui-org/react";
-import { AddToShoppingCart, SearchIcon } from "@/app/components/icons";
+import {
+  AddToShoppingCart,
+  MinusIcon,
+  PlusIcon,
+  SearchIcon,
+} from "@/app/components/icons";
 import { fetchProductGroups } from "@/app/api/ProductGroup";
 import ProductGroup from "@/models/ProductGroup";
 import CartItemNew from "@/models/CartItemNew";
@@ -115,7 +122,7 @@ export default function MenuPage({
         }
         return cartItem;
       });
-      localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
+
       return updatedCartItems;
     });
   }
@@ -153,6 +160,11 @@ export default function MenuPage({
     }
   };
 
+  const handleonCartItemsChange = (cartItems: CartItemNew[]) => {
+    setCartItems(cartItems);
+    console.log(cartItems);
+  };
+
   return (
     <MenuLayout
       lang={lang}
@@ -179,7 +191,11 @@ export default function MenuPage({
           );
         })}
       <div className="justify-center bg-transparent items-center flex mb-24">
-        <BottomCart lng={lang} CartItems={cartItems} />{" "}
+        <BottomCart
+          lng={lang}
+          CartItems={cartItems}
+          onCartItemsChange={handleonCartItemsChange}
+        />{" "}
       </div>
 
       <Modal
@@ -241,46 +257,55 @@ export default function MenuPage({
                     </p>
 
                     <div className="mt-auto flex items-center justify-between">
-                      <p className="mr-2 text-sm text-black dark:text-white relative">
+                      <p className="mr-2  text-black dark:text-white relative">
                         {product?.discount !== 0 ? (
                           <>
-                            <span className="line-through">
-                              {product?.price} {lang === "en" ? "GEL" : "₾"}
+                            <span className="line-through text-xs text-slate-400">
+                              {product?.price} {lang === "en" ? " GEL" : "₾"}
                             </span>
 
                             <span className="text-green-500 ml-1">
-                              {product?.DiscountedPrice}{" "}
-                              {lang === "en" ? "GEL" : "₾"}
+                              <span className="text-sm">
+                                {product?.DiscountedPrice}
+                              </span>
+                              <span className="text-xs">
+                                {lang === "en" ? " GEL" : " ₾"}
+                              </span>
                             </span>
                           </>
                         ) : (
                           <>
-                            {product.price} {lang === "en" ? "GEL" : "₾"}
+                            <span className="text-sm">{product.price}</span>
+                            <span className="text-xs">
+                              {lang === "en" ? " GEL" : " ₾"}
+                            </span>
                           </>
                         )}
                       </p>
 
                       {cartItem ? (
                         <div className="flex items-center">
-                          <ButtonGroup className="gap-2">
+                          <div className="flex flex-row gap-4 items-center bg-white rounded-lg mt-4">
                             <Button
                               size="sm"
                               isIconOnly
-                              //onClick={() => handleDecreaseQuantity(product)}
-                              className="text-white text-3xl bg-red-600"
+                              // onClick={() => handleDecreaseQuantity(product)}
+                              className="text-white text-3xl bg-green-600"
                             >
-                              -
+                              <MinusIcon size={20} />
                             </Button>
-                            <p className="text-lg">{cartItem.quantity}</p>
+                            <p className="text-lg text-black">
+                              {cartItem.quantity}
+                            </p>
                             <Button
                               size="sm"
                               isIconOnly
                               onClick={() => product && exonAddToCart(product)}
-                              className="text-white text-3xl bg-green-600"
+                              className="text-white  text-3xl bg-green-600"
                             >
-                              +
+                              <PlusIcon size={20} />
                             </Button>
-                          </ButtonGroup>
+                          </div>
                         </div>
                       ) : (
                         <Button

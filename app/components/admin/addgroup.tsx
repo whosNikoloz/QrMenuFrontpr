@@ -4,7 +4,6 @@ import { AddToShoppingCart, AddIcon } from "../icons";
 import toast, { Toaster } from "react-hot-toast";
 import { createProductGroup, deleteProductGroup } from "@/app/api/ProductGroup";
 import {
-  Avatar,
   Input,
   Modal,
   ModalBody,
@@ -59,7 +58,7 @@ const AddGroup = ({ lang, onAddnewGroup }: AddGroupInterface) => {
 
   return (
     <>
-      <div className="flex w-full justify-center mt-10">
+      <div className="flex w-full justify-center mt-7 mb-3">
         <Button
           size="lg"
           endContent={<AddIcon size={23} />}
@@ -88,7 +87,6 @@ const AddGroup = ({ lang, onAddnewGroup }: AddGroupInterface) => {
                     placeholder="Enter English"
                     value={englishName}
                     onChange={(e) => setEnglishName(e.target.value)}
-                    variant="bordered"
                     required
                   />
                   <Input
@@ -100,7 +98,6 @@ const AddGroup = ({ lang, onAddnewGroup }: AddGroupInterface) => {
                     }}
                     onChange={(e) => setGeorgianName(e.target.value)}
                     placeholder="Enter ქართულად"
-                    variant="bordered"
                     required
                   />
                 </div>
