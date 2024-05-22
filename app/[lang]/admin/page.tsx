@@ -379,7 +379,7 @@ export default function AdminPage({
             />
           </ModalBody>
           <ModalFooter>
-            <Button color="primary" onPress={handleAuthorize}>
+            <Button className="bg-green-600" onPress={handleAuthorize}>
               {lang === "en" ? "Sign in" : "შესვლა"}
             </Button>
           </ModalFooter>
