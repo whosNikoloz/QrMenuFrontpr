@@ -22,6 +22,8 @@ import {
   AddIcon,
   AddToShoppingCart,
   EditIcon,
+  LockIcon,
+  MailIcon,
   SearchIcon,
 } from "@/app/components/icons";
 import { fetchProductGroups } from "@/app/api/ProductGroup";
@@ -29,6 +31,7 @@ import ProductGroup from "@/models/ProductGroup";
 import CartItemNew from "@/models/CartItemNew";
 import ProductNew from "@/models/ProductNew";
 import AddGroup from "@/app/components/admin/addgroup";
+import toast from "react-hot-toast";
 
 export default function AdminPage({
   params: { lang },
@@ -54,7 +57,11 @@ export default function AdminPage({
   function toggleLayout(arg: boolean) {
     setChangelayout(arg);
   }
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenSearchModal,
+    onOpen: onOpenSearchModal,
+    onClose: onCloseSearchModal,
+  } = useDisclosure();
 
   const [cartItems, setCartItems] = useState<CartItemNew[]>([]);
 
@@ -161,11 +168,46 @@ export default function AdminPage({
     );
   };
 
+  const {
+    isOpen: isOpenAuthModal,
+    onOpen: onOpenAuthModal,
+    onClose: onCloseAuthModal,
+  } = useDisclosure();
+
+  useEffect(() => {
+    const sessionExpiresAt = localStorage.getItem("sessionAdmin");
+    if (!sessionExpiresAt) {
+      onOpenAuthModal();
+      return;
+    }
+
+    const currentTime = Math.floor(Date.now() / 1000);
+    if (currentTime >= parseInt(sessionExpiresAt, 10)) {
+      onOpenAuthModal();
+    }
+  }, []);
+
+  const [user, setUser] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleAuthorize = () => {
+    if (user === "admin" && password === "admin") {
+      const sessionDuration = 3600; // 1 hour in seconds
+      const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
+      const sessionExpiresAt = currentTime + sessionDuration;
+      localStorage.setItem("sessionAdmin", sessionExpiresAt.toString());
+      toast.success("Authorized successfully");
+      onCloseAuthModal();
+    } else {
+      toast.error("Invalid credentials");
+    }
+  };
+
   return (
     <MenuLayout
       lang={lang}
       toggleLayout={toggleLayout}
-      eopenSearch={() => onOpen()}
+      eopenSearch={() => onOpenSearchModal()}
     >
       {Array.isArray(productGroups) &&
         productGroups.map((group) => {
@@ -194,8 +236,8 @@ export default function AdminPage({
 
       <Modal
         size="full"
-        isOpen={isOpen}
-        onClose={onClose}
+        isOpen={isOpenSearchModal}
+        onClose={onCloseSearchModal}
         radius="md"
         scrollBehavior="inside"
         isDismissable={false}
@@ -299,6 +341,48 @@ export default function AdminPage({
             })}
           </ModalBody>
           <ModalFooter className="flex flex-col justify-center w-full"></ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      <Modal
+        isOpen={isOpenAuthModal}
+        placement="center"
+        isDismissable={false}
+        isKeyboardDismissDisabled={true}
+        backdrop="blur"
+        hideCloseButton={true}
+      >
+        <ModalContent>
+          <ModalHeader className="flex flex-col gap-1">
+            {lang === "en" ? "Authorize" : "ავტორიზაცია"}
+          </ModalHeader>
+          <ModalBody>
+            <Input
+              autoFocus
+              endContent={
+                <MailIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+              }
+              value={user}
+              onChange={(e) => setUser(e.target.value)}
+              label="User"
+              placeholder="Enter your UserName"
+            />
+            <Input
+              endContent={
+                <LockIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+              }
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              label="Password"
+              placeholder="Enter your password"
+              type="password"
+            />
+          </ModalBody>
+          <ModalFooter>
+            <Button color="primary" onPress={handleAuthorize}>
+              {lang === "en" ? "Sign in" : "შესვლა"}
+            </Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </MenuLayout>
