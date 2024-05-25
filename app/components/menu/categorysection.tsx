@@ -366,10 +366,11 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
 
                 return (
                   <div key={index} className="w-full">
-                    <div className="max-w-[200px] h-[350px] rounded-3xl border dark:bg-[#313638]/85 bg-white shadow-2xl text-center font-semibold ">
+                    <div className="max-w-[200px] h-auto rounded-3xl border dark:bg-[#313638]/85 bg-white shadow-2xl text-center font-semibold ">
                       <Image
                         src={formatedPr.imageUrl ?? ""}
                         width={200}
+                        alt="Sample Image"
                         className="rounded-3xl"
                       />
                       <h1 className="text-md uppercase font-bold mt-3 mx-1">
@@ -436,7 +437,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                         <Button
                           size="md"
                           onClick={() => handleAddToCart(formatedPr)}
-                          endContent={<AddToShoppingCart size={24} />}
+                          startContent={<AddToShoppingCart size={24} />}
                           className="text-white text-sm mb-4 mt-4  rounded-3xl px-8 py-2 font-bold  bg-green-600"
                         >
                           {lang === "en" ? "Add" : "დამატება"}
@@ -535,7 +536,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                         <Button
                           size="sm"
                           onClick={() => handleAddToCart(formatedPr)}
-                          endContent={<AddToShoppingCart size={23} />}
+                          startContent={<AddToShoppingCart size={23} />}
                           className="text-white text-sm bg-green-600"
                         >
                           {lang === "en" ? "Add" : "დამატება"}
