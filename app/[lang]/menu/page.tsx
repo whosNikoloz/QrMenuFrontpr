@@ -31,7 +31,7 @@ import { fetchProductGroups } from "@/app/api/ProductGroup";
 import ProductGroup from "@/models/ProductGroup";
 import CartItemNew from "@/models/CartItemNew";
 import ProductNew from "@/models/ProductNew";
-import NextImage from "next/image"
+import NextImage from "next/image";
 
 export default function MenuPage({
   params: { lang },
@@ -262,7 +262,7 @@ export default function MenuPage({
                           : product?.description_Ka}
                       </p>
 
-                      <div className="mt-auto flex items-center justify-between">
+                      <div className="mt-2 flex items-center justify-between">
                         <p className="mr-2  text-black dark:text-white relative">
                           {product?.discount !== 0 ? (
                             <>
@@ -272,7 +272,7 @@ export default function MenuPage({
 
                               <span className="text-green-500 ml-1">
                                 <span className="text-sm">
-                                  {product?.DiscountedPrice}
+                                  {product?.DiscountedPrice?.toFixed(2)}
                                 </span>
                                 <span className="text-xs">
                                   {lang === "en" ? " GEL" : " ₾"}

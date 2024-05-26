@@ -186,7 +186,7 @@ export default function AdminPage({
     if (currentTime >= parseInt(sessionExpiresAt, 10)) {
       onOpenAuthModal();
     }
-  }, []);
+  }, [onOpenAuthModal]);
 
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
