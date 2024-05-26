@@ -478,26 +478,26 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                 >
                   <Image
                     src={formatedPr.imageUrl ?? ""}
-                    width={270}
+                    width={200}
                     isZoomed
-                    height={270}
+                    height={200}
                     as={NextImage}
                     alt="Sample Image"
-                    className="rounded-lg"
+                    className="rounded-lg h-28"
                   />
 
                   <div className="ml-4  flex w-full flex-col justify-between">
                     <h1 className="text-md uppercase font-bold text-black dark:text-white ">
                       {formatedPr.name}
                     </h1>
-                    <p className="text-xs/3 mt-2  dark:text-white/70 text-black/70">
+                    <p className="text-xs/3 mt-2 leading-tight dark:text-white/70 text-black/70">
                       {formatedPr.description}
                     </p>
 
                     <div className="mt-auto flex items-center justify-between">
                       <p className="mr-2 mt-4 text-black dark:text-white relative">
                         {formatedPr.discount !== 0 ? (
-                          <>
+                          <p className="flex flex-col">
                             {/* Original price */}
                             <span className="line-through text-slate-400">
                               <span className="text-sm">
@@ -509,13 +509,13 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                             </span>
 
                             {/* Discounted price */}
-                            <span className="text-green-500 ml-1">
+                            <span className="text-green-500 ">
                               {Number(formatedPr.discountedPrice).toFixed(2)}
                               <span className="text-xs">
                                 {lang === "en" ? " GEL" : " ₾"}
                               </span>
                             </span>
-                          </>
+                          </p>
                         ) : (
                           <>
                             <span className="text-md">
