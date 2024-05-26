@@ -91,7 +91,7 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
       setSelectedProduct(product);
       onOpenMainModal();
     }
-  }, [product]);
+  }, [onOpenMainModal, open, product]);
 
   const [englishName, setEnglishName] = useState("");
   const [georgianName, setGeorgianName] = useState("");

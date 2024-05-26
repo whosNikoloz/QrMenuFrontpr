@@ -24,6 +24,8 @@ import { createProduct } from "@/app/api/Product";
 import toast from "react-hot-toast";
 import ProdactNew from "@/models/ProductNew";
 import ProductNew from "@/models/ProductNew";
+import Image from "next/image";
+import NextImage from "next/image";
 
 interface AddProductInterface {
   lang: string;
@@ -230,12 +232,12 @@ const AddProduct = ({
                   onChange={(e) => setImage(e.target.value)}
                 />
                 {image && (
-                  <img
+                  <Image
                     src={image}
-                    alt="Product"
-                    className="rounded-2xl"
-                    height={100}
                     width={100}
+                    alt="Product"
+                    height={100}
+                    className="rounded-2xl"
                   />
                 )}
               </div>

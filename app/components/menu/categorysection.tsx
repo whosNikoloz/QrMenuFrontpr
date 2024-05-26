@@ -382,6 +382,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                       <Image
                         src={formatedPr.imageUrl ?? ""}
                         width={200}
+                        isZoomed
                         height={200}
                         as={NextImage}
                         alt="Sample Image"
@@ -478,6 +479,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                   <Image
                     src={formatedPr.imageUrl ?? ""}
                     width={270}
+                    isZoomed
                     height={270}
                     as={NextImage}
                     alt="Sample Image"
@@ -584,6 +586,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                     <Image
                       src={selectedProduct.imageUrl ?? ""}
                       width={500}
+                      isZoomed
                       height={500}
                       alt="Sample Image"
                       as={NextImage}

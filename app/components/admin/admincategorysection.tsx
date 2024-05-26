@@ -334,6 +334,7 @@ const CategorySectionAdmin = forwardRef<
                       <Image
                         src={formatedPr.imageUrl ?? ""}
                         width={200}
+                        isZoomed
                         height={200}
                         as={NextImage}
                         alt="Sample Image"
@@ -527,9 +528,7 @@ const CategorySectionAdmin = forwardRef<
           onClose={onCloseProductModal}
           radius="md"
           scrollBehavior="inside"
-          isDismissable={false}
           backdrop="blur"
-          shouldBlockScroll={true}
         >
           <ModalContent>
             <ModalHeader className="flex flex-col gap-1 dark:text-white text-black">
@@ -544,6 +543,7 @@ const CategorySectionAdmin = forwardRef<
                         src={image ?? ""}
                         width={500}
                         height={500}
+                        isZoomed
                         as={NextImage}
                         alt="Sample Image"
                         className="rounded-3xl"
