@@ -50,19 +50,11 @@ const AddProduct = ({
   const [descriptionGeorgian, setDescriptionGeorgian] = useState("");
   const [image, setImage] = useState("");
   const [groupId, setGroupId] = useState(groupid);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSave = async () => {
     // Add save logic here
-    console.log({
-      englishName,
-      georgianName,
-      price,
-      discount,
-      descriptionEnglish,
-      descriptionGeorgian,
-      image,
-      groupId,
-    });
+    setIsLoading(true);
     try {
       const product = await createProduct({
         name_En: englishName,
@@ -92,8 +84,12 @@ const AddProduct = ({
       }
     } catch (error) {
       console.error("Error saving product:", error);
+      setIsLoading(false);
+      toast.error("Failed to add product");
+      onClose();
     }
     toast.success("Product added successfully");
+    setIsLoading(false);
     onClose();
   };
   const [groups, setGroups] = useState<ProductGroup[]>([]);
@@ -266,7 +262,7 @@ const AddProduct = ({
           <Button onClick={onClose}>
             {lang === "en" ? "Cancel" : "გაუქმება"}
           </Button>
-          <Button color="success" onClick={handleSave}>
+          <Button color="success" isLoading={isLoading} onClick={handleSave}>
             {lang === "en" ? "Save" : "შენახვა"}
           </Button>
         </ModalFooter>

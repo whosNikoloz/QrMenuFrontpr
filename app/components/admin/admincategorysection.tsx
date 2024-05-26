@@ -182,7 +182,13 @@ const CategorySectionAdmin = forwardRef<
       onOpenProductAddModal();
     };
 
+    const [isLoadingGroup, setIsLoadingGroup] = useState(false);
+    const [isLoadingProductAdd, setIsLoadingProductAdd] = useState(false);
+    const [isLoadingProductDelete, setIsLoadingProductDelete] = useState(false);
+    const [isLoadingGroupDelete, setIsLoadingGroupDelete] = useState(false);
+
     const handleSaveGroup = async () => {
+      setIsLoadingGroup(true);
       const data = {
         name_En: englishName,
         name_Ka: georgianName,
@@ -194,6 +200,7 @@ const CategorySectionAdmin = forwardRef<
       );
       if (!APIData) {
         toast.error("Failed to add group");
+        setIsLoadingGroup(false);
         return;
       }
       const newGroup = new ProductGroup(
@@ -205,6 +212,7 @@ const CategorySectionAdmin = forwardRef<
       );
       toast.success("Group Updated successfully");
       onUpdateGroup(newGroup);
+      setIsLoadingGroup(false);
       onCloseGroupModal();
     };
 
@@ -218,6 +226,7 @@ const CategorySectionAdmin = forwardRef<
     const [groupId, setGroupId] = useState(groupid);
 
     const handleSaveProduct = async () => {
+      setIsLoadingProductAdd(true);
       const response = await editProduct(
         selectedProduct?.id ?? 0,
         englishNameProduct,
@@ -245,9 +254,11 @@ const CategorySectionAdmin = forwardRef<
         );
         onUpdateProduct(newproduct);
         toast.success("Product Updated successfully");
+        setIsLoadingProductAdd(false);
         onCloseProductModal();
         return;
       } else {
+        setIsLoadingProductAdd(false);
         toast.error("Failed to update product");
         onCloseProductModal();
         return;
@@ -255,12 +266,14 @@ const CategorySectionAdmin = forwardRef<
     };
 
     const handleProductDelete = async () => {
+      setIsLoadingProductDelete(true);
       if (selectedProduct) {
         const product = selectedProduct;
 
         const reposnse = await deleteProduct(product.id);
         if (!reposnse) {
           toast.error("Failed to delete product");
+          setIsLoadingProductDelete(false);
           onCloseProductModal();
           return;
         }
@@ -269,10 +282,12 @@ const CategorySectionAdmin = forwardRef<
           products.splice(index, 1);
           onDeleteGroup(product.id);
           toast.success("Product Deleted successfully");
+          setIsLoadingProductAdd(false);
           onCloseProductModal();
           return;
         } else {
           toast.error("Failed to delete product");
+          setIsLoadingProductAdd(false);
           onCloseProductModal();
           return;
         }
@@ -280,13 +295,16 @@ const CategorySectionAdmin = forwardRef<
     };
 
     const handleDeleteGroup = async (id: number) => {
+      setIsLoadingGroupDelete(true);
       const response = await deleteProductGroup(id);
 
       if (response) {
         toast.success("Group Deleted successfully");
         onDeleteGroup(id);
+        setIsLoadingGroupDelete(false);
         onCloseGroupModal();
       } else {
+        setIsLoadingGroupDelete(false);
         console.log("Failed to delete product group.");
       }
     };
@@ -509,11 +527,16 @@ const CategorySectionAdmin = forwardRef<
                   <Button
                     color="danger"
                     variant="flat"
+                    isLoading={isLoadingGroupDelete}
                     onClick={() => handleDeleteGroup(groupid)}
                   >
                     {lang === "en" ? "Delete" : "წაშლა"}
                   </Button>
-                  <Button color="success" onClick={handleSaveGroup}>
+                  <Button
+                    color="success"
+                    isLoading={isLoadingGroup}
+                    onClick={handleSaveGroup}
+                  >
                     {lang === "en" ? "Save" : "შენახვა"}
                   </Button>
                 </ModalFooter>
@@ -665,11 +688,16 @@ const CategorySectionAdmin = forwardRef<
               <Button
                 color="danger"
                 variant="flat"
+                isLoading={isLoadingProductDelete}
                 onPress={handleProductDelete}
               >
                 Delete
               </Button>
-              <Button color="success" onClick={handleSaveProduct}>
+              <Button
+                color="success"
+                isLoading={isLoadingProductAdd}
+                onClick={handleSaveProduct}
+              >
                 Save
               </Button>
             </ModalFooter>

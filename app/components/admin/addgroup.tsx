@@ -23,9 +23,11 @@ const AddGroup = ({ lang, onAddnewGroup }: AddGroupInterface) => {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const [englishName, setEnglishName] = useState("");
   const [georgianName, setGeorgianName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSave = async () => {
     // Prepare the data to be sent to the API
+    setIsLoading(true);
     const data = {
       name_En: englishName,
       name_Ka: georgianName,
@@ -33,6 +35,7 @@ const AddGroup = ({ lang, onAddnewGroup }: AddGroupInterface) => {
     const APidata = await createProductGroup(data.name_En, data.name_Ka);
     if (!APidata) {
       toast.error("Failed to add group");
+      setIsLoading(false);
       return;
     }
     const newGroup = new ProductGroup(
@@ -44,6 +47,7 @@ const AddGroup = ({ lang, onAddnewGroup }: AddGroupInterface) => {
     );
     onAddnewGroup(newGroup);
     toast.success("Group added successfully");
+    setIsLoading(false);
     onClose();
   };
 
@@ -111,7 +115,11 @@ const AddGroup = ({ lang, onAddnewGroup }: AddGroupInterface) => {
                 <Button color="danger" variant="flat" onPress={onClose}>
                   {lang === "en" ? "Close" : "დახურვა"}
                 </Button>
-                <Button color="success" onPress={handleSave}>
+                <Button
+                  color="success"
+                  isLoading={isLoading}
+                  onPress={handleSave}
+                >
                   {lang === "en" ? "Save" : "შენახვა"}
                 </Button>
               </ModalFooter>
