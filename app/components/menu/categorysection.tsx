@@ -776,15 +776,17 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                   <span>
                     {selectedProduct?.discount !== 0 ? (
                       <>
-                        <span className="text-green-500 text-sm mr-4">
+                        <span className="text-green-500 text-sm mr-4 flex gap-1">
                           {selectedProduct?.DiscountedPrice?.toFixed(2)}
-                          {lang === "en" ? "GEL" : "₾"}
+                          <span>{lang === "en" ? "GEL" : "₾"}</span>
                         </span>
                       </>
                     ) : (
                       <>
-                        {selectedProduct.price} {lang === "en" ? "GEL" : "₾"}
-                        <span className="mr-4"></span>
+                        <span className="text-sm mr-4 flex flex-row gap-1">
+                          {selectedProduct.price}
+                          <span>{lang === "en" ? "GEL" : "₾"}</span>
+                        </span>
                       </>
                     )}
                   </span>
