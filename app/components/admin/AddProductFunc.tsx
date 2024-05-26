@@ -124,9 +124,8 @@ const AddProduct = ({
         </ModalHeader>
         <ModalBody>
           <div className="flex flex-col gap-2">
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-row gap-3">
               <Input
-                label={lang === "en" ? "English Name" : "ინგლისური სახელი"}
                 placeholder={
                   lang === "en"
                     ? "Enter English Name"
@@ -138,8 +137,16 @@ const AddProduct = ({
                 value={englishName}
                 onChange={(e) => setEnglishName(e.target.value)}
               />
+              <label
+                htmlFor="NameEnglish"
+                className="text-xs items-center justify-start flex w-1/2"
+              >
+                {lang === "en" ? "English Name" : "ინგლისური სახელი"}
+              </label>
+            </div>
+
+            <div className="flex flex-row gap-3">
               <Input
-                label={lang === "en" ? "Georgian Name" : "ქართული სახელი"}
                 placeholder={
                   lang === "en"
                     ? "Enter Georgian Name"
@@ -151,8 +158,15 @@ const AddProduct = ({
                 value={georgianName}
                 onChange={(e) => setGeorgianName(e.target.value)}
               />
+              <label
+                htmlFor="NameGeorgian"
+                className="text-xs items-center justify-start flex w-1/2"
+              >
+                {lang === "en" ? "Georgian Name" : "ქართული სახელი"}
+              </label>
+            </div>
+            <div className="flex flex-row gap-3">
               <Input
-                label={lang === "en" ? "Price" : "ფასი"}
                 placeholder={lang === "en" ? "Enter Price" : "შეიყვანეთ ფასი"}
                 endContent={
                   <div className="pointer-events-none flex items-center">
@@ -162,13 +176,20 @@ const AddProduct = ({
                 classNames={{
                   input: ["text-[16px] "],
                 }}
+                inputMode="numeric"
                 type="number"
                 value={price.toString()}
                 onChange={(e) => setPrice(Number(e.target.value))}
               />
-
+              <label
+                htmlFor="Price"
+                className="text-xs items-center justify-start flex w-1/2"
+              >
+                {lang === "en" ? "Price" : "ფასი"}
+              </label>
+            </div>
+            <div className="flex flex-row gap-3">
               <Input
-                label={lang === "en" ? "Discount" : "ფასდაკლება"}
                 placeholder="0.00"
                 endContent={
                   <div className="pointer-events-none flex items-center">
@@ -179,15 +200,19 @@ const AddProduct = ({
                   input: ["text-[16px] "],
                 }}
                 type="number"
+                inputMode="numeric"
                 value={discount.toString()}
                 onChange={(e) => setDiscount(Number(e.target.value))}
               />
+              <label
+                htmlFor="Discount"
+                className="text-xs items-center justify-start flex w-1/2"
+              >
+                {lang === "en" ? "Discount" : "ფასდაკლება"}
+              </label>
+            </div>
+            <div className="flex flex-row gap-3">
               <Textarea
-                label={
-                  lang === "en"
-                    ? "Description (English)"
-                    : "აღწერა (ინგლისურად)"
-                }
                 classNames={{
                   input: ["text-[16px] "],
                 }}
@@ -199,10 +224,17 @@ const AddProduct = ({
                 value={descriptionEnglish}
                 onChange={(e) => setDescriptionEnglish(e.target.value)}
               />
+              <label
+                htmlFor="DescriptionEnglish"
+                className="text-xs items-center justify-start flex w-1/2"
+              >
+                {lang === "en"
+                  ? "Description (English)"
+                  : "აღწერა (ინგლისურად)"}
+              </label>
+            </div>
+            <div className="flex flex-row gap-3">
               <Textarea
-                label={
-                  lang === "en" ? "Description (Georgian)" : "აღწერა (ქართულად)"
-                }
                 classNames={{
                   input: ["text-[16px] "],
                 }}
@@ -214,48 +246,54 @@ const AddProduct = ({
                 value={descriptionGeorgian}
                 onChange={(e) => setDescriptionGeorgian(e.target.value)}
               />
-
-              <div className="flex gap-4 p-3">
-                <Input
-                  label={lang === "en" ? "Image URL" : "სურათის URL"}
-                  placeholder={
-                    lang === "en" ? "Enter Image URL" : "შეიყვანეთ სურათის URL"
-                  }
-                  classNames={{
-                    input: ["text-[16px] "],
-                  }}
-                  value={image}
-                  onChange={(e) => setImage(e.target.value)}
-                />
-                {image && (
-                  <Image
-                    src={image}
-                    width={100}
-                    alt="Product"
-                    height={100}
-                    className="rounded-2xl"
-                  />
-                )}
-              </div>
-
-              <Select
-                size="md"
-                label={lang === "en" ? "Select a group" : "აირჩიეთ ჯგუფი"}
-                onChange={(e) => setGroupId(Number(e.target.value))}
-                defaultSelectedKeys={[groupId.toString()]}
-                value={groupId.toString()}
-                required
+              <label
+                htmlFor="NameGeorgian"
+                className="text-xs items-center justify-start flex w-1/2"
               >
-                {groups.map((group) => (
-                  <SelectItem
-                    key={group.id.toString()}
-                    value={group.id.toString()}
-                  >
-                    {lang === "en" ? group.name_En : group.name_Ka}
-                  </SelectItem>
-                ))}
-              </Select>
+                {lang === "en" ? "Description (Georgian)" : "აღწერა (ქართულად)"}
+              </label>
             </div>
+
+            <div className="flex gap-4 p-3">
+              <Input
+                label={lang === "en" ? "Image URL" : "სურათის URL"}
+                placeholder={
+                  lang === "en" ? "Enter Image URL" : "შეიყვანეთ სურათის URL"
+                }
+                classNames={{
+                  input: ["text-[16px] "],
+                }}
+                value={image}
+                onChange={(e) => setImage(e.target.value)}
+              />
+              {image && (
+                <Image
+                  src={image}
+                  width={100}
+                  alt="Product"
+                  height={100}
+                  className="rounded-2xl"
+                />
+              )}
+            </div>
+
+            <Select
+              size="md"
+              label={lang === "en" ? "Select a group" : "აირჩიეთ ჯგუფი"}
+              onChange={(e) => setGroupId(Number(e.target.value))}
+              defaultSelectedKeys={[groupId.toString()]}
+              value={groupId.toString()}
+              required
+            >
+              {groups.map((group) => (
+                <SelectItem
+                  key={group.id.toString()}
+                  value={group.id.toString()}
+                >
+                  {lang === "en" ? group.name_En : group.name_Ka}
+                </SelectItem>
+              ))}
+            </Select>
           </div>
         </ModalBody>
         <ModalFooter className="flex flex-col justify-center w-full">
