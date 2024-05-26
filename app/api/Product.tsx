@@ -2,7 +2,7 @@ import ProductNew from "@/models/ProductNew";
 import { OptionClass, Option } from "@/models/Option";
 import { OptionValueClass, OptionValue } from "@/models/OptionValue";
 
-const mainAPI = "https://localhost:44380/api/Product";
+const mainAPI = "https://tallorangecat98.conveyor.cloud/api/Product";
 
 const fetchProductWithOptionsAndValues = async (
   productid: number

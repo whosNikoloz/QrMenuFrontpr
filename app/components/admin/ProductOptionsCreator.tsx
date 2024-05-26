@@ -384,7 +384,7 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
   return (
     <>
       <Modal
-        size="full"
+        size="5xl"
         isOpen={isOpenMainAddModal}
         onClose={onCloseMainModal}
         radius="md"
@@ -398,228 +398,237 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
             {lang === "en" ? "Manage Options" : "ვარიანტების მართვა"}
           </ModalHeader>
           <ModalBody>
-            {selectedProduct && (
-              <>
-                <div className="flex justify-between">
-                  <User
-                    name={
-                      lang === "en"
-                        ? selectedProduct.name_Ka
-                        : selectedProduct.name_Ka
-                    }
-                    description={selectedProduct.price.toString()}
-                    avatarProps={{
-                      size: "lg",
-                      src: selectedProduct.imageUrl ?? "",
-                    }}
-                  />
-                  <Dropdown>
-                    <DropdownTrigger>
-                      <Button
+            <div>
+              {selectedProduct && (
+                <>
+                  <div className="flex justify-between">
+                    <User
+                      name={
+                        lang === "en"
+                          ? selectedProduct.name_Ka
+                          : selectedProduct.name_Ka
+                      }
+                      description={selectedProduct.price.toString()}
+                      avatarProps={{
+                        size: "lg",
+                        src: selectedProduct.imageUrl ?? "",
+                      }}
+                    />
+                    <Dropdown>
+                      <DropdownTrigger>
+                        <Button
+                          color={"success"}
+                          isIconOnly
+                          size="lg"
+                          className="bg-transparent text-white "
+                        >
+                          <AddIcon size={35} />
+                        </Button>
+                      </DropdownTrigger>
+                      <DropdownMenu
+                        aria-label="Dropdown Variants"
                         color={"success"}
-                        isIconOnly
-                        size="lg"
-                        className="bg-transparent text-white "
                       >
-                        <AddIcon size={35} />
-                      </Button>
-                    </DropdownTrigger>
-                    <DropdownMenu
-                      aria-label="Dropdown Variants"
-                      color={"success"}
-                    >
-                      <DropdownItem
-                        key="Radio"
-                        onClick={() => handleAddOption("Radio")}
-                      >
-                        Radio
-                      </DropdownItem>
-                      <DropdownItem
-                        key="CheckBox"
-                        onClick={() => handleAddOption("CheckBox")}
-                      >
-                        CheckBox
-                      </DropdownItem>
-                      <DropdownItem
-                        key="NumField"
-                        onClick={() => handleAddOption("NumField")}
-                      >
-                        NumField
-                      </DropdownItem>
-                    </DropdownMenu>
-                  </Dropdown>
-                </div>
+                        <DropdownItem
+                          key="Radio"
+                          onClick={() => handleAddOption("Radio")}
+                        >
+                          Radio
+                        </DropdownItem>
+                        <DropdownItem
+                          key="CheckBox"
+                          onClick={() => handleAddOption("CheckBox")}
+                        >
+                          CheckBox
+                        </DropdownItem>
+                        <DropdownItem
+                          key="NumField"
+                          onClick={() => handleAddOption("NumField")}
+                        >
+                          NumField
+                        </DropdownItem>
+                      </DropdownMenu>
+                    </Dropdown>
+                  </div>
 
-                {selectedProduct.options.map((option) => (
-                  <div key={option.id}>
-                    <Divider className="my-3" />
-                    <RadioGroup>
-                      <>
-                        <div className="flex font-bold text-md justify-between ">
-                          <h1>
-                            {lang === "en" ? option.name_En : option.name_Ka}
-                          </h1>
-                          <Button
-                            className="flex bg-transparent"
-                            onClick={() => handleEditOption(option.id)}
-                            isIconOnly
-                          >
-                            <EditIcon size={25} />
-                          </Button>
-                        </div>
+                  {selectedProduct.options.map((option) => (
+                    <div key={option.id}>
+                      <Divider className="my-3" />
+                      <RadioGroup>
+                        <>
+                          <div className="flex font-bold text-md justify-between ">
+                            <h1>
+                              {lang === "en" ? option.name_En : option.name_Ka}
+                            </h1>
+                            <Button
+                              className="flex bg-transparent"
+                              onClick={() => handleEditOption(option.id)}
+                              isIconOnly
+                            >
+                              <EditIcon size={25} />
+                            </Button>
+                          </div>
 
-                        {option.type === "Radio"
-                          ? option.optionValues.map((value, index) => (
-                              <div
-                                key={value.id}
-                                className="flex items-center flex-row p-1  justify-between"
-                              >
-                                <Radio
-                                  color="success"
-                                  classNames={{
-                                    base: cn(
-                                      "inline-flex w-full max-w-md bg-content1",
-                                      "hover:bg-content2 items-center justify-start",
-                                      "cursor-pointer rounded-lg gap-2 p-3 border-2 border-transparent",
-                                      "data-[selected=true]:border-primary"
-                                    ),
-                                    label: "w-full",
-                                  }}
-                                  value={
-                                    lang === "en"
-                                      ? value.name_En
-                                      : value.name_Ka
-                                  }
-                                  // onChange={() =>
-                                  //   handleOptionRadioToggle(option.id, value.id)
-                                  // }
+                          {option.type === "Radio"
+                            ? option.optionValues.map((value, index) => (
+                                <div
+                                  key={value.id}
+                                  className="flex items-center flex-row p-1  justify-between"
                                 >
-                                  <div className="w-full flex justify-between gap-2">
+                                  <Radio
+                                    color="success"
+                                    classNames={{
+                                      base: cn(
+                                        "inline-flex w-full max-w-md bg-content1",
+                                        "hover:bg-content2 items-center justify-start",
+                                        "cursor-pointer rounded-lg gap-2 p-3 border-2 border-transparent",
+                                        "data-[selected=true]:border-primary"
+                                      ),
+                                      label: "w-full",
+                                    }}
+                                    value={
+                                      lang === "en"
+                                        ? value.name_En
+                                        : value.name_Ka
+                                    }
+                                    // onChange={() =>
+                                    //   handleOptionRadioToggle(option.id, value.id)
+                                    // }
+                                  >
+                                    <div className="w-full flex justify-between gap-2">
+                                      {lang === "en"
+                                        ? value.name_En
+                                        : value.name_Ka}
+                                      <div className="flex flex-col items-end gap-1">
+                                        <Chip
+                                          color="success"
+                                          size="sm"
+                                          variant="flat"
+                                        >
+                                          +{value.price}{" "}
+                                          {lang === "en" ? "GEL" : "₾"}
+                                        </Chip>
+                                      </div>
+                                    </div>
+                                  </Radio>
+                                  <Button
+                                    className="flex bg-transparent ml-5"
+                                    onClick={() =>
+                                      handleEditOptionValue(option.id, value.id)
+                                    }
+                                    isIconOnly
+                                  >
+                                    <EditIcon size={25} />
+                                  </Button>
+                                </div>
+                              ))
+                            : option.type === "CheckBox"
+                            ? option.optionValues.map((value) => (
+                                <div
+                                  key={value.id}
+                                  className="flex items-center justify-between p-2"
+                                >
+                                  <Checkbox
+                                    defaultSelected={value.selected}
+                                    size="lg"
+                                    color="success"
+                                    // onChange={() =>
+                                    //   handleOptionCheckboxToggle(
+                                    //     option.id,
+                                    //     value.id
+                                    //   )
+                                    // }
+                                  >
                                     {lang === "en"
                                       ? value.name_En
                                       : value.name_Ka}
-                                    <div className="flex flex-col items-end gap-1">
-                                      <Chip
-                                        color="success"
-                                        size="sm"
-                                        variant="flat"
-                                      >
-                                        +{value.price}{" "}
-                                        {lang === "en" ? "GEL" : "₾"}
-                                      </Chip>
-                                    </div>
+                                  </Checkbox>
+                                  <div className="flex flex-row items-end ">
+                                    <Chip
+                                      color="success"
+                                      size="sm"
+                                      variant="flat"
+                                      className="mb-2"
+                                    >
+                                      +{value.price}{" "}
+                                      {lang === "en" ? "GEL" : "₾"}
+                                    </Chip>
+                                    <Button
+                                      className="flex bg-transparents "
+                                      onClick={() =>
+                                        handleEditOptionValue(
+                                          option.id,
+                                          value.id
+                                        )
+                                      }
+                                      isIconOnly
+                                    >
+                                      <EditIcon size={25} />
+                                    </Button>
                                   </div>
-                                </Radio>
-                                <Button
-                                  className="flex bg-transparent ml-5"
-                                  onClick={() =>
-                                    handleEditOptionValue(option.id, value.id)
-                                  }
-                                  isIconOnly
-                                >
-                                  <EditIcon size={25} />
-                                </Button>
-                              </div>
-                            ))
-                          : option.type === "CheckBox"
-                          ? option.optionValues.map((value) => (
-                              <div
-                                key={value.id}
-                                className="flex items-center justify-between p-2"
-                              >
-                                <Checkbox
-                                  defaultSelected={value.selected}
-                                  size="lg"
-                                  color="success"
-                                  // onChange={() =>
-                                  //   handleOptionCheckboxToggle(
-                                  //     option.id,
-                                  //     value.id
-                                  //   )
-                                  // }
-                                >
-                                  {lang === "en"
-                                    ? value.name_En
-                                    : value.name_Ka}
-                                </Checkbox>
-                                <div className="flex flex-row items-end ">
-                                  <Chip
-                                    color="success"
-                                    size="sm"
-                                    variant="flat"
-                                    className="mb-2"
-                                  >
-                                    +{value.price} {lang === "en" ? "GEL" : "₾"}
-                                  </Chip>
-                                  <Button
-                                    className="flex bg-transparents "
-                                    onClick={() =>
-                                      handleEditOptionValue(option.id, value.id)
-                                    }
-                                    isIconOnly
-                                  >
-                                    <EditIcon size={25} />
-                                  </Button>
                                 </div>
-                              </div>
-                            ))
-                          : option.type === "NumField"
-                          ? option.optionValues.map((value) => (
-                              <div
-                                key={value.id}
-                                className="flex flex-row items-end"
-                              >
-                                <Input
-                                  type="number"
-                                  placeholder="0"
-                                  className="mr-2"
-                                  // value={inputValues}
-                                  // onValueChange={(value) => {
-                                  //   handleOptionNumFieldChange(value);
-                                  // }}
-                                />
-                                <div className="flex flex-col items-end gap-1">
-                                  <Chip
-                                    color="success"
-                                    size="sm"
-                                    variant="flat"
-                                    className="mb-2"
-                                  >
-                                    +
-                                    {(
-                                      selectedProduct?.StaticPrice ?? 0
-                                    ).toFixed(2)}
-                                    {lang === "en" ? "GEL" : "₾"}
-                                  </Chip>
-                                  <Button
-                                    className="flex bg-transparents "
-                                    onClick={() =>
-                                      handleEditOptionValue(option.id, value.id)
-                                    }
-                                    isIconOnly
-                                  >
-                                    <EditIcon size={25} />
-                                  </Button>
+                              ))
+                            : option.type === "NumField"
+                            ? option.optionValues.map((value) => (
+                                <div
+                                  key={value.id}
+                                  className="flex flex-row items-end"
+                                >
+                                  <Input
+                                    type="number"
+                                    placeholder="0"
+                                    className="mr-2"
+                                    // value={inputValues}
+                                    // onValueChange={(value) => {
+                                    //   handleOptionNumFieldChange(value);
+                                    // }}
+                                  />
+                                  <div className="flex flex-col items-end gap-1">
+                                    <Chip
+                                      color="success"
+                                      size="sm"
+                                      variant="flat"
+                                      className="mb-2"
+                                    >
+                                      +
+                                      {(
+                                        selectedProduct?.StaticPrice ?? 0
+                                      ).toFixed(2)}
+                                      {lang === "en" ? "GEL" : "₾"}
+                                    </Chip>
+                                    <Button
+                                      className="flex bg-transparents "
+                                      onClick={() =>
+                                        handleEditOptionValue(
+                                          option.id,
+                                          value.id
+                                        )
+                                      }
+                                      isIconOnly
+                                    >
+                                      <EditIcon size={25} />
+                                    </Button>
+                                  </div>
                                 </div>
-                              </div>
-                            ))
-                          : null}
-                      </>
-                      <div className="flex items-center justify-center ">
-                        <Button
-                          color="success"
-                          isIconOnly
-                          onClick={() => hanldeAddValueButton(option.id)}
-                          className="flex w-1/4 mt-2 text-white bg-green-600"
-                        >
-                          <AddIcon size={25} />
-                        </Button>
-                      </div>
-                    </RadioGroup>
-                  </div>
-                ))}
-              </>
-            )}
+                              ))
+                            : null}
+                        </>
+                        <div className="flex items-center justify-center ">
+                          <Button
+                            color="success"
+                            isIconOnly
+                            onClick={() => hanldeAddValueButton(option.id)}
+                            className="flex w-1/4 mt-2 text-white bg-green-600"
+                          >
+                            <AddIcon size={25} />
+                          </Button>
+                        </div>
+                      </RadioGroup>
+                    </div>
+                  ))}
+                </>
+              )}
+            </div>
           </ModalBody>
           <ModalFooter>
             <Button color="danger" variant="flat" onPress={onCloseMainModal}>

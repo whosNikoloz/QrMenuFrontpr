@@ -33,6 +33,7 @@ import ProductNew from "@/models/ProductNew";
 import ProductData from "@/models/ProductData";
 import { fetchProductWithOptionsAndValues } from "@/app/api/Product";
 import CartItemNew from "@/models/CartItemNew";
+import NextImage from "next/image";
 
 interface CategorySectionProps {
   title: string;
@@ -64,21 +65,27 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
     const [selectedProduct, setSelectedProduct] = useState<ProductNew | null>(
       null
     );
+
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [customDescription, setCustomDescription] = useState("");
     const [extras, setExtras] = useState<{ [key: string]: string[] }>({});
     const handleAddToCart = (product: ProductData) => {
-      const fetchData = async () => {
-        try {
-          const data = await fetchProductWithOptionsAndValues(product.id);
-          setSelectedProduct(data);
-        } catch (error) {
-          console.error("Error fetching product groups:", error);
-        }
-      };
+      setSelectedProduct(null); // Reset the selected item
+      // const fetchData = async () => {
+      //   try {
+      //     const data = await fetchProductWithOptionsAndValues(product.id);
+      //     setSelectedProduct(data);
+      //   } catch (error) {
+      //     console.error("Error fetching product groups:", error);
+      //   }
+      // };
 
-      fetchData();
-      onOpen();
+      // fetchData();
+      const selectedProduct = products.find((p) => p.id === product.id);
+      if (selectedProduct) {
+        setSelectedProduct(selectedProduct);
+        onOpen();
+      }
     };
 
     useImperativeHandle(ref, () => ({
@@ -128,17 +135,22 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
     };
 
     const handleIncreaseQuantity = async (product: ProductNew) => {
-      const fetchData = async () => {
-        try {
-          const data = await fetchProductWithOptionsAndValues(product.id);
-          setSelectedProduct(data); // Set the selected item
-        } catch (error) {
-          console.error("Error fetching product groups:", error);
-        }
-      };
+      setSelectedProduct(null);
+      // const fetchData = async () => {
+      //   try {
+      //     const data = await fetchProductWithOptionsAndValues(product.id);
+      //     setSelectedProduct(data); // Set the selected item
+      //   } catch (error) {
+      //     console.error("Error fetching product groups:", error);
+      //   }
+      // };
 
-      fetchData();
-      onOpen();
+      // fetchData();
+      const selectedProduct = products.find((p) => p.id === product.id);
+      if (selectedProduct) {
+        setSelectedProduct(selectedProduct);
+        onOpen();
+      }
     };
 
     const handleDecreaseQuantity = (product: ProductNew) => {
@@ -350,7 +362,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
     return (
       <>
         <div className="p-2">
-          <h1 className="ml-4 text-black dark:text-white font-bold text-3xl">
+          <h1 className="ml-4 text-black dark:text-white font-bold text-2xl">
             {title}
           </h1>
 
@@ -370,20 +382,22 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                       <Image
                         src={formatedPr.imageUrl ?? ""}
                         width={200}
+                        height={200}
+                        as={NextImage}
                         alt="Sample Image"
                         className="rounded-3xl"
                       />
-                      <h1 className="text-md uppercase font-bold mt-3 mx-1">
+                      <h1 className="text-sm uppercase font-bold mt-3 mx-1">
                         {formatedPr.name}
                       </h1>
-                      <h3 className="text-sm mt-3 mx-3 text-gray-400">
+                      <h3 className="text-xs mt-3 mx-3 text-gray-400">
                         {formatedPr.description}
                       </h3>
                       <h3 className=" mt-5">
                         {formatedPr.discount !== 0 ? (
                           <>
                             {/* Original price */}
-                            <span className="line-through text-sm text-slate-400">
+                            <span className="line-through text-xs text-slate-400">
                               {formatedPr.price.toFixed(2)}
                               <span className="">
                                 {lang === "en" ? " GEL" : " ₾"}
@@ -464,6 +478,8 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                   <Image
                     src={formatedPr.imageUrl ?? ""}
                     width={270}
+                    height={270}
+                    as={NextImage}
                     alt="Sample Image"
                     className="rounded-lg"
                   />
@@ -550,197 +566,205 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
           )}
         </div>
         <Modal
-          size="full"
+          size="5xl"
           isOpen={isOpen}
           onClose={onClose}
           radius="md"
           scrollBehavior="inside"
-          isDismissable={false}
           backdrop="blur"
-          shouldBlockScroll={true}
         >
           <ModalContent>
             <ModalHeader className="flex flex-col gap-1 dark:text-white text-black">
               {lang === "en" ? "Detail" : "დეტალები"}
             </ModalHeader>
             <ModalBody>
-              {selectedProduct && (
-                <>
-                  <Image
-                    src={selectedProduct.imageUrl ?? ""}
-                    width="100%"
-                    alt="Sample Image"
-                    className="rounded-3xl"
-                  />
-                  <h1 className="text-lg font-bold text-black dark:text-white">
-                    {lang === "en"
-                      ? selectedProduct.name_Ka
-                      : selectedProduct.name_Ka}
-                  </h1>
-                  <p className="text-sm text-black dark:text-white">
-                    {lang === "en"
-                      ? selectedProduct.description_En
-                      : selectedProduct.description_Ka}
-                  </p>
-                  <p className="text-sm text-black dark:text-white">
-                    {selectedProduct.discount !== 0 ? (
-                      <>
-                        {/* Original price */}
-                        <span className="line-through text-slate-400">
-                          {selectedProduct.price.toFixed(2)}{" "}
-                          {lang === "en" ? "GEL" : "₾"}
-                        </span>
+              <div className="flex flex-col gap-2">
+                {selectedProduct && (
+                  <>
+                    <Image
+                      src={selectedProduct.imageUrl ?? ""}
+                      width={500}
+                      height={500}
+                      alt="Sample Image"
+                      as={NextImage}
+                      className="rounded-3xl"
+                    />
+                    <h1 className="text-lg font-bold text-black dark:text-white">
+                      {lang === "en"
+                        ? selectedProduct.name_Ka
+                        : selectedProduct.name_Ka}
+                    </h1>
+                    <p className="text-sm text-black dark:text-white/50">
+                      {lang === "en"
+                        ? selectedProduct.description_En
+                        : selectedProduct.description_Ka}
+                    </p>
+                    <p className="text-sm text-black dark:text-white">
+                      {selectedProduct.discount !== 0 ? (
+                        <>
+                          {/* Original price */}
+                          <span className="line-through text-slate-400">
+                            {selectedProduct.price.toFixed(2)}{" "}
+                            {lang === "en" ? "GEL" : "₾"}
+                          </span>
 
-                        {/* Discounted price */}
-                        <span className="text-green-500 ml-1">
-                          {selectedProduct.DiscountedPrice?.toFixed(2)}
-                          {lang === "en" ? "GEL" : "₾"}
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        {selectedProduct.price} {lang === "en" ? "GEL" : "₾"}
-                      </>
-                    )}
-                  </p>
+                          {/* Discounted price */}
+                          <span className="text-green-500 ml-1">
+                            {selectedProduct.DiscountedPrice?.toFixed(2)}
+                            {lang === "en" ? "GEL" : "₾"}
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          {selectedProduct.price} {lang === "en" ? "GEL" : "₾"}
+                        </>
+                      )}
+                    </p>
 
-                  {selectedProduct.options.map((option) => (
-                    <div key={option.id}>
-                      <Divider className="my-3" />
-                      <RadioGroup
-                        label={lang === "en" ? option.name_En : option.name_Ka}
-                      >
-                        {option.type === "Radio"
-                          ? option.optionValues.map((value, index) => (
-                              <div
-                                key={value.id}
-                                className="flex items-center flex-col p-1 justify-between"
-                              >
-                                <Radio
-                                  color="success"
-                                  classNames={{
-                                    base: cn(
-                                      "inline-flex w-full max-w-md bg-content1",
-                                      "hover:bg-content2 items-center justify-start",
-                                      "cursor-pointer rounded-lg gap-2 p-3 border-2 border-transparent",
-                                      "data-[selected=true]:border-primary"
-                                    ),
-                                    label: "w-full",
-                                  }}
-                                  value={
-                                    lang === "en"
-                                      ? value.name_En
-                                      : value.name_Ka
-                                  }
-                                  onChange={() =>
-                                    handleOptionRadioToggle(option.id, value.id)
-                                  }
+                    {selectedProduct.options.map((option) => (
+                      <div key={option.id}>
+                        <Divider className="my-3" />
+                        <RadioGroup
+                          label={
+                            lang === "en" ? option.name_En : option.name_Ka
+                          }
+                        >
+                          {option.type === "Radio"
+                            ? option.optionValues.map((value, index) => (
+                                <div
+                                  key={value.id}
+                                  className="flex items-center flex-col p-1 justify-between"
                                 >
-                                  <div className="w-full flex justify-between gap-2">
+                                  <Radio
+                                    color="success"
+                                    classNames={{
+                                      base: cn(
+                                        "inline-flex w-full max-w-md bg-content1",
+                                        "hover:bg-content2 items-center justify-start",
+                                        "cursor-pointer rounded-lg gap-2 p-3 border-2 border-transparent",
+                                        "data-[selected=true]:border-primary"
+                                      ),
+                                      label: "w-full",
+                                    }}
+                                    value={
+                                      lang === "en"
+                                        ? value.name_En
+                                        : value.name_Ka
+                                    }
+                                    onChange={() =>
+                                      handleOptionRadioToggle(
+                                        option.id,
+                                        value.id
+                                      )
+                                    }
+                                  >
+                                    <div className="w-full flex justify-between gap-2">
+                                      {lang === "en"
+                                        ? value.name_En
+                                        : value.name_Ka}
+                                      <div className="flex flex-col items-end gap-1">
+                                        <Chip
+                                          color="success"
+                                          size="sm"
+                                          variant="flat"
+                                        >
+                                          +{value.price}{" "}
+                                          {lang === "en" ? "GEL" : "₾"}
+                                        </Chip>
+                                      </div>
+                                    </div>
+                                  </Radio>
+                                </div>
+                              ))
+                            : option.type === "CheckBox"
+                            ? option.optionValues.map((value) => (
+                                <div
+                                  key={value.id}
+                                  className="flex items-center justify-between p-3"
+                                >
+                                  <Checkbox
+                                    defaultSelected={value.selected}
+                                    size="lg"
+                                    color="success"
+                                    onChange={() =>
+                                      handleOptionCheckboxToggle(
+                                        option.id,
+                                        value.id
+                                      )
+                                    }
+                                  >
                                     {lang === "en"
                                       ? value.name_En
                                       : value.name_Ka}
-                                    <div className="flex flex-col items-end gap-1">
-                                      <Chip
-                                        color="success"
-                                        size="sm"
-                                        variant="flat"
-                                      >
-                                        +{value.price}{" "}
-                                        {lang === "en" ? "GEL" : "₾"}
-                                      </Chip>
-                                    </div>
+                                  </Checkbox>
+                                  <div className="flex flex-col items-end gap-1">
+                                    <Chip
+                                      color="success"
+                                      size="sm"
+                                      variant="flat"
+                                    >
+                                      +{value.price}{" "}
+                                      {lang === "en" ? "GEL" : "₾"}
+                                    </Chip>
                                   </div>
-                                </Radio>
-                              </div>
-                            ))
-                          : option.type === "CheckBox"
-                          ? option.optionValues.map((value) => (
-                              <div
-                                key={value.id}
-                                className="flex items-center justify-between p-3"
-                              >
-                                <Checkbox
-                                  defaultSelected={value.selected}
-                                  size="lg"
-                                  color="success"
-                                  onChange={() =>
-                                    handleOptionCheckboxToggle(
-                                      option.id,
-                                      value.id
-                                    )
-                                  }
+                                </div>
+                              ))
+                            : option.type === "NumField"
+                            ? option.optionValues.map((value) => (
+                                <div
+                                  key={value.id}
+                                  className="flex items-center justify-between p-3"
                                 >
-                                  {lang === "en"
-                                    ? value.name_En
-                                    : value.name_Ka}
-                                </Checkbox>
-                                <div className="flex flex-col items-end gap-1">
-                                  <Chip
-                                    color="success"
-                                    size="sm"
-                                    variant="flat"
-                                  >
-                                    +{value.price} {lang === "en" ? "GEL" : "₾"}
-                                  </Chip>
+                                  <Input
+                                    type="number"
+                                    placeholder="0"
+                                    className="mr-2"
+                                    value={inputValues}
+                                    onValueChange={(value) => {
+                                      handleOptionNumFieldChange(value);
+                                    }}
+                                  />
+                                  <div className="flex flex-col items-end gap-1">
+                                    <Chip
+                                      color="success"
+                                      size="sm"
+                                      variant="flat"
+                                    >
+                                      +
+                                      {(
+                                        selectedProduct?.StaticPrice ?? 0
+                                      ).toFixed(2)}
+                                      {lang === "en" ? "GEL" : "₾"}
+                                    </Chip>
+                                  </div>
                                 </div>
-                              </div>
-                            ))
-                          : option.type === "NumField"
-                          ? option.optionValues.map((value) => (
-                              <div
-                                key={value.id}
-                                className="flex items-center justify-between p-3"
-                              >
-                                <Input
-                                  type="number"
-                                  placeholder="0"
-                                  className="mr-2"
-                                  value={inputValues}
-                                  onValueChange={(value) => {
-                                    handleOptionNumFieldChange(value);
-                                  }}
-                                />
-                                <div className="flex flex-col items-end gap-1">
-                                  <Chip
-                                    color="success"
-                                    size="sm"
-                                    variant="flat"
-                                  >
-                                    +
-                                    {(
-                                      selectedProduct?.StaticPrice ?? 0
-                                    ).toFixed(2)}
-                                    {lang === "en" ? "GEL" : "₾"}
-                                  </Chip>
-                                </div>
-                              </div>
-                            ))
-                          : null}
-                      </RadioGroup>
-                    </div>
-                  ))}
+                              ))
+                            : null}
+                        </RadioGroup>
+                      </div>
+                    ))}
 
-                  <Divider className="my-3" />
+                    <Divider className="my-3" />
 
-                  <h1 className="font-bold text-lg dark:text-white text-black">
-                    {lang === "en"
-                      ? "Add special instructions"
-                      : "დაამატეთ განსაკუთრებული მითითებები"}
-                  </h1>
-                  <Textarea
-                    variant="bordered"
-                    size="lg"
-                    onChange={(e) => setCustomDescription(e.target.value)}
-                    placeholder={
-                      lang === "ka"
-                        ? "ალერგია,მნიშვნელოვანი დეტალები"
-                        : "Allergies, important details"
-                    }
-                    className=" col-span-12 md:col-span-6 mb-64 "
-                  />
-                </>
-              )}
+                    <h1 className="font-bold text-lg dark:text-white text-black">
+                      {lang === "en"
+                        ? "Add special instructions"
+                        : "დაამატეთ განსაკუთრებული მითითებები"}
+                    </h1>
+                    <Textarea
+                      variant="bordered"
+                      size="lg"
+                      onChange={(e) => setCustomDescription(e.target.value)}
+                      placeholder={
+                        lang === "ka"
+                          ? "ალერგია,მნიშვნელოვანი დეტალები"
+                          : "Allergies, important details"
+                      }
+                      className=" col-span-12 md:col-span-6 mb-64 "
+                    />
+                  </>
+                )}
+              </div>
             </ModalBody>
             <ModalFooter className="flex flex-col justify-center w-full">
               <div className="flex">
@@ -749,7 +773,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                   <span>
                     {selectedProduct?.discount !== 0 ? (
                       <>
-                        <span className="text-green-500 text-md mr-4">
+                        <span className="text-green-500 text-sm mr-4">
                           {selectedProduct?.DiscountedPrice?.toFixed(2)}
                           {lang === "en" ? "GEL" : "₾"}
                         </span>

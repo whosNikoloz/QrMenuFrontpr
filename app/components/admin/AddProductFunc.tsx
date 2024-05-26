@@ -111,7 +111,7 @@ const AddProduct = ({
 
   return (
     <Modal
-      size="full"
+      size="5xl"
       isOpen={isOpen}
       onClose={onClose}
       radius="md"

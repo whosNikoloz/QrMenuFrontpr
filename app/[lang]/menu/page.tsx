@@ -43,6 +43,7 @@ export default function MenuPage({
     const fetchData = async () => {
       try {
         const data = await fetchProductGroups();
+        console.log(data);
         setProductGroups(data);
       } catch (error) {
         console.error("Error fetching product groups:", error);
@@ -66,6 +67,7 @@ export default function MenuPage({
     if (storedCartItems) {
       try {
         const parsedCartItems: CartItemNew[] = JSON.parse(storedCartItems);
+
         setCartItems(parsedCartItems); // Set cart items in state
       } catch (error) {
         console.error("Error parsing cart items from localStorage:", error);
@@ -199,7 +201,7 @@ export default function MenuPage({
       </div>
 
       <Modal
-        size="full"
+        size="5xl"
         isOpen={isOpen}
         onClose={onClose}
         radius="md"
@@ -229,99 +231,103 @@ export default function MenuPage({
             </div>
           </ModalHeader>
           <ModalBody>
-            {filteredProducts.map((product, index) => {
-              const cartItem = cartItems.find(
-                (item) => item.product?.id === product?.id
-              );
+            <div>
+              {filteredProducts.map((product, index) => {
+                const cartItem = cartItems.find(
+                  (item) => item.product?.id === product?.id
+                );
 
-              return (
-                <div
-                  className="flex justify-between dark:bg-[#313638]/85 bg-white shadow-2xl p-4 mt-2 rounded-2xl"
-                  key={index}
-                >
-                  <Image
-                    src={product?.imageUrl ?? ""}
-                    width={200}
-                    alt="Sample Image"
-                    className="rounded-lg"
-                  />
+                return (
+                  <div
+                    className="flex justify-between dark:bg-[#313638]/85 bg-white shadow-2xl p-4 mt-2 rounded-2xl"
+                    key={index}
+                  >
+                    <Image
+                      src={product?.imageUrl ?? ""}
+                      width={200}
+                      alt="Sample Image"
+                      className="rounded-lg"
+                    />
 
-                  <div className="ml-4  flex w-full flex-col justify-between">
-                    <h1 className="text-md font-bold text-black dark:text-white ">
-                      {lang === "en" ? product?.name_En : product?.name_Ka}
-                    </h1>
-                    <p className="text-xs/3 mt-2 dark:text-white/70 text-black/70">
-                      {lang === "en"
-                        ? product?.description_En
-                        : product?.description_Ka}
-                    </p>
+                    <div className="ml-4  flex w-full flex-col justify-between">
+                      <h1 className="text-md font-bold text-black dark:text-white ">
+                        {lang === "en" ? product?.name_En : product?.name_Ka}
+                      </h1>
+                      <p className="text-xs/3 mt-2 dark:text-white/70 text-black/70">
+                        {lang === "en"
+                          ? product?.description_En
+                          : product?.description_Ka}
+                      </p>
 
-                    <div className="mt-auto flex items-center justify-between">
-                      <p className="mr-2  text-black dark:text-white relative">
-                        {product?.discount !== 0 ? (
-                          <>
-                            <span className="line-through text-xs text-slate-400">
-                              {product?.price} {lang === "en" ? " GEL" : "₾"}
-                            </span>
-
-                            <span className="text-green-500 ml-1">
-                              <span className="text-sm">
-                                {product?.DiscountedPrice}
+                      <div className="mt-auto flex items-center justify-between">
+                        <p className="mr-2  text-black dark:text-white relative">
+                          {product?.discount !== 0 ? (
+                            <>
+                              <span className="line-through text-xs text-slate-400">
+                                {product?.price} {lang === "en" ? " GEL" : "₾"}
                               </span>
+
+                              <span className="text-green-500 ml-1">
+                                <span className="text-sm">
+                                  {product?.DiscountedPrice}
+                                </span>
+                                <span className="text-xs">
+                                  {lang === "en" ? " GEL" : " ₾"}
+                                </span>
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              <span className="text-sm">{product.price}</span>
                               <span className="text-xs">
                                 {lang === "en" ? " GEL" : " ₾"}
                               </span>
-                            </span>
-                          </>
-                        ) : (
-                          <>
-                            <span className="text-sm">{product.price}</span>
-                            <span className="text-xs">
-                              {lang === "en" ? " GEL" : " ₾"}
-                            </span>
-                          </>
-                        )}
-                      </p>
+                            </>
+                          )}
+                        </p>
 
-                      {cartItem ? (
-                        <div className="flex items-center">
-                          <div className="flex flex-row gap-4 items-center bg-white rounded-lg mt-4">
-                            <Button
-                              size="sm"
-                              isIconOnly
-                              // onClick={() => handleDecreaseQuantity(product)}
-                              className="text-white text-3xl bg-green-600"
-                            >
-                              <MinusIcon size={20} />
-                            </Button>
-                            <p className="text-lg text-black">
-                              {cartItem.quantity}
-                            </p>
-                            <Button
-                              size="sm"
-                              isIconOnly
-                              onClick={() => product && exonAddToCart(product)}
-                              className="text-white  text-3xl bg-green-600"
-                            >
-                              <PlusIcon size={20} />
-                            </Button>
+                        {cartItem ? (
+                          <div className="flex items-center">
+                            <div className="flex flex-row gap-4 items-center bg-white rounded-lg mt-4">
+                              <Button
+                                size="sm"
+                                isIconOnly
+                                // onClick={() => handleDecreaseQuantity(product)}
+                                className="text-white text-3xl bg-green-600"
+                              >
+                                <MinusIcon size={20} />
+                              </Button>
+                              <p className="text-lg text-black">
+                                {cartItem.quantity}
+                              </p>
+                              <Button
+                                size="sm"
+                                isIconOnly
+                                onClick={() =>
+                                  product && exonAddToCart(product)
+                                }
+                                className="text-white  text-3xl bg-green-600"
+                              >
+                                <PlusIcon size={20} />
+                              </Button>
+                            </div>
                           </div>
-                        </div>
-                      ) : (
-                        <Button
-                          size="sm"
-                          onClick={() => product && exonAddToCart(product)}
-                          endContent={<AddToShoppingCart size={23} />}
-                          className="text-white text-sm bg-green-600"
-                        >
-                          {lang === "en" ? "Add" : "დამატება"}
-                        </Button>
-                      )}
+                        ) : (
+                          <Button
+                            size="sm"
+                            onClick={() => product && exonAddToCart(product)}
+                            endContent={<AddToShoppingCart size={23} />}
+                            className="text-white text-sm bg-green-600"
+                          >
+                            {lang === "en" ? "Add" : "დამატება"}
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </ModalBody>
           <ModalFooter className="flex flex-col justify-center w-full"></ModalFooter>
         </ModalContent>

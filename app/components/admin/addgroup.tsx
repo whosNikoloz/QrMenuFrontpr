@@ -69,10 +69,15 @@ const AddGroup = ({ lang, onAddnewGroup }: AddGroupInterface) => {
         </Button>
       </div>
 
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="center">
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        backdrop="blur"
+        placement="top-center"
+      >
         <ModalContent>
           {(onClose) => (
-            <>
+            <div>
               <ModalHeader className="flex flex-col gap-1">
                 {lang === "en" ? "Create Group" : "ჯგუფის შექმნა"}
               </ModalHeader>
@@ -110,7 +115,7 @@ const AddGroup = ({ lang, onAddnewGroup }: AddGroupInterface) => {
                   {lang === "en" ? "Save" : "შენახვა"}
                 </Button>
               </ModalFooter>
-            </>
+            </div>
           )}
         </ModalContent>
       </Modal>

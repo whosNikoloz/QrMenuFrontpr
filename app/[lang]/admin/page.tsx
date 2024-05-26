@@ -235,12 +235,13 @@ export default function AdminPage({
       <AddGroup lang={lang} onAddnewGroup={handlenewGroupAdd} />
 
       <Modal
-        size="full"
+        size="5xl"
         isOpen={isOpenSearchModal}
         onClose={onCloseSearchModal}
         radius="md"
         scrollBehavior="inside"
         isDismissable={false}
+        className="z-50"
         backdrop="blur"
         shouldBlockScroll={true}
       >
@@ -265,80 +266,82 @@ export default function AdminPage({
             </div>
           </ModalHeader>
           <ModalBody>
-            {filteredProducts.map((product, index) => {
-              return (
-                <div
-                  className="flex justify-between dark:bg-[#313638]/85 bg-white shadow-2xl p-4 mt-2 rounded-2xl"
-                  key={index}
-                >
-                  <Image
-                    src={product?.imageUrl ?? ""}
-                    width={270}
-                    alt="Sample Image"
-                    className="rounded-lg"
-                  />
+            <div>
+              {filteredProducts.map((product, index) => {
+                return (
+                  <div
+                    className="flex justify-between dark:bg-[#313638]/85 bg-white shadow-2xl p-4 mt-2 rounded-2xl"
+                    key={index}
+                  >
+                    <Image
+                      src={product?.imageUrl ?? ""}
+                      width={270}
+                      alt="Sample Image"
+                      className="rounded-lg"
+                    />
 
-                  <div className="ml-4  flex w-full flex-col justify-between">
-                    <h1 className="text-md font-bold text-black dark:text-white ">
-                      {lang === "en" ? product?.name_En : product?.name_Ka}
-                    </h1>
-                    <p className="text-xs/3 mt-2 dark:text-white/70 text-black/70">
-                      {lang === "en"
-                        ? product?.description_En
-                        : product?.description_Ka}
-                    </p>
+                    <div className="ml-4  flex w-full flex-col justify-between">
+                      <h1 className="text-md font-bold text-black dark:text-white ">
+                        {lang === "en" ? product?.name_En : product?.name_Ka}
+                      </h1>
+                      <p className="text-xs/3 mt-2 dark:text-white/70 text-black/70">
+                        {lang === "en"
+                          ? product?.description_En
+                          : product?.description_Ka}
+                      </p>
 
-                    <div className="mt-auto flex items-center justify-between">
-                      <p className="mr-2 text-sm text-black dark:text-white relative">
-                        {product?.discount !== 0 ? (
-                          <>
-                            <span className="line-through text-slate-400">
-                              {product?.price}
-                              {lang === "en" ? "GEL" : "₾"}
-                            </span>
+                      <div className="mt-auto flex items-center justify-between">
+                        <p className="mr-2 text-sm text-black dark:text-white relative">
+                          {product?.discount !== 0 ? (
+                            <>
+                              <span className="line-through text-slate-400">
+                                {product?.price}
+                                {lang === "en" ? "GEL" : "₾"}
+                              </span>
 
-                            <span className="text-green-500 ml-1">
-                              {product?.DiscountedPrice}
+                              <span className="text-green-500 ml-1">
+                                {product?.DiscountedPrice}
+                                <span className="text-xs">
+                                  {lang === "en" ? " GEL" : " ₾"}
+                                </span>
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              {product.price}
                               <span className="text-xs">
                                 {lang === "en" ? " GEL" : " ₾"}
                               </span>
-                            </span>
-                          </>
-                        ) : (
-                          <>
-                            {product.price}
-                            <span className="text-xs">
-                              {lang === "en" ? " GEL" : " ₾"}
-                            </span>
-                          </>
-                        )}
-                      </p>
+                            </>
+                          )}
+                        </p>
 
-                      <div className="flex flex-row gap-2">
-                        <Button
-                          size="md"
-                          onClick={() => product && exonEditProduct(product)}
-                          className="text-white text-sm bg-transparent"
-                          isIconOnly
-                        >
-                          <EditIcon size={30} />
-                        </Button>
-                        <Button
-                          size="md"
-                          onClick={() =>
-                            product && exonEditProductOptions(product)
-                          }
-                          isIconOnly
-                          className="text-green-600 text-sm bg-transparent"
-                        >
-                          <AddIcon size={30} />
-                        </Button>
+                        <div className="flex flex-row gap-2">
+                          <Button
+                            size="md"
+                            onClick={() => product && exonEditProduct(product)}
+                            className="text-white text-sm bg-transparent"
+                            isIconOnly
+                          >
+                            <EditIcon size={30} />
+                          </Button>
+                          <Button
+                            size="md"
+                            onClick={() =>
+                              product && exonEditProductOptions(product)
+                            }
+                            isIconOnly
+                            className="text-green-600 text-sm bg-transparent"
+                          >
+                            <AddIcon size={30} />
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </ModalBody>
           <ModalFooter className="flex flex-col justify-center w-full"></ModalFooter>
         </ModalContent>
@@ -346,7 +349,7 @@ export default function AdminPage({
 
       <Modal
         isOpen={isOpenAuthModal}
-        placement="center"
+        placement="top-center"
         isDismissable={false}
         isKeyboardDismissDisabled={true}
         backdrop="blur"
@@ -357,26 +360,34 @@ export default function AdminPage({
             {lang === "en" ? "Authorize" : "ავტორიზაცია"}
           </ModalHeader>
           <ModalBody>
-            <Input
-              autoFocus
-              endContent={
-                <MailIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
-              }
-              value={user}
-              onChange={(e) => setUser(e.target.value)}
-              label="User"
-              placeholder="Enter your UserName"
-            />
-            <Input
-              endContent={
-                <LockIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
-              }
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              label="Password"
-              placeholder="Enter your password"
-              type="password"
-            />
+            <div className="flex flex-col gap-2">
+              <Input
+                autoFocus
+                endContent={
+                  <MailIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+                }
+                classNames={{
+                  input: "text-[16px]",
+                }}
+                value={user}
+                onChange={(e) => setUser(e.target.value)}
+                label="User"
+                placeholder="Enter your UserName"
+              />
+              <Input
+                endContent={
+                  <LockIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+                }
+                classNames={{
+                  input: "text-[16px]",
+                }}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                label="Password"
+                placeholder="Enter your password"
+                type="password"
+              />
+            </div>
           </ModalBody>
           <ModalFooter>
             <Button className="bg-green-600" onPress={handleAuthorize}>

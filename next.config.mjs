@@ -22,6 +22,11 @@ const nextConfig = {
         hostname: "nikolozkobaidze.vercel.app",
         pathname: "**",
       },
+      {
+        protocol: "https",
+        hostname: "imageproxy.wolt.com",
+        pathname: "**",
+      },
     ],
   },
 };

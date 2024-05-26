@@ -25,6 +25,7 @@ import { deleteProductGroup, editProductGroup } from "@/app/api/ProductGroup";
 import ProductGroup from "@/models/ProductGroup";
 import AddProduct from "./AddProductFunc";
 import ProductOptionsCreator from "./ProductOptionsCreator";
+import NextImage from "next/image";
 
 interface CategorySectionProps {
   groupid: number;
@@ -108,38 +109,60 @@ const CategorySectionAdmin = forwardRef<
     } = useDisclosure();
 
     const handleEditProductOptionsModal = (product: ProductData) => {
-      const fetchData = async () => {
-        try {
-          const data = await fetchProductWithOptionsAndValues(product.id);
-          setSelectedProduct(data);
-          onOpenProductOptionsModal();
-        } catch (error) {
-          console.error("Error fetching product groups:", error);
-        }
-      };
-      fetchData();
+      setSelectedProduct(null);
+      // const fetchData = async () => {
+      //   try {
+      //     const data = await fetchProductWithOptionsAndValues(product.id);
+      //     setSelectedProduct(data);
+      //     onOpenProductOptionsModal();
+      //   } catch (error) {
+      //     console.error("Error fetching product groups:", error);
+      //   }
+      // };
+      // fetchData();
+
+      const selectedProduct = products.find((p) => p.id === product.id);
+      if (selectedProduct) {
+        setSelectedProduct(selectedProduct);
+        onOpenProductOptionsModal();
+      }
     };
     const handleProductEditModel = (product: ProductData) => {
       onCloseProductOptionsModal();
-      const fetchData = async () => {
-        try {
-          const data = await fetchProductWithOptionsAndValues(product.id);
-          setSelectedProduct(data);
-          setImage(data?.imageUrl ?? "");
-          setEnglishNameProduct(data?.name_En ?? "");
-          setGeorgianNameProduct(data?.name_Ka ?? "");
-          setPrice(data?.price ?? 0);
-          setDiscount(data?.discount ?? 0);
-          setDescriptionEnglish(data?.description_En ?? "");
-          setDescriptionGeorgian(data?.description_Ka ?? "");
-          setGroupId(data?.group_Id ?? groupid);
-        } catch (error) {
-          console.error("Error fetching product groups:", error);
-        }
-      };
+      setSelectedProduct(null);
+      // const fetchData = async () => {
+      //   try {
+      //     const data = await fetchProductWithOptionsAndValues(product.id);
+      //     setSelectedProduct(data);
+      //     setImage(data?.imageUrl ?? "");
+      //     setEnglishNameProduct(data?.name_En ?? "");
+      //     setGeorgianNameProduct(data?.name_Ka ?? "");
+      //     setPrice(data?.price ?? 0);
+      //     setDiscount(data?.discount ?? 0);
+      //     setDescriptionEnglish(data?.description_En ?? "");
+      //     setDescriptionGeorgian(data?.description_Ka ?? "");
+      //     setGroupId(data?.group_Id ?? groupid);
+      //   } catch (error) {
+      //     console.error("Error fetching product groups:", error);
+      //   }
+      // };
 
-      fetchData();
-      onOpenProductModal();
+      // fetchData();
+      // onOpenProductModal();
+
+      const selectedProduct = products.find((p) => p.id === product.id);
+      if (selectedProduct) {
+        setSelectedProduct(selectedProduct);
+        setImage(selectedProduct.imageUrl ?? "");
+        setEnglishNameProduct(selectedProduct.name_En);
+        setGeorgianNameProduct(selectedProduct.name_Ka);
+        setPrice(selectedProduct.price);
+        setDiscount(selectedProduct.discount);
+        setDescriptionEnglish(selectedProduct.description_En);
+        setDescriptionGeorgian(selectedProduct.description_Ka);
+        setGroupId(selectedProduct.group_Id);
+        onOpenProductModal();
+      }
     };
 
     const AddeddProduct = (product: ProductNew) => {
@@ -311,6 +334,8 @@ const CategorySectionAdmin = forwardRef<
                       <Image
                         src={formatedPr.imageUrl ?? ""}
                         width={200}
+                        height={200}
+                        as={NextImage}
                         alt="Sample Image"
                         className="rounded-3xl"
                       />
@@ -379,6 +404,9 @@ const CategorySectionAdmin = forwardRef<
                   <Image
                     src={formatedPr.imageUrl ?? ""}
                     width={211}
+                    height={211}
+                    as={NextImage}
+                    isZoomed
                     alt="Sample Image"
                     className="rounded-lg"
                   />
@@ -392,7 +420,7 @@ const CategorySectionAdmin = forwardRef<
                     </p>
 
                     <div className="mt-auto flex items-center justify-between">
-                      <p className="mr-2 text-sm text-black dark:text-white relative">
+                      <p className="mr-2 text-md text-black dark:text-white relative">
                         {formatedPr.discount !== 0 ? (
                           <>
                             {/* Original price */}
@@ -403,7 +431,7 @@ const CategorySectionAdmin = forwardRef<
                             {/* Discounted price */}
                             <span className="text-green-500 ml-1">
                               {formatedPr.discountedPrice}
-                              <span className="text-xs">
+                              <span className="text-sm">
                                 {lang === "en" ? " GEL" : " ₾"}
                               </span>
                             </span>
@@ -411,7 +439,7 @@ const CategorySectionAdmin = forwardRef<
                         ) : (
                           <>
                             {formatedPr.price}
-                            <span className="text-xs">
+                            <span className="text-sm">
                               {lang === "en" ? " GEL" : " ₾"}
                             </span>
                           </>
@@ -494,7 +522,7 @@ const CategorySectionAdmin = forwardRef<
         </Modal>
 
         <Modal
-          size="full"
+          size="5xl"
           isOpen={isOpenProductModal}
           onClose={onCloseProductModal}
           radius="md"
@@ -508,124 +536,128 @@ const CategorySectionAdmin = forwardRef<
               {lang === "en" ? "Edit Product" : "პროდუქტის რედაქტირება"}
             </ModalHeader>
             <ModalBody>
-              {selectedProduct && (
-                <>
-                  {image && (
-                    <Image
-                      src={image ?? ""}
-                      width="100%"
-                      alt="Sample Image"
-                      className="rounded-3xl"
+              <div className="flex flex-col gap-2">
+                {selectedProduct && (
+                  <>
+                    {image && (
+                      <Image
+                        src={image ?? ""}
+                        width="100%"
+                        alt="Sample Image"
+                        className="rounded-3xl"
+                      />
+                    )}
+                    <Input
+                      label={lang === "en" ? "Image URL" : "სურათის URL"}
+                      placeholder={
+                        lang === "en"
+                          ? "Enter Image URL"
+                          : "შეიყვანეთ სურათის URL"
+                      }
+                      classNames={{
+                        input: ["text-[16px] "],
+                      }}
+                      value={image}
+                      onChange={(e) => setImage(e.target.value)}
                     />
-                  )}
-                  <Input
-                    label={lang === "en" ? "Image URL" : "სურათის URL"}
-                    placeholder={
-                      lang === "en"
-                        ? "Enter Image URL"
-                        : "შეიყვანეთ სურათის URL"
-                    }
-                    classNames={{
-                      input: ["text-[16px] "],
-                    }}
-                    value={image}
-                    onChange={(e) => setImage(e.target.value)}
-                  />
-                  <Input
-                    label={lang === "en" ? "English Name" : "ინგლისური სახელი"}
-                    placeholder={
-                      lang === "en"
-                        ? "Enter English Name"
-                        : "შეიყვანეთ ინგლისური სახელი"
-                    }
-                    classNames={{
-                      input: ["text-[16px] "],
-                    }}
-                    value={englishNameProduct}
-                    onChange={(e) => setEnglishNameProduct(e.target.value)}
-                  />
-                  <Input
-                    label={lang === "en" ? "Georgian Name" : "ქართული სახელი"}
-                    placeholder={
-                      lang === "en"
-                        ? "Enter Georgian Name"
-                        : "შეიყვანეთ ქართული სახელი"
-                    }
-                    classNames={{
-                      input: ["text-[16px] "],
-                    }}
-                    value={georgianNameProduct}
-                    onChange={(e) => setGeorgianNameProduct(e.target.value)}
-                  />
-                  <Input
-                    label={lang === "en" ? "Price" : "ფასი"}
-                    placeholder={
-                      lang === "en" ? "Enter Price" : "შეიყვანეთ ფასი"
-                    }
-                    endContent={
-                      <div className="pointer-events-none flex items-center">
-                        <span className="text-default-400 text-small">$</span>
-                      </div>
-                    }
-                    classNames={{
-                      input: ["text-[16px] "],
-                    }}
-                    type="number"
-                    value={price.toString()}
-                    onChange={(e) => setPrice(Number(e.target.value))}
-                  />
+                    <Input
+                      label={
+                        lang === "en" ? "English Name" : "ინგლისური სახელი"
+                      }
+                      placeholder={
+                        lang === "en"
+                          ? "Enter English Name"
+                          : "შეიყვანეთ ინგლისური სახელი"
+                      }
+                      classNames={{
+                        input: ["text-[16px] "],
+                      }}
+                      value={englishNameProduct}
+                      onChange={(e) => setEnglishNameProduct(e.target.value)}
+                    />
+                    <Input
+                      label={lang === "en" ? "Georgian Name" : "ქართული სახელი"}
+                      placeholder={
+                        lang === "en"
+                          ? "Enter Georgian Name"
+                          : "შეიყვანეთ ქართული სახელი"
+                      }
+                      classNames={{
+                        input: ["text-[16px] "],
+                      }}
+                      value={georgianNameProduct}
+                      onChange={(e) => setGeorgianNameProduct(e.target.value)}
+                    />
+                    <Input
+                      label={lang === "en" ? "Price" : "ფასი"}
+                      placeholder={
+                        lang === "en" ? "Enter Price" : "შეიყვანეთ ფასი"
+                      }
+                      endContent={
+                        <div className="pointer-events-none flex items-center">
+                          <span className="text-default-400 text-small">$</span>
+                        </div>
+                      }
+                      classNames={{
+                        input: ["text-[16px] "],
+                      }}
+                      type="number"
+                      value={price.toString()}
+                      onChange={(e) => setPrice(Number(e.target.value))}
+                    />
 
-                  <Input
-                    label={lang === "en" ? "Discount" : "ფასდაკლება"}
-                    placeholder="0.00"
-                    endContent={
-                      <div className="pointer-events-none flex items-center">
-                        <span className="text-default-400 text-small">%</span>
-                      </div>
-                    }
-                    classNames={{
-                      input: ["text-[16px] "],
-                    }}
-                    type="number"
-                    value={discount.toString()}
-                    onChange={(e) => setDiscount(Number(e.target.value))}
-                  />
-                  <Textarea
-                    label={
-                      lang === "en"
-                        ? "Description (English)"
-                        : "აღწერა (ინგლისურად)"
-                    }
-                    classNames={{
-                      input: ["text-[16px] "],
-                    }}
-                    placeholder={
-                      lang === "en"
-                        ? "Enter English Description"
-                        : "შეიყვანეთ ინგლისური აღწერა"
-                    }
-                    value={descriptionEnglish}
-                    onChange={(e) => setDescriptionEnglish(e.target.value)}
-                  />
-                  <Textarea
-                    label={
-                      lang === "en"
-                        ? "Description (Georgian)"
-                        : "აღწერა (ქართულად)"
-                    }
-                    classNames={{
-                      input: ["text-[16px] "],
-                    }}
-                    placeholder={
-                      lang === "en"
-                        ? "Enter Georgian Description"
-                        : "შეიყვანეთ ქართული აღწერა"
-                    }
-                    value={descriptionGeorgian}
-                    onChange={(e) => setDescriptionGeorgian(e.target.value)}
-                  />
-                </>
-              )}
+                    <Input
+                      label={lang === "en" ? "Discount" : "ფასდაკლება"}
+                      placeholder="0.00"
+                      endContent={
+                        <div className="pointer-events-none flex items-center">
+                          <span className="text-default-400 text-small">%</span>
+                        </div>
+                      }
+                      classNames={{
+                        input: ["text-[16px] "],
+                      }}
+                      type="number"
+                      value={discount.toString()}
+                      onChange={(e) => setDiscount(Number(e.target.value))}
+                    />
+                    <Textarea
+                      label={
+                        lang === "en"
+                          ? "Description (English)"
+                          : "აღწერა (ინგლისურად)"
+                      }
+                      classNames={{
+                        input: ["text-[16px] "],
+                      }}
+                      placeholder={
+                        lang === "en"
+                          ? "Enter English Description"
+                          : "შეიყვანეთ ინგლისური აღწერა"
+                      }
+                      value={descriptionEnglish}
+                      onChange={(e) => setDescriptionEnglish(e.target.value)}
+                    />
+                    <Textarea
+                      label={
+                        lang === "en"
+                          ? "Description (Georgian)"
+                          : "აღწერა (ქართულად)"
+                      }
+                      classNames={{
+                        input: ["text-[16px] "],
+                      }}
+                      placeholder={
+                        lang === "en"
+                          ? "Enter Georgian Description"
+                          : "შეიყვანეთ ქართული აღწერა"
+                      }
+                      value={descriptionGeorgian}
+                      onChange={(e) => setDescriptionGeorgian(e.target.value)}
+                    />
+                  </>
+                )}
+              </div>
             </ModalBody>
             <ModalFooter>
               <Button

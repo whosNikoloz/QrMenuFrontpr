@@ -188,7 +188,7 @@ const BottomCart: React.FC<BottomCartProps> = ({
 
       {/* Cart modal */}
       <Modal
-        size="full"
+        size="5xl"
         isOpen={isOpen}
         onClose={onClose}
         radius="md"
@@ -202,103 +202,105 @@ const BottomCart: React.FC<BottomCartProps> = ({
             {lng === "en" ? "Your Cart" : "თქვენი კალათა"}
           </ModalHeader>
           <ModalBody>
-            {cartItems.length != 0 ? (
-              <>
-                {cartItems.map((cartitem, index) => (
-                  <div
-                    className="flex justify-between bg-transparent p-3 border-b border-gray-200 dark:border-gray-700"
-                    key={index}
-                  >
-                    <Image
-                      src={cartitem.product?.imageUrl ?? ""}
-                      width={150}
-                      alt="Sample Image"
-                      className="rounded-lg"
-                    />
-                    <div className="ml-4 flex w-full flex-col justify-between">
-                      <h1 className="text-md font-bold text-black dark:text-white">
-                        {lng === "en"
-                          ? cartitem.product?.name_En
-                          : cartitem.product?.name_Ka}
-                      </h1>
-                      <p className="text-xs text-white dark:text-white/70">
-                        {Object.entries(cartitem.extras).map(
-                          ([key, values]: [string, string[]]) =>
-                            key === lng && (
-                              <div key={key}>{values.join(", ")}</div>
-                            )
-                        )}
-                      </p>
-                      <p className="text-xs mt-3 text-white dark:text-white/70">
-                        {cartitem.comment}
-                      </p>
-                      <div className="mt-auto flex items-center justify-between">
-                        <p className="mr-2 text-sm text-black dark:text-white">
-                          <span className="text-white ml-1">
-                            {cartitem.finalPrice?.toFixed(2) ??
-                              cartitem.product?.price.toFixed(2)}
-                          </span>
-                          <span className="text-[11px]">
-                            {lng === "en" ? " GEL" : " ₾"}
-                          </span>
+            <div>
+              {cartItems.length != 0 ? (
+                <>
+                  {cartItems.map((cartitem, index) => (
+                    <div
+                      className="flex justify-between bg-transparent p-3 border-b border-gray-200 dark:border-gray-700"
+                      key={index}
+                    >
+                      <Image
+                        src={cartitem.product?.imageUrl ?? ""}
+                        width={150}
+                        alt="Sample Image"
+                        className="rounded-lg"
+                      />
+                      <div className="ml-4 flex w-full flex-col justify-between">
+                        <h1 className="text-md font-bold text-black dark:text-white">
+                          {lng === "en"
+                            ? cartitem.product?.name_En
+                            : cartitem.product?.name_Ka}
+                        </h1>
+                        <p className="text-xs text-white dark:text-white/70">
+                          {Object.entries(cartitem.extras).map(
+                            ([key, values]: [string, string[]]) =>
+                              key === lng && (
+                                <div key={key}>{values.join(", ")}</div>
+                              )
+                          )}
                         </p>
-                        <div className="flex flex-row gap-4 items-center bg-white rounded-lg">
-                          <Button
-                            size="sm"
-                            isIconOnly
-                            onClick={() =>
-                              handleDecrement(
-                                cartitem.product?.id.toString(),
-                                cartitem.extras,
-                                cartitem.comment
-                              )
-                            }
-                            className="text-white text-3xl bg-green-600"
-                          >
-                            <MinusIcon size={20} />
-                          </Button>
-                          <p className="text-lg text-black">
-                            {
-                              itemQuantities[
-                                `${cartitem.product?.id}-${sortExtras(
-                                  cartitem.extras
-                                )}-${cartitem.comment}`
-                              ]
-                            }
+                        <p className="text-xs mt-3 text-white dark:text-white/70">
+                          {cartitem.comment}
+                        </p>
+                        <div className="mt-auto flex items-center justify-between">
+                          <p className="mr-2 text-sm text-black dark:text-white">
+                            <span className="text-white ml-1">
+                              {cartitem.finalPrice?.toFixed(2) ??
+                                cartitem.product?.price.toFixed(2)}
+                            </span>
+                            <span className="text-[11px]">
+                              {lng === "en" ? " GEL" : " ₾"}
+                            </span>
                           </p>
-                          <Button
-                            size="sm"
-                            isIconOnly
-                            onClick={() =>
-                              handleIncrement(
-                                cartitem.product?.id.toString(),
-                                cartitem.extras,
-                                cartitem.comment
-                              )
-                            }
-                            className="text-white text-3xl bg-green-600"
-                          >
-                            <PlusIcon size={20} />
-                          </Button>
+                          <div className="flex flex-row gap-4 items-center bg-white rounded-lg">
+                            <Button
+                              size="sm"
+                              isIconOnly
+                              onClick={() =>
+                                handleDecrement(
+                                  cartitem.product?.id.toString(),
+                                  cartitem.extras,
+                                  cartitem.comment
+                                )
+                              }
+                              className="text-white text-3xl bg-green-600"
+                            >
+                              <MinusIcon size={20} />
+                            </Button>
+                            <p className="text-lg text-black">
+                              {
+                                itemQuantities[
+                                  `${cartitem.product?.id}-${sortExtras(
+                                    cartitem.extras
+                                  )}-${cartitem.comment}`
+                                ]
+                              }
+                            </p>
+                            <Button
+                              size="sm"
+                              isIconOnly
+                              onClick={() =>
+                                handleIncrement(
+                                  cartitem.product?.id.toString(),
+                                  cartitem.extras,
+                                  cartitem.comment
+                                )
+                              }
+                              className="text-white text-3xl bg-green-600"
+                            >
+                              <PlusIcon size={20} />
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </>
-            ) : (
-              <div className="flex flex-col p-3 justify-center items-center ">
-                <Image
-                  src="/shopping-cart-com.png" // Convert StaticImageData to string
-                  width={300}
-                  alt="logo"
-                  className="p-10"
-                />
-                <p className="text-lg text-gray-500">
-                  {lng === "en" ? "No items in cart" : "კალათა ცარიელია"}
-                </p>
-              </div>
-            )}
+                  ))}
+                </>
+              ) : (
+                <div className="flex flex-col p-3 justify-center items-center ">
+                  <Image
+                    src="/shopping-cart-com.png" // Convert StaticImageData to string
+                    width={300}
+                    alt="logo"
+                    className="p-10"
+                  />
+                  <p className="text-lg text-gray-500">
+                    {lng === "en" ? "No items in cart" : "კალათა ცარიელია"}
+                  </p>
+                </div>
+              )}
+            </div>
           </ModalBody>
           <ModalFooter className="flex flex-col justify-center w-full">
             {cartItems.length != 0 ? (
