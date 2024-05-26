@@ -31,6 +31,7 @@ import { fetchProductGroups } from "@/app/api/ProductGroup";
 import ProductGroup from "@/models/ProductGroup";
 import CartItemNew from "@/models/CartItemNew";
 import ProductNew from "@/models/ProductNew";
+import NextImage from "next/image"
 
 export default function MenuPage({
   params: { lang },
@@ -245,6 +246,8 @@ export default function MenuPage({
                     <Image
                       src={product?.imageUrl ?? ""}
                       width={200}
+                      height={200}
+                      as={NextImage}
                       alt="Sample Image"
                       className="rounded-lg"
                     />

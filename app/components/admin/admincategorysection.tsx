@@ -542,7 +542,9 @@ const CategorySectionAdmin = forwardRef<
                     {image && (
                       <Image
                         src={image ?? ""}
-                        width="100%"
+                        width={500}
+                        height={500}
+                        as={NextImage}
                         alt="Sample Image"
                         className="rounded-3xl"
                       />

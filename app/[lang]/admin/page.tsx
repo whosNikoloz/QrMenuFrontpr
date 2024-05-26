@@ -32,6 +32,7 @@ import CartItemNew from "@/models/CartItemNew";
 import ProductNew from "@/models/ProductNew";
 import AddGroup from "@/app/components/admin/addgroup";
 import toast from "react-hot-toast";
+import NextImage from "next/image";
 
 export default function AdminPage({
   params: { lang },
@@ -276,6 +277,8 @@ export default function AdminPage({
                     <Image
                       src={product?.imageUrl ?? ""}
                       width={270}
+                      height={270}
+                      as={NextImage}
                       alt="Sample Image"
                       className="rounded-lg"
                     />

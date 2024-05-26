@@ -14,6 +14,7 @@ import {
 } from "@nextui-org/react";
 // import ProductNew from "@models/ProductNew";
 import CartItemNew from "@/models/CartItemNew";
+import NextImage from "next/image";
 
 interface ItemQuantities {
   [key: string]: number;
@@ -213,6 +214,8 @@ const BottomCart: React.FC<BottomCartProps> = ({
                       <Image
                         src={cartitem.product?.imageUrl ?? ""}
                         width={150}
+                        height={150}
+                        as={NextImage}
                         alt="Sample Image"
                         className="rounded-lg"
                       />
@@ -292,6 +295,8 @@ const BottomCart: React.FC<BottomCartProps> = ({
                   <Image
                     src="/shopping-cart-com.png" // Convert StaticImageData to string
                     width={300}
+                    height={300}
+                    as={NextImage}
                     alt="logo"
                     className="p-10"
                   />
