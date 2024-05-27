@@ -21,17 +21,16 @@ import {
   SelectItem,
   User,
 } from "@nextui-org/react";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { AddIcon, EditIcon } from "../icons";
 import ProductNew from "@/models/ProductNew";
-import { Locale } from "@/i18n.config";
-import { Image } from "@nextui-org/react";
 import { createOption, editOption } from "@/app/api/Options";
 import {
   createOptionValue,
   editOptionValue,
   deleteOptionValue,
 } from "@/app/api/OptionValue";
+import { deleteOption } from "@/app/api/Options";
 import toast from "react-hot-toast";
 
 interface ProductOptionsCreatorProps {
@@ -105,6 +104,8 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
   const [optionValueId, setOptionValueId] = useState(0);
 
   const handleAddOption = (value: string) => {
+    setEnglishName("");
+    setGeorgianName("");
     setType(value);
     onOpenAddModal();
   };
@@ -122,7 +123,11 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
       onOpenEditModal();
     }
   };
+
+  const [newOptionLoading, setNewOptionLoading] = useState(false);
+
   const AddNewOption = async () => {
+    setNewOptionLoading(true);
     if (selectedProduct) {
       const reposnse = await createOption({
         name_En: englishName,
@@ -131,7 +136,11 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
         type: type,
       });
 
-      if (!reposnse) return;
+      if (!reposnse) {
+        setNewOptionLoading(false);
+        toast.error("Option Creation Failed");
+        return;
+      }
 
       const newOption = {
         id: reposnse.id,
@@ -155,10 +164,14 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
         };
       });
     }
+    toast.success("Option Created Successfully");
+    setNewOptionLoading(false);
     onCloseAddModal();
   };
+  const [optionEditLoading, setOptionEditLoading] = useState(false);
 
   const EditOption = async () => {
+    setOptionEditLoading(true);
     if (selectedProduct) {
       console.log(type);
       const response = await editOption(
@@ -170,7 +183,11 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
         },
         optionid
       );
-      if (!response) return;
+      if (!response) {
+        setOptionEditLoading(false);
+        toast.error("Option Update Failed");
+        return;
+      }
 
       setSelectedProduct((prevProduct) => {
         if (!prevProduct) return null;
@@ -194,17 +211,25 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
           getProductData: prevProduct.getProductData,
         };
       });
+      setOptionEditLoading(false);
+      toast.success("Option Updated Successfully");
     }
     onCloseEditModal();
   };
 
   const hanldeAddValueButton = (optionid: number) => {
     console.log(optionid);
+    setValueEnglishName("");
+    setValueGeorgianName("");
+    setValueprice(0);
     setOptionId(optionid);
     onOpenOptionValueModal();
   };
 
+  const [optionValueAddLoading, setOptionValueAddLoading] = useState(false);
+
   const handleOptionValueAdd = async () => {
+    setOptionValueAddLoading(true);
     const response = await createOptionValue({
       name_En: valueEnglishName,
       name_Ka: valueGeorgianName,
@@ -253,8 +278,10 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
       });
 
       toast.success("Option Value Added Successfully");
+      setOptionValueAddLoading(false);
       onCloseOptionValueModal();
     } else {
+      setOptionValueAddLoading(false);
       toast.error("Option Value Added Failed");
     }
   };
@@ -277,7 +304,11 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
     }
   };
 
+  const [updateOptionValueLoading, setUpdateOptionValueLoading] =
+    useState(false);
+
   const handleOptionValueUpdate = async () => {
+    setUpdateOptionValueLoading(true);
     const response = await editOptionValue(
       {
         name_En: valueEnglishName,
@@ -329,15 +360,21 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
         }
         return prevProduct;
       });
+      setUpdateOptionValueLoading(false);
 
       toast.success("Option Value Updated Successfully");
       onCloseOptionValueEditModal();
     } else {
+      setUpdateOptionValueLoading(false);
       toast.error("Option Value Update Failed");
     }
   };
 
+  const [deleteOptionValueLoading, setDeleteOptionValueLoading] =
+    useState(false);
+
   const handledeleteOptionValue = async () => {
+    setDeleteOptionValueLoading(true);
     const response = await deleteOptionValue(optionValueId);
 
     if (response) {
@@ -375,9 +412,42 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
       });
 
       toast.success("Option Value Deleted Successfully");
+      setDeleteOptionValueLoading(false);
       onCloseOptionValueEditModal();
     } else {
+      setDeleteOptionValueLoading(false);
       toast.error("Option Value Delete Failed");
+    }
+  };
+
+  const [deleteOptionLoading, setDeleteOptionLoading] = useState(false);
+
+  const handledeleteOption = async () => {
+    setDeleteOptionLoading(true);
+    const response = await deleteOption(optionid);
+
+    if (response) {
+      setSelectedProduct((prevProduct) => {
+        if (!prevProduct) return null;
+
+        const updatedOptions = prevProduct.options.filter(
+          (option) => option.id !== optionid
+        );
+
+        return {
+          ...prevProduct,
+          options: updatedOptions,
+          incrementPrice: prevProduct.incrementPrice,
+          decrementPrice: prevProduct.decrementPrice,
+          getProductData: prevProduct.getProductData,
+        };
+      });
+      toast.success("Option Deleted Successfully");
+      setDeleteOptionLoading(false);
+      onCloseEditModal();
+    } else {
+      setDeleteOptionLoading(false);
+      toast.error("Option Delete Failed");
     }
   };
 
@@ -647,7 +717,7 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                Add Option
+                {lang === "en" ? "Add Option" : "ვარიანტის დამატება"}
               </ModalHeader>
               <ModalBody>
                 <div className="flex flex-col gap-2">
@@ -679,7 +749,11 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
                 <Button color="danger" variant="flat" onPress={onCloseAddModal}>
                   Close
                 </Button>
-                <Button color="success" onClick={() => AddNewOption()}>
+                <Button
+                  color="success"
+                  isLoading={newOptionLoading}
+                  onClick={() => AddNewOption()}
+                >
                   Save
                 </Button>
               </ModalFooter>
@@ -697,7 +771,7 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
           {(onCloseEditModal) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                Add Option
+                {lang === "en" ? "Edit Option" : "ვარიანტის რედაქტირება"}
               </ModalHeader>
               <ModalBody>
                 <div className="flex flex-col gap-2">
@@ -752,11 +826,16 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
                 <Button
                   color="danger"
                   variant="flat"
-                  onPress={onCloseEditModal}
+                  isLoading={deleteOptionLoading}
+                  onPress={handledeleteOption}
                 >
-                  Close
+                  Delete
                 </Button>
-                <Button color="success" onClick={EditOption}>
+                <Button
+                  color="success"
+                  isLoading={optionEditLoading}
+                  onClick={EditOption}
+                >
                   Save
                 </Button>
               </ModalFooter>
@@ -774,7 +853,9 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
           {(onCloseOptionValueModal) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                Add Option
+                {lang === "en"
+                  ? "Add Option Value"
+                  : "ვარიანტის მნიშვნელობის დამატება"}
               </ModalHeader>
               <ModalBody>
                 <div className="flex flex-col gap-2">
@@ -827,7 +908,11 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
                 >
                   Close
                 </Button>
-                <Button color="success" onClick={handleOptionValueAdd}>
+                <Button
+                  color="success"
+                  isLoading={optionValueAddLoading}
+                  onClick={handleOptionValueAdd}
+                >
                   Save
                 </Button>
               </ModalFooter>
@@ -845,7 +930,9 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
           {(onCloseOptionValueEditModal) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                {lang === "en" ? "Edit Option" : "ვარიანტის რედაქტირება"}
+                {lang === "en"
+                  ? "Edit OptionValue"
+                  : "ვარიანტის რედაქტირება Value"}
               </ModalHeader>
               <ModalBody>
                 <div className="flex flex-col gap-2">
@@ -894,11 +981,16 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
                 <Button
                   color="danger"
                   variant="flat"
+                  isLoading={deleteOptionValueLoading}
                   onPress={handledeleteOptionValue}
                 >
                   {lang === "en" ? "Delete" : "წაშლა"}
                 </Button>
-                <Button color="success" onClick={handleOptionValueUpdate}>
+                <Button
+                  color="success"
+                  isLoading={updateOptionValueLoading}
+                  onClick={handleOptionValueUpdate}
+                >
                   {lang === "en" ? "Save" : "შენახვა"}
                 </Button>
               </ModalFooter>

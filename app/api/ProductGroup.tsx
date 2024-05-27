@@ -3,7 +3,7 @@
 import ProductGroup from "@/models/ProductGroup";
 import ProductNew from "@/models/ProductNew";
 
-const mainAPI = "https://lostbrassshed22.conveyor.cloud/api/ProductGroup";
+const mainAPI = "https://newsageleaf67.conveyor.cloud/api/ProductGroup";
 
 const fetchProductGroups = async (): Promise<ProductGroup[]> => {
   try {
