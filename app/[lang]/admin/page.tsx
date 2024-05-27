@@ -33,6 +33,7 @@ import ProductNew from "@/models/ProductNew";
 import AddGroup from "@/app/components/admin/addgroup";
 import toast from "react-hot-toast";
 import NextImage from "next/image";
+import SkeletonCard from "@/app/components/CardSkeletons";
 
 export default function AdminPage({
   params: { lang },
@@ -40,11 +41,13 @@ export default function AdminPage({
   params: { lang: Locale };
 }) {
   const [productGroups, setProductGroups] = useState<ProductGroup[]>([]);
+  const [isFetching, setIsFetching] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await fetchProductGroups();
+        setIsFetching(false);
         setProductGroups(data);
       } catch (error) {
         console.error("Error fetching product groups:", error);
@@ -210,7 +213,10 @@ export default function AdminPage({
       toggleLayout={toggleLayout}
       eopenSearch={() => onOpenSearchModal()}
     >
-      {Array.isArray(productGroups) &&
+      {isFetching ? (
+        <SkeletonCard lng={lang} />
+      ) : (
+        Array.isArray(productGroups) &&
         productGroups.map((group) => {
           if (!group || !group.id || !group.products) {
             return null; // Skip this iteration if group, group.id or group.products is undefined
@@ -231,7 +237,8 @@ export default function AdminPage({
               onUpdateProduct={updateProduct}
             />
           );
-        })}
+        })
+      )}
 
       <AddGroup lang={lang} onAddnewGroup={handlenewGroupAdd} />
 

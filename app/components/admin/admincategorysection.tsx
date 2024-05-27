@@ -549,7 +549,7 @@ const CategorySectionAdmin = forwardRef<
         </Modal>
 
         <Modal
-          size="5xl"
+          size="full"
           isOpen={isOpenProductModal}
           onClose={onCloseProductModal}
           radius="md"
@@ -560,214 +560,203 @@ const CategorySectionAdmin = forwardRef<
             <ModalHeader className="flex flex-col gap-1 dark:text-white text-black">
               {lang === "en" ? "Edit Product" : "პროდუქტის რედაქტირება"}
             </ModalHeader>
-            <form onSubmit={handleSaveProduct}>
-              <ModalBody>
-                <div className="flex flex-col gap-2">
-                  {selectedProduct && (
-                    <>
-                      {image && (
-                        <Image
-                          src={image ?? ""}
-                          width={500}
-                          height={500}
-                          isZoomed
-                          as={NextImage}
-                          alt="Sample Image"
-                          className="rounded-3xl"
-                        />
-                      )}
-                      <div className="flex flex-row gap-3">
-                        <Input
-                          placeholder={
-                            lang === "en"
-                              ? "Enter Image URL"
-                              : "შეიყვანეთ სურათის URL"
-                          }
-                          classNames={{
-                            input: ["text-[16px] "],
-                          }}
-                          value={image}
-                          onChange={(e) => setImage(e.target.value)}
-                        />
-                        <label
-                          htmlFor="ImageUrl"
-                          className="text-xs items-center justify-start flex w-1/2 "
-                        >
-                          {lang === "en" ? "Enter Image URL" : "სურათის URL"}
-                        </label>
-                      </div>
+            <ModalBody>
+              <div className="flex flex-col gap-2">
+                {selectedProduct && (
+                  <>
+                    {image && (
+                      <Image
+                        src={image ?? ""}
+                        width={500}
+                        height={500}
+                        isZoomed
+                        as={NextImage}
+                        alt="Sample Image"
+                        className="rounded-3xl"
+                      />
+                    )}
+                    <div className="flex flex-row gap-3">
+                      <Input
+                        placeholder={
+                          lang === "en"
+                            ? "Enter Image URL"
+                            : "შეიყვანეთ სურათის URL"
+                        }
+                        classNames={{
+                          input: ["text-[16px] "],
+                        }}
+                        value={image}
+                        onChange={(e) => setImage(e.target.value)}
+                      />
+                      <label
+                        htmlFor="ImageUrl"
+                        className="text-xs items-center justify-start flex w-1/2 "
+                      >
+                        {lang === "en" ? "Enter Image URL" : "სურათის URL"}
+                      </label>
+                    </div>
 
-                      <div className="flex flex-row gap-3">
-                        <Input
-                          placeholder={
-                            lang === "en"
-                              ? "Enter English Name"
-                              : "შეიყვანეთ ინგლისური სახელი"
-                          }
-                          classNames={{
-                            input: ["text-[16px] "],
-                          }}
-                          value={englishNameProduct}
-                          onChange={(e) =>
-                            setEnglishNameProduct(e.target.value)
-                          }
-                        />
-                        <label
-                          htmlFor="NameEnglish"
-                          className="text-xs items-center justify-start flex w-1/2"
-                        >
-                          {lang === "en" ? "English Name" : "ინგლისური სახელი"}
-                        </label>
-                      </div>
+                    <div className="flex flex-row gap-3">
+                      <Input
+                        placeholder={
+                          lang === "en"
+                            ? "Enter English Name"
+                            : "შეიყვანეთ ინგლისური სახელი"
+                        }
+                        classNames={{
+                          input: ["text-[16px] "],
+                        }}
+                        value={englishNameProduct}
+                        onChange={(e) => setEnglishNameProduct(e.target.value)}
+                      />
+                      <label
+                        htmlFor="NameEnglish"
+                        className="text-xs items-center justify-start flex w-1/2"
+                      >
+                        {lang === "en" ? "English Name" : "ინგლისური სახელი"}
+                      </label>
+                    </div>
 
-                      <div className="flex flex-row gap-3">
-                        <Input
-                          placeholder={
-                            lang === "en"
-                              ? "Enter Georgian Name"
-                              : "შეიყვანეთ ქართული სახელი"
-                          }
-                          classNames={{
-                            input: ["text-[16px] "],
-                          }}
-                          value={georgianNameProduct}
-                          onChange={(e) =>
-                            setGeorgianNameProduct(e.target.value)
-                          }
-                        />
-                        <label
-                          htmlFor="NameGeorgian"
-                          className="text-xs items-center justify-start flex w-1/2"
-                        >
-                          {lang === "en" ? "Georgian Name" : "ქართული სახელი"}
-                        </label>
-                      </div>
-                      <div className="flex flex-row gap-3">
-                        <Input
-                          placeholder={
-                            lang === "en" ? "Enter Price" : "შეიყვანეთ ფასი"
-                          }
-                          endContent={
-                            <div className="pointer-events-none flex items-center">
-                              <span className="text-default-400 text-small">
-                                $
-                              </span>
-                            </div>
-                          }
-                          classNames={{
-                            input: ["text-[16px] "],
-                          }}
-                          type="number"
-                          inputMode="numeric"
-                          value={price.toString()}
-                          onChange={(e) => setPrice(Number(e.target.value))}
-                        />
-                        <label
-                          htmlFor="Price"
-                          className="text-xs items-center justify-start flex w-1/2"
-                        >
-                          {lang === "en" ? "Price" : "ფასი"}
-                        </label>
-                      </div>
+                    <div className="flex flex-row gap-3">
+                      <Input
+                        placeholder={
+                          lang === "en"
+                            ? "Enter Georgian Name"
+                            : "შეიყვანეთ ქართული სახელი"
+                        }
+                        classNames={{
+                          input: ["text-[16px] "],
+                        }}
+                        value={georgianNameProduct}
+                        onChange={(e) => setGeorgianNameProduct(e.target.value)}
+                      />
+                      <label
+                        htmlFor="NameGeorgian"
+                        className="text-xs items-center justify-start flex w-1/2"
+                      >
+                        {lang === "en" ? "Georgian Name" : "ქართული სახელი"}
+                      </label>
+                    </div>
+                    <div className="flex flex-row gap-3">
+                      <Input
+                        placeholder={
+                          lang === "en" ? "Enter Price" : "შეიყვანეთ ფასი"
+                        }
+                        endContent={
+                          <div className="pointer-events-none flex items-center">
+                            <span className="text-default-400 text-small">
+                              $
+                            </span>
+                          </div>
+                        }
+                        classNames={{
+                          input: ["text-[16px] "],
+                        }}
+                        type="number"
+                        inputMode="numeric"
+                        value={price.toString()}
+                        onChange={(e) => setPrice(Number(e.target.value))}
+                      />
+                      <label
+                        htmlFor="Price"
+                        className="text-xs items-center justify-start flex w-1/2"
+                      >
+                        {lang === "en" ? "Price" : "ფასი"}
+                      </label>
+                    </div>
 
-                      <div className="flex flex-row gap-3">
-                        <Input
-                          placeholder="0.00"
-                          endContent={
-                            <div className="pointer-events-none flex items-center">
-                              <span className="text-default-400 text-small">
-                                %
-                              </span>
-                            </div>
-                          }
-                          classNames={{
-                            input: ["text-[16px] "],
-                          }}
-                          type="number"
-                          inputMode="numeric"
-                          value={discount.toString()}
-                          onChange={(e) => setDiscount(Number(e.target.value))}
-                        />
-                        <label
-                          htmlFor="Discount"
-                          className="text-xs items-center justify-start flex w-1/2"
-                        >
-                          {lang === "en" ? "Discount" : "ფასდაკლება"}
-                        </label>
-                      </div>
+                    <div className="flex flex-row gap-3">
+                      <Input
+                        placeholder="0.00"
+                        endContent={
+                          <div className="pointer-events-none flex items-center">
+                            <span className="text-default-400 text-small">
+                              %
+                            </span>
+                          </div>
+                        }
+                        classNames={{
+                          input: ["text-[16px] "],
+                        }}
+                        type="number"
+                        inputMode="numeric"
+                        value={discount.toString()}
+                        onChange={(e) => setDiscount(Number(e.target.value))}
+                      />
+                      <label
+                        htmlFor="Discount"
+                        className="text-xs items-center justify-start flex w-1/2"
+                      >
+                        {lang === "en" ? "Discount" : "ფასდაკლება"}
+                      </label>
+                    </div>
 
-                      <div className="flex flex-row gap-3">
-                        <Textarea
-                          classNames={{
-                            input: ["text-[16px] "],
-                          }}
-                          placeholder={
-                            lang === "en"
-                              ? "Enter English Description"
-                              : "შეიყვანეთ ინგლისური აღწერა"
-                          }
-                          value={descriptionEnglish}
-                          onChange={(e) =>
-                            setDescriptionEnglish(e.target.value)
-                          }
-                        />
-                        <label
-                          htmlFor="DescriptionEnglish"
-                          className="text-xs items-center justify-start flex w-1/2"
-                        >
-                          {lang === "en"
-                            ? "Description (English)"
-                            : "აღწერა (ინგლისურად)"}
-                        </label>
-                      </div>
+                    <div className="flex flex-row gap-3">
+                      <Textarea
+                        classNames={{
+                          input: ["text-[16px] "],
+                        }}
+                        placeholder={
+                          lang === "en"
+                            ? "Enter English Description"
+                            : "შეიყვანეთ ინგლისური აღწერა"
+                        }
+                        value={descriptionEnglish}
+                        onChange={(e) => setDescriptionEnglish(e.target.value)}
+                      />
+                      <label
+                        htmlFor="DescriptionEnglish"
+                        className="text-xs items-center justify-start flex w-1/2"
+                      >
+                        {lang === "en"
+                          ? "Description (English)"
+                          : "აღწერა (ინგლისურად)"}
+                      </label>
+                    </div>
 
-                      <div className="flex flex-row gap-3">
-                        <Textarea
-                          classNames={{
-                            input: ["text-[16px] "],
-                          }}
-                          placeholder={
-                            lang === "en"
-                              ? "Enter Georgian Description"
-                              : "შეიყვანეთ ქართული აღწერა"
-                          }
-                          value={descriptionGeorgian}
-                          onChange={(e) =>
-                            setDescriptionGeorgian(e.target.value)
-                          }
-                        />
-                        <label
-                          htmlFor="DescriptionGeorgian"
-                          className="text-xs items-center justify-start flex w-1/2"
-                        >
-                          {lang === "en"
-                            ? "Description (Georgian)"
-                            : "აღწერა (ქართულად)"}
-                        </label>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </ModalBody>
-              <ModalFooter>
-                <Button
-                  color="danger"
-                  variant="flat"
-                  isLoading={isLoadingProductDelete}
-                  onPress={handleProductDelete}
-                >
-                  Delete
-                </Button>
-                <Button
-                  color="success"
-                  type="submit"
-                  isLoading={isLoadingProductAdd}
-                  onClick={handleSaveProduct}
-                >
-                  Save
-                </Button>
-              </ModalFooter>
-            </form>
+                    <div className="flex flex-row gap-3">
+                      <Textarea
+                        classNames={{
+                          input: ["text-[16px] "],
+                        }}
+                        placeholder={
+                          lang === "en"
+                            ? "Enter Georgian Description"
+                            : "შეიყვანეთ ქართული აღწერა"
+                        }
+                        value={descriptionGeorgian}
+                        onChange={(e) => setDescriptionGeorgian(e.target.value)}
+                      />
+                      <label
+                        htmlFor="DescriptionGeorgian"
+                        className="text-xs items-center justify-start flex w-1/2"
+                      >
+                        {lang === "en"
+                          ? "Description (Georgian)"
+                          : "აღწერა (ქართულად)"}
+                      </label>
+                    </div>
+                  </>
+                )}
+              </div>
+            </ModalBody>
+            <ModalFooter className="flex flex-col justify-center w-full">
+              <Button
+                color="danger"
+                isLoading={isLoadingProductDelete}
+                onPress={handleProductDelete}
+              >
+                Delete
+              </Button>
+              <Button
+                color="success"
+                type="submit"
+                isLoading={isLoadingProductAdd}
+                onClick={handleSaveProduct}
+              >
+                Save
+              </Button>
+            </ModalFooter>
           </ModalContent>
         </Modal>
 

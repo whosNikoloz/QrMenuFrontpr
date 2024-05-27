@@ -1,11 +1,12 @@
 "use client";
 import { Locale } from "@/i18n.config";
-import React, { useEffect, useRef, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import CategorySection, {
   CategorySectionRef,
 } from "@/app/components/menu/categorysection";
 import { MenuLayout } from "../layouts/MenuLayout";
 import BottomCart from "@/app/components/Cart/bottomCart";
+import SkeletonCard from "@/app/components/CardSkeletons";
 import {
   Avatar,
   Input,
@@ -39,6 +40,7 @@ export default function MenuPage({
   params: { lang: Locale };
 }) {
   const [productGroups, setProductGroups] = useState<ProductGroup[]>([]);
+  const [isFetching, setIsFetching] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,11 +48,11 @@ export default function MenuPage({
         const data = await fetchProductGroups();
         console.log(data);
         setProductGroups(data);
+        setIsFetching(false);
       } catch (error) {
         console.error("Error fetching product groups:", error);
       }
     };
-
     fetchData();
   }, []);
 
@@ -174,7 +176,10 @@ export default function MenuPage({
       toggleLayout={toggleLayout}
       eopenSearch={() => onOpen()}
     >
-      {Array.isArray(productGroups) &&
+      {isFetching ? (
+        <SkeletonCard lng={lang} />
+      ) : (
+        Array.isArray(productGroups) &&
         productGroups.map((group) => {
           if (!group || !group.id || !group.products) {
             return null; // Skip this iteration if group, group.id or group.products is undefined
@@ -192,7 +197,8 @@ export default function MenuPage({
               onUpdateCartItemQuantity={handleUpdateCartItemQuantity}
             />
           );
-        })}
+        })
+      )}
       <div className="justify-center bg-transparent items-center flex mb-24">
         <BottomCart
           lng={lang}
