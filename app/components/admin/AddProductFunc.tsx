@@ -296,8 +296,8 @@ const AddProduct = ({
             </Select>
           </div>
         </ModalBody>
-        <ModalFooter className="flex flex-col justify-center w-full">
-          <Button onClick={onClose}>
+        <ModalFooter>
+          <Button color="danger" onClick={onClose}>
             {lang === "en" ? "Cancel" : "გაუქმება"}
           </Button>
           <Button color="success" isLoading={isLoading} onClick={handleSave}>

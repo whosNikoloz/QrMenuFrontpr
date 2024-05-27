@@ -688,9 +688,9 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
                             color="success"
                             isIconOnly
                             onClick={() => hanldeAddValueButton(option.id)}
-                            className="flex w-1/4 mt-2 text-white bg-green-600"
+                            className="flex  mt-2 text-white bg-transparent"
                           >
-                            <AddIcon size={25} />
+                            <AddIcon size={35} />
                           </Button>
                         </div>
                       </RadioGroup>
@@ -701,7 +701,7 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
             </div>
           </ModalBody>
           <ModalFooter>
-            <Button color="danger" variant="flat" onPress={onCloseMainModal}>
+            <Button color="danger" onPress={onCloseMainModal}>
               Close
             </Button>
           </ModalFooter>
@@ -711,7 +711,7 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
       <Modal
         isOpen={isOpenAddModal}
         onOpenChange={onCloseAddModal}
-        placement="center"
+        placement="top-center"
       >
         <ModalContent>
           {(onClose) => (
@@ -746,7 +746,7 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
                 </div>
               </ModalBody>
               <ModalFooter>
-                <Button color="danger" variant="flat" onPress={onCloseAddModal}>
+                <Button color="danger" onPress={onCloseAddModal}>
                   Close
                 </Button>
                 <Button
@@ -765,7 +765,7 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
       <Modal
         isOpen={isOpenEditModal}
         onOpenChange={onCloseEditModal}
-        placement="center"
+        placement="top-center"
       >
         <ModalContent>
           {(onCloseEditModal) => (
@@ -825,7 +825,6 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
               <ModalFooter>
                 <Button
                   color="danger"
-                  variant="flat"
                   isLoading={deleteOptionLoading}
                   onPress={handledeleteOption}
                 >
@@ -847,7 +846,7 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
       <Modal
         isOpen={isOpenOptionValueModal}
         onOpenChange={onCloseOptionValueModal}
-        placement="center"
+        placement="top-center"
       >
         <ModalContent>
           {(onCloseOptionValueModal) => (
@@ -901,11 +900,7 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
                 </div>
               </ModalBody>
               <ModalFooter>
-                <Button
-                  color="danger"
-                  variant="flat"
-                  onPress={onCloseOptionValueModal}
-                >
+                <Button color="danger" onPress={onCloseOptionValueModal}>
                   Close
                 </Button>
                 <Button
@@ -924,7 +919,7 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
       <Modal
         isOpen={isOpenOptionValueEditModal}
         onOpenChange={onCloseOptionValueEditModal}
-        placement="center"
+        placement="top-center"
       >
         <ModalContent>
           {(onCloseOptionValueEditModal) => (
@@ -980,7 +975,6 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
               <ModalFooter>
                 <Button
                   color="danger"
-                  variant="flat"
                   isLoading={deleteOptionValueLoading}
                   onPress={handledeleteOptionValue}
                 >

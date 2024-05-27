@@ -464,14 +464,14 @@ const CategorySectionAdmin = forwardRef<
                           </>
                         )}
                       </p>
-                      <div className="flex flex-row gap-2">
+                      <div className="flex flex-row ">
                         <Button
                           size="md"
                           onClick={() => handleProductEditModel(formatedPr)}
                           className="text-white text-sm bg-transparent"
                           isIconOnly
                         >
-                          <EditIcon size={30} />
+                          <EditIcon size={24} />
                         </Button>
                         <Button
                           size="md"
@@ -481,7 +481,7 @@ const CategorySectionAdmin = forwardRef<
                           isIconOnly
                           className="text-green-600 text-sm bg-transparent"
                         >
-                          <AddIcon size={30} />
+                          <AddIcon size={26} />
                         </Button>
                       </div>
                     </div>
@@ -527,7 +527,6 @@ const CategorySectionAdmin = forwardRef<
                   <ModalFooter>
                     <Button
                       color="danger"
-                      variant="flat"
                       isLoading={isLoadingGroupDelete}
                       onClick={() => handleDeleteGroup(groupid)}
                     >
@@ -740,7 +739,7 @@ const CategorySectionAdmin = forwardRef<
                 )}
               </div>
             </ModalBody>
-            <ModalFooter className="flex flex-col justify-center w-full">
+            <ModalFooter>
               <Button
                 color="danger"
                 isLoading={isLoadingProductDelete}
