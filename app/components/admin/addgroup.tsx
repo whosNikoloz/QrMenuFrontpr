@@ -85,44 +85,47 @@ const AddGroup = ({ lang, onAddnewGroup }: AddGroupInterface) => {
               <ModalHeader className="flex flex-col gap-1">
                 {lang === "en" ? "Create Group" : "ჯგუფის შექმნა"}
               </ModalHeader>
-              <ModalBody>
-                <div className="flex flex-col gap-2">
-                  <Input
-                    autoFocus
-                    label="English"
-                    classNames={{
-                      input: ["text-[16px] "],
-                    }}
-                    placeholder="Enter English"
-                    value={englishName}
-                    onChange={(e) => setEnglishName(e.target.value)}
-                    required
-                  />
-                  <Input
-                    autoFocus
-                    label="ქართულად"
-                    value={georgianName}
-                    classNames={{
-                      input: ["text-[16px] "],
-                    }}
-                    onChange={(e) => setGeorgianName(e.target.value)}
-                    placeholder="Enter ქართულად"
-                    required
-                  />
-                </div>
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="flat" onPress={onClose}>
-                  {lang === "en" ? "Close" : "დახურვა"}
-                </Button>
-                <Button
-                  color="success"
-                  isLoading={isLoading}
-                  onPress={handleSave}
-                >
-                  {lang === "en" ? "Save" : "შენახვა"}
-                </Button>
-              </ModalFooter>
+              <form onSubmit={handleSave}>
+                <ModalBody>
+                  <div className="flex flex-col gap-2">
+                    <Input
+                      autoFocus
+                      label="English"
+                      classNames={{
+                        input: ["text-[16px] "],
+                      }}
+                      placeholder="Enter English"
+                      value={englishName}
+                      onChange={(e) => setEnglishName(e.target.value)}
+                      required
+                    />
+                    <Input
+                      autoFocus
+                      label="ქართულად"
+                      value={georgianName}
+                      classNames={{
+                        input: ["text-[16px] "],
+                      }}
+                      onChange={(e) => setGeorgianName(e.target.value)}
+                      placeholder="Enter ქართულად"
+                      required
+                    />
+                  </div>
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="danger" variant="flat" onPress={onClose}>
+                    {lang === "en" ? "Close" : "დახურვა"}
+                  </Button>
+                  <Button
+                    color="success"
+                    type="submit"
+                    isLoading={isLoading}
+                    onPress={handleSave}
+                  >
+                    {lang === "en" ? "Save" : "შენახვა"}
+                  </Button>
+                </ModalFooter>
+              </form>
             </div>
           )}
         </ModalContent>

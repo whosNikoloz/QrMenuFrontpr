@@ -362,41 +362,47 @@ export default function AdminPage({
           <ModalHeader className="flex flex-col gap-1">
             {lang === "en" ? "Authorize" : "ავტორიზაცია"}
           </ModalHeader>
-          <ModalBody>
-            <div className="flex flex-col gap-2">
-              <Input
-                autoFocus
-                endContent={
-                  <MailIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
-                }
-                classNames={{
-                  input: "text-[16px]",
-                }}
-                value={user}
-                onChange={(e) => setUser(e.target.value)}
-                label="User"
-                placeholder="Enter your UserName"
-              />
-              <Input
-                endContent={
-                  <LockIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
-                }
-                classNames={{
-                  input: "text-[16px]",
-                }}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                label="Password"
-                placeholder="Enter your password"
-                type="password"
-              />
-            </div>
-          </ModalBody>
-          <ModalFooter>
-            <Button className="bg-green-600" onPress={handleAuthorize}>
-              {lang === "en" ? "Sign in" : "შესვლა"}
-            </Button>
-          </ModalFooter>
+          <form onSubmit={handleAuthorize}>
+            <ModalBody>
+              <div className="flex flex-col gap-2">
+                <Input
+                  autoFocus
+                  endContent={
+                    <MailIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+                  }
+                  classNames={{
+                    input: "text-[16px]",
+                  }}
+                  value={user}
+                  onChange={(e) => setUser(e.target.value)}
+                  label="User"
+                  placeholder="Enter your UserName"
+                />
+                <Input
+                  endContent={
+                    <LockIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+                  }
+                  classNames={{
+                    input: "text-[16px]",
+                  }}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  label="Password"
+                  placeholder="Enter your password"
+                  type="password"
+                />
+              </div>
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                className="bg-green-600"
+                type="submit"
+                onPress={handleAuthorize}
+              >
+                {lang === "en" ? "Sign in" : "შესვლა"}
+              </Button>
+            </ModalFooter>
+          </form>
         </ModalContent>
       </Modal>
     </MenuLayout>
