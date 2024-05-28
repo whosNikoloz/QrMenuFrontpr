@@ -122,7 +122,6 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
               ? selectedProduct.DiscountedPrice ?? 0
               : selectedProduct.price,
         });
-        console.log("Selected Product:", selectedProduct);
         setCustomDescription("");
         setExtras({});
         onClose();
@@ -173,22 +172,8 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
 
     const handleOptionRadioToggle = (optionId: number, valueId: number) => {
       if (selectedProduct) {
-        const newSelectedProduct = new ProductNew(
-          selectedProduct.id,
-          selectedProduct.name_En,
-          selectedProduct.name_Ka,
-          selectedProduct.price,
-          selectedProduct.imageUrl,
-          selectedProduct.discount,
-          selectedProduct.description_En,
-          selectedProduct.description_Ka,
-          selectedProduct.group_Id,
-          selectedProduct.options,
-          selectedProduct.DiscountedPrice ?? 0
-        );
-
         // Find the selected option and its value
-        const selectedOption = newSelectedProduct.options.find(
+        const selectedOption = selectedProduct.options.find(
           (option) => option.id === optionId
         );
         const selectedValue = selectedOption?.optionValues.find(
@@ -202,28 +187,23 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
         );
 
         // Toggle the selection status
-        newSelectedProduct.options = newSelectedProduct.options.map(
-          (option) => {
-            if (option.id === optionId) {
-              return {
-                ...option,
-                optionValues: option.optionValues.map((value) =>
-                  value.id === valueId
-                    ? { ...value, selected: true }
-                    : { ...value, selected: false }
-                ),
-              };
-            }
-            return option;
+        selectedProduct.options = selectedProduct.options.map((option) => {
+          if (option.id === optionId) {
+            return {
+              ...option,
+              optionValues: option.optionValues.map((value) =>
+                value.id === valueId
+                  ? { ...value, selected: true }
+                  : { ...value, selected: false }
+              ),
+            };
           }
-        );
+          return option;
+        });
 
         // Decrement the price of the previously selected value if exists
         if (previouslySelectedValue) {
-          newSelectedProduct.decrementPrice(
-            optionId,
-            previouslySelectedValue.id
-          );
+          selectedProduct.decrementPrice(optionId, previouslySelectedValue.id);
           // Remove the previously selected value from extras
           setExtras((prevExtras) => ({
             ...prevExtras,
@@ -237,7 +217,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
         }
 
         // Increment the price of the newly selected value
-        newSelectedProduct.incrementPrice(optionId, valueId);
+        selectedProduct.incrementPrice(optionId, valueId);
 
         // Add the newly selected value to extras
         setExtras((prevExtras) => ({
@@ -246,27 +226,13 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
           ["ka"]: [...(prevExtras["ka"] || []), selectedValue.name_Ka],
         }));
 
-        setSelectedProduct(newSelectedProduct);
+        setSelectedProduct(selectedProduct);
       }
     };
 
     const handleOptionCheckboxToggle = (optionId: number, valueId: number) => {
       if (selectedProduct) {
-        const newSelectedProduct = new ProductNew(
-          selectedProduct.id,
-          selectedProduct.name_En,
-          selectedProduct.name_Ka,
-          selectedProduct.price,
-          selectedProduct.imageUrl,
-          selectedProduct.discount,
-          selectedProduct.description_En,
-          selectedProduct.description_Ka,
-          selectedProduct.group_Id,
-          selectedProduct.options,
-          selectedProduct.DiscountedPrice ?? 0
-        );
-
-        const selectedOption = newSelectedProduct.options.find(
+        const selectedOption = selectedProduct.options.find(
           (option) => option.id === optionId
         );
         const selectedValue = selectedOption?.optionValues.find(
@@ -277,24 +243,22 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
 
         const isCurrentlySelected = selectedValue.selected;
 
-        newSelectedProduct.options = newSelectedProduct.options.map(
-          (option) => {
-            if (option.id === optionId) {
-              return {
-                ...option,
-                optionValues: option.optionValues.map((value) =>
-                  value.id === valueId
-                    ? { ...value, selected: !value.selected }
-                    : value
-                ),
-              };
-            }
-            return option;
+        selectedProduct.options = selectedProduct.options.map((option) => {
+          if (option.id === optionId) {
+            return {
+              ...option,
+              optionValues: option.optionValues.map((value) =>
+                value.id === valueId
+                  ? { ...value, selected: !value.selected }
+                  : value
+              ),
+            };
           }
-        );
+          return option;
+        });
 
         if (isCurrentlySelected) {
-          newSelectedProduct.decrementPrice(optionId, valueId);
+          selectedProduct.decrementPrice(optionId, valueId);
           // Remove the deselected value from extras
           setExtras((prevExtras) => ({
             ...prevExtras,
@@ -306,7 +270,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
             ),
           }));
         } else {
-          newSelectedProduct.incrementPrice(optionId, valueId);
+          selectedProduct.incrementPrice(optionId, valueId);
           // Add the newly selected value to extras
           setExtras((prevExtras) => ({
             ...prevExtras,
@@ -315,7 +279,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
           }));
         }
 
-        setSelectedProduct(newSelectedProduct);
+        setSelectedProduct(selectedProduct);
       }
     };
 
@@ -324,28 +288,27 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
     const handleOptionNumFieldChange = (quantity: string) => {
       setInputValues(quantity);
       if (!selectedProduct) return;
-      const newSelectedProduct = new ProductNew(
-        selectedProduct.id,
-        selectedProduct.name_En,
-        selectedProduct.name_Ka,
-        selectedProduct.price,
-        selectedProduct.imageUrl,
-        selectedProduct.discount,
-        selectedProduct.description_En,
-        selectedProduct.description_Ka,
-        selectedProduct.group_Id,
-        selectedProduct.options,
-        selectedProduct.DiscountedPrice ?? 0
-      );
+      // const newSelectedProduct = new ProductNew(
+      //   selectedProduct.id,
+      //   selectedProduct.name_En,
+      //   selectedProduct.name_Ka,
+      //   selectedProduct.price,
+      //   selectedProduct.imageUrl,
+      //   selectedProduct.discount,
+      //   selectedProduct.description_En,
+      //   selectedProduct.description_Ka,
+      //   selectedProduct.group_Id,
+      //   selectedProduct.options,
+      //   selectedProduct.DiscountedPrice ?? 0
+      // );
 
       if (quantity === "") return;
       var value = parseInt(quantity);
       if (selectedProduct.discount !== 0) {
-        newSelectedProduct.DiscountedPrice =
-          (newSelectedProduct?.StaticPrice ?? 0) * value;
+        selectedProduct.DiscountedPrice =
+          (selectedProduct?.StaticPrice ?? 0) * value;
       } else {
-        newSelectedProduct.price =
-          (newSelectedProduct?.StaticPrice ?? 0) * value;
+        selectedProduct.price = (selectedProduct?.StaticPrice ?? 0) * value;
       }
       setExtras((prevExtras) => ({
         ...prevExtras,
@@ -356,7 +319,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
           ?.filter((extra) => !extra.endsWith(" ცალი"))
           .concat([value.toString() + " ცალი"]) || [value.toString() + " ცალი"],
       }));
-      setSelectedProduct(newSelectedProduct);
+      setSelectedProduct(selectedProduct);
     };
 
     return (
@@ -607,19 +570,22 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                         <>
                           {/* Original price */}
                           <span className="line-through text-slate-400">
-                            {selectedProduct.price.toFixed(2)}{" "}
+                            {selectedProduct.originalPrice.toFixed(2)}{" "}
                             {lang === "en" ? "GEL" : "₾"}
                           </span>
 
                           {/* Discounted price */}
                           <span className="text-green-500 ml-1">
-                            {selectedProduct.DiscountedPrice?.toFixed(2)}
+                            {selectedProduct.originalDiscountedPrice?.toFixed(
+                              2
+                            )}
                             {lang === "en" ? "GEL" : "₾"}
                           </span>
                         </>
                       ) : (
                         <>
-                          {selectedProduct.price} {lang === "en" ? "GEL" : "₾"}
+                          {selectedProduct.originalPrice.toFixed(2)}{" "}
+                          {lang === "en" ? "GEL" : "₾"}
                         </>
                       )}
                     </p>
@@ -784,7 +750,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                     ) : (
                       <>
                         <span className="text-sm mr-4 flex flex-row gap-1">
-                          {selectedProduct.price}
+                          {selectedProduct.price.toFixed(2)}
                           <span>{lang === "en" ? "GEL" : "₾"}</span>
                         </span>
                       </>
