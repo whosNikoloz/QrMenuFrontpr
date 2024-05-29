@@ -715,6 +715,11 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                                     type="number"
                                     placeholder="0"
                                     className="mr-2"
+                                    classNames={{
+                                      base: "max-w-full sm:max-w-[10rem] h-10",
+                                      mainWrapper: "h-full",
+                                      input: "text-[16px]",
+                                    }}
                                     value={inputValues}
                                     onValueChange={(value) => {
                                       handleOptionNumFieldChange(value);
@@ -750,6 +755,9 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                     <Textarea
                       variant="bordered"
                       size="lg"
+                      classNames={{
+                        input: "text-[16px]",
+                      }}
                       onChange={(e) => setCustomDescription(e.target.value)}
                       placeholder={
                         lang === "ka"
