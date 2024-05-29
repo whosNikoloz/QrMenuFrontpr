@@ -1,6 +1,6 @@
 import { OptionValueClass, OptionValue } from "@/models/OptionValue";
 
-const mainAPI = "https://newgoldski30.conveyor.cloud/api/OptionValue";
+const mainAPI = "https://widesparklydart56.conveyor.cloud/api/OptionValue";
 
 const createOptionValue = async (
   option: OptionValueCreateDto

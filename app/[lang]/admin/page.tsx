@@ -194,7 +194,10 @@ export default function AdminPage({
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleAuthorize = () => {
+  const handleAuthorize = (event: { preventDefault: () => void }) => {
+    // Prevent the default form submission behavior
+    event.preventDefault();
+
     if (user === "admin" && password === "admin") {
       const sessionDuration = 3600; // 1 hour in seconds
       const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
@@ -401,11 +404,7 @@ export default function AdminPage({
               </div>
             </ModalBody>
             <ModalFooter>
-              <Button
-                className="bg-green-600"
-                type="submit"
-                onPress={handleAuthorize}
-              >
+              <Button className="bg-green-600" type="submit">
                 {lang === "en" ? "Sign in" : "შესვლა"}
               </Button>
             </ModalFooter>
