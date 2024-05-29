@@ -720,6 +720,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                                       mainWrapper: "h-full",
                                       input: "text-[16px]",
                                     }}
+                                    inputMode="numeric"
                                     value={inputValues}
                                     onValueChange={(value) => {
                                       handleOptionNumFieldChange(value);

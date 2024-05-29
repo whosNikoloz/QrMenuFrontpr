@@ -485,3 +485,196 @@ export const PlusIcon = ({ size, height, width }: IconSvgProps) => (
     </g>
   </svg>
 );
+
+export const CheckBox = ({ size, height, width }: IconSvgProps) => (
+  <svg
+    viewBox="0 0 24 24"
+    width={size || width || 16}
+    height={size || height || 16}
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+    <g
+      id="SVGRepo_tracerCarrier"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    ></g>
+    <g id="SVGRepo_iconCarrier">
+      {" "}
+      <g id="Interface / Checkbox_Check">
+        {" "}
+        <path
+          id="Vector"
+          d="M8 12L11 15L16 9M4 16.8002V7.2002C4 6.08009 4 5.51962 4.21799 5.0918C4.40973 4.71547 4.71547 4.40973 5.0918 4.21799C5.51962 4 6.08009 4 7.2002 4H16.8002C17.9203 4 18.4796 4 18.9074 4.21799C19.2837 4.40973 19.5905 4.71547 19.7822 5.0918C20 5.5192 20 6.07899 20 7.19691V16.8036C20 17.9215 20 18.4805 19.7822 18.9079C19.5905 19.2842 19.2837 19.5905 18.9074 19.7822C18.48 20 17.921 20 16.8031 20H7.19691C6.07899 20 5.5192 20 5.0918 19.7822C4.71547 19.5905 4.40973 19.2842 4.21799 18.9079C4 18.4801 4 17.9203 4 16.8002Z"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        ></path>{" "}
+      </g>{" "}
+    </g>
+  </svg>
+);
+
+export const RadioGroupIcon = ({ size, height, width }: IconSvgProps) => (
+  <svg
+    version="1.1"
+    width={size || width || 16}
+    height={size || height || 16}
+    id="Uploaded to svgrepo.com"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 32 32"
+    fill="currentColor"
+  >
+    <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+    <g
+      id="SVGRepo_tracerCarrier"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    ></g>
+    <g id="SVGRepo_iconCarrier">
+      {" "}
+      <style type="text/css"> </style>{" "}
+      <g>
+        {" "}
+        <g>
+          {" "}
+          <path
+            className="linesandangles_een"
+            d="M10,20c-1.657,0-3,1.343-3,3s1.343,3,3,3s3-1.343,3-3S11.657,20,10,20z M10,24 c-0.551,0-1-0.449-1-1s0.449-1,1-1s1,0.449,1,1S10.551,24,10,24z"
+          ></path>{" "}
+          <circle className="linesandangles_een" cx="10" cy="16" r="3"></circle>{" "}
+          <path
+            className="linesandangles_een"
+            d="M10,6C8.343,6,7,7.343,7,9s1.343,3,3,3s3-1.343,3-3S11.657,6,10,6z M10,10 c-0.551,0-1-0.449-1-1s0.449-1,1-1s1,0.449,1,1S10.551,10,10,10z"
+          ></path>{" "}
+          <rect
+            x="15"
+            y="8"
+            className="linesandangles_een"
+            width="10"
+            height="2"
+          ></rect>{" "}
+          <rect
+            x="15"
+            y="15"
+            className="linesandangles_een"
+            width="10"
+            height="2"
+          ></rect>{" "}
+          <rect
+            x="15"
+            y="22"
+            className="linesandangles_een"
+            width="10"
+            height="2"
+          ></rect>{" "}
+        </g>{" "}
+        <g>
+          {" "}
+          <path
+            className="linesandangles_een"
+            d="M10,20c-1.657,0-3,1.343-3,3s1.343,3,3,3s3-1.343,3-3S11.657,20,10,20z M10,24 c-0.551,0-1-0.449-1-1s0.449-1,1-1s1,0.449,1,1S10.551,24,10,24z"
+          ></path>{" "}
+          <circle className="linesandangles_een" cx="10" cy="16" r="3"></circle>{" "}
+          <path
+            className="linesandangles_een"
+            d="M10,6C8.343,6,7,7.343,7,9s1.343,3,3,3s3-1.343,3-3S11.657,6,10,6z M10,10 c-0.551,0-1-0.449-1-1s0.449-1,1-1s1,0.449,1,1S10.551,10,10,10z"
+          ></path>{" "}
+          <rect
+            x="15"
+            y="8"
+            className="linesandangles_een"
+            width="10"
+            height="2"
+          ></rect>{" "}
+          <rect
+            x="15"
+            y="15"
+            className="linesandangles_een"
+            width="10"
+            height="2"
+          ></rect>{" "}
+          <rect
+            x="15"
+            y="22"
+            className="linesandangles_een"
+            width="10"
+            height="2"
+          ></rect>{" "}
+        </g>{" "}
+      </g>{" "}
+    </g>
+  </svg>
+);
+
+export const NumFieldIcon = ({ size, height, width }: IconSvgProps) => (
+  <svg
+    viewBox="0 0 512 512"
+    width={size || width || 16}
+    height={size || height || 16}
+    xmlns="http://www.w3.org/2000/svg"
+    fill="currentColor"
+  >
+    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+    <g
+      id="SVGRepo_tracerCarrier"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    ></g>
+    <g id="SVGRepo_iconCarrier">
+      {" "}
+      <path
+        fill="var(--ci-primary-color, currentColor)"
+        d="M121,16a48,48,0,1,0,48,48A48.054,48.054,0,0,0,121,16Zm0,64a16,16,0,1,1,16-16A16.019,16.019,0,0,1,121,80Z"
+        className="ci-primary"
+      ></path>{" "}
+      <path
+        fill="var(--ci-primary-color, currentColor)"
+        d="M249,16a48,48,0,1,0,48,48A48.054,48.054,0,0,0,249,16Zm0,64a16,16,0,1,1,16-16A16.019,16.019,0,0,1,249,80Z"
+        className="ci-primary"
+      ></path>{" "}
+      <path
+        fill="var(--ci-primary-color, currentColor)"
+        d="M377,112a48,48,0,1,0-48-48A48.054,48.054,0,0,0,377,112Zm0-64a16,16,0,1,1-16,16A16.019,16.019,0,0,1,377,48Z"
+        className="ci-primary"
+      ></path>{" "}
+      <path
+        fill="var(--ci-primary-color, currentColor)"
+        d="M121,144a48,48,0,1,0,48,48A48.054,48.054,0,0,0,121,144Zm0,64a16,16,0,1,1,16-16A16.019,16.019,0,0,1,121,208Z"
+        className="ci-primary"
+      ></path>{" "}
+      <path
+        fill="var(--ci-primary-color, currentColor)"
+        d="M249,144a48,48,0,1,0,48,48A48.054,48.054,0,0,0,249,144Zm0,64a16,16,0,1,1,16-16A16.019,16.019,0,0,1,249,208Z"
+        className="ci-primary"
+      ></path>{" "}
+      <path
+        fill="var(--ci-primary-color, currentColor)"
+        d="M377,144a48,48,0,1,0,48,48A48.054,48.054,0,0,0,377,144Zm0,64a16,16,0,1,1,16-16A16.019,16.019,0,0,1,377,208Z"
+        className="ci-primary"
+      ></path>{" "}
+      <path
+        fill="var(--ci-primary-color, currentColor)"
+        d="M121,272a48,48,0,1,0,48,48A48.054,48.054,0,0,0,121,272Zm0,64a16,16,0,1,1,16-16A16.019,16.019,0,0,1,121,336Z"
+        className="ci-primary"
+      ></path>{" "}
+      <path
+        fill="var(--ci-primary-color, currentColor)"
+        d="M249,272a48,48,0,1,0,48,48A48.054,48.054,0,0,0,249,272Zm0,64a16,16,0,1,1,16-16A16.019,16.019,0,0,1,249,336Z"
+        className="ci-primary"
+      ></path>{" "}
+      <path
+        fill="var(--ci-primary-color, currentColor)"
+        d="M377,272a48,48,0,1,0,48,48A48.054,48.054,0,0,0,377,272Zm0,64a16,16,0,1,1,16-16A16.019,16.019,0,0,1,377,336Z"
+        className="ci-primary"
+      ></path>{" "}
+      <path
+        fill="var(--ci-primary-color, currentColor)"
+        d="M249,400a48,48,0,1,0,48,48A48.054,48.054,0,0,0,249,400Zm0,64a16,16,0,1,1,16-16A16.019,16.019,0,0,1,249,464Z"
+        className="ci-primary"
+      ></path>{" "}
+    </g>
+  </svg>
+);

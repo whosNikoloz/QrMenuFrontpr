@@ -20,9 +20,16 @@ import {
   Select,
   SelectItem,
   User,
+  ButtonGroup,
 } from "@nextui-org/react";
 import React, { use, useEffect, useState } from "react";
-import { AddIcon, EditIcon } from "../icons";
+import {
+  AddIcon,
+  CheckBox,
+  EditIcon,
+  NumFieldIcon,
+  RadioGroupIcon,
+} from "../icons";
 import ProductNew from "@/models/ProductNew";
 import { createOption, editOption } from "@/app/api/Options";
 import {
@@ -104,6 +111,7 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
   const [optionValueId, setOptionValueId] = useState(0);
 
   const handleAddOption = (value: string) => {
+    alert(value);
     setEnglishName("");
     setGeorgianName("");
     setType(value);
@@ -484,41 +492,35 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
                         src: selectedProduct.imageUrl ?? "",
                       }}
                     />
-                    <Dropdown>
-                      <DropdownTrigger>
-                        <Button
-                          color={"success"}
-                          isIconOnly
-                          size="lg"
-                          className="bg-transparent text-white "
-                        >
-                          <AddIcon size={35} />
-                        </Button>
-                      </DropdownTrigger>
-                      <DropdownMenu
-                        aria-label="Dropdown Variants"
+                    <ButtonGroup>
+                      <Button
                         color={"success"}
+                        isIconOnly
+                        size="lg"
+                        className="bg-transparent text-white "
+                        onClick={() => handleAddOption("Radio")}
                       >
-                        <DropdownItem
-                          key="Radio"
-                          onClick={() => handleAddOption("Radio")}
-                        >
-                          Radio
-                        </DropdownItem>
-                        <DropdownItem
-                          key="CheckBox"
-                          onClick={() => handleAddOption("CheckBox")}
-                        >
-                          CheckBox
-                        </DropdownItem>
-                        <DropdownItem
-                          key="NumField"
-                          onClick={() => handleAddOption("NumField")}
-                        >
-                          NumField
-                        </DropdownItem>
-                      </DropdownMenu>
-                    </Dropdown>
+                        <RadioGroupIcon size={35} />
+                      </Button>
+                      <Button
+                        color={"success"}
+                        isIconOnly
+                        size="lg"
+                        className="bg-transparent text-white "
+                        onClick={() => handleAddOption("CheckBox")}
+                      >
+                        <CheckBox size={35} />
+                      </Button>
+                      <Button
+                        color={"success"}
+                        isIconOnly
+                        size="lg"
+                        className="bg-transparent text-white "
+                        onClick={() => handleAddOption("NumField")}
+                      >
+                        <NumFieldIcon size={30} />
+                      </Button>
+                    </ButtonGroup>
                   </div>
 
                   {selectedProduct.options.map((option) => (
