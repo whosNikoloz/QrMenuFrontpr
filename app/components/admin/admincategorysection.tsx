@@ -431,7 +431,7 @@ const CategorySectionAdmin = forwardRef<
                   />
 
                   <div className="ml-4  flex w-full flex-col justify-between">
-                    <h1 className="text-md font-bold uppercase text-black dark:text-white ">
+                    <h1 className="font-bold text-black dark:text-white ">
                       {formatedPr.name}
                     </h1>
                     <p className="text-xs/3 mt-2 leading-tight dark:text-white/70 text-black/70">
@@ -439,7 +439,7 @@ const CategorySectionAdmin = forwardRef<
                     </p>
 
                     <div className="mt-auto flex items-center justify-between">
-                      <p className="mr-2 text-md text-black dark:text-white relative">
+                      <p className="mr-2 text-md font-bold text-black dark:text-white relative">
                         {formatedPr.discount !== 0 ? (
                           <p className="flex flex-col">
                             {/* Original price */}

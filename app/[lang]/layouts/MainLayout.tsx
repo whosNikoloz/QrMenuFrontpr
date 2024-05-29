@@ -9,7 +9,7 @@ export default function MainLayout({
   lang: Locale;
 }) {
   return (
-    <div className="relative  flex flex-col h-full ">
+    <div className="relative  flex flex-col h-full min-h-screen">
       <div className="justify-center items-center flex mb-24">
         <Navbar
           lng={lang}

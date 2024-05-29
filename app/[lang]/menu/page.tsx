@@ -121,12 +121,14 @@ export default function MenuPage({
 
   function handleUpdateCartItemQuantity(product: ProductNew, quantity: number) {
     setCartItems((prevCartItems: CartItemNew[]) => {
-      const updatedCartItems = prevCartItems.map((cartItem) => {
-        if (cartItem.product?.id === product.id) {
-          return { ...cartItem, quantity } as CartItemNew;
-        }
-        return cartItem;
-      });
+      const updatedCartItems = prevCartItems
+        .map((cartItem) => {
+          if (cartItem.product?.id === product.id) {
+            return { ...cartItem, quantity } as CartItemNew;
+          }
+          return cartItem;
+        })
+        .filter((cartItem) => cartItem.quantity !== 0);
 
       return updatedCartItems;
     });
@@ -158,8 +160,10 @@ export default function MenuPage({
   const categorySectionRef = useRef<CategorySectionRef>(null);
 
   const exonAddToCart = (product: ProductNew) => {
+    setSearchButtonLoading(true);
     if (product) {
       if (categorySectionRef.current) {
+        console.log("categorySectionRef", categorySectionRef);
         categorySectionRef.current.handleAddToCartFromParent(product);
       }
     }
@@ -167,8 +171,12 @@ export default function MenuPage({
 
   const handleonCartItemsChange = (cartItems: CartItemNew[]) => {
     setCartItems(cartItems);
-    console.log(cartItems);
   };
+
+  const [serachButtonLoading, setSearchButtonLoading] = useState(false);
+  function handleSearchLoading(isLoadingAdd: boolean) {
+    setSearchButtonLoading(isLoadingAdd);
+  }
 
   return (
     <MenuLayout
@@ -195,6 +203,7 @@ export default function MenuPage({
               onAddToCart={handleAddToCart}
               cartItems={cartItems}
               onUpdateCartItemQuantity={handleUpdateCartItemQuantity}
+              onSearchLoading={handleSearchLoading}
             />
           );
         })
@@ -208,7 +217,7 @@ export default function MenuPage({
       </div>
 
       <Modal
-        size="5xl"
+        size="full"
         isOpen={isOpen}
         onClose={onClose}
         radius="md"
@@ -253,16 +262,17 @@ export default function MenuPage({
                       src={product?.imageUrl ?? ""}
                       width={200}
                       height={200}
+                      isZoomed
                       as={NextImage}
                       alt="Sample Image"
-                      className="rounded-lg"
+                      className="rounded-lg h-28"
                     />
 
                     <div className="ml-4  flex w-full flex-col justify-between">
-                      <h1 className="text-md font-bold text-black dark:text-white ">
+                      <h1 className="text-md uppercase font-bold text-black dark:text-white ">
                         {lang === "en" ? product?.name_En : product?.name_Ka}
                       </h1>
-                      <p className="text-xs/3 mt-2 dark:text-white/70 text-black/70">
+                      <p className="text-[11px] mt-1 leading-tight dark:text-white/70 text-black/70">
                         {lang === "en"
                           ? product?.description_En
                           : product?.description_Ka}
@@ -312,6 +322,7 @@ export default function MenuPage({
                               <Button
                                 size="sm"
                                 isIconOnly
+                                isLoading={serachButtonLoading}
                                 onClick={() =>
                                   product && exonAddToCart(product)
                                 }
@@ -324,6 +335,7 @@ export default function MenuPage({
                         ) : (
                           <Button
                             size="sm"
+                            isLoading={serachButtonLoading}
                             onClick={() => product && exonAddToCart(product)}
                             endContent={<AddToShoppingCart size={23} />}
                             className="text-white text-sm bg-green-600"

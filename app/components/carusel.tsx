@@ -28,19 +28,13 @@ const AutoScrollCarousel = ({ lng }: { lng: string }) => {
       advertid: 1,
       advertName: "Advert 1",
       advertLogo:
-        "https://images.immediate.co.uk/production/volatile/sites/30/2022/08/Corndogs-7832ef6.jpg?quality=90&resize=556,505",
+        "https://bonee.blob.core.windows.net/images/7627ac9f-c26b-f7d7-f3bb-e04979bbba2e_3.webp",
     },
     {
       advertid: 2,
       advertName: "Advert 2",
       advertLogo:
-        "https://images.immediate.co.uk/production/volatile/sites/30/2022/08/Corndogs-7832ef6.jpg?quality=90&resize=556,505",
-    },
-    {
-      advertid: 3,
-      advertName: "Advert 3",
-      advertLogo:
-        "https://images.immediate.co.uk/production/volatile/sites/30/2022/08/Corndogs-7832ef6.jpg?quality=90&resize=556,505",
+        "https://bonee.blob.core.windows.net/images/5468a25c-d66f-8195-ce7d-49edae0a215e_3.webp",
     },
   ]);
 
@@ -59,7 +53,7 @@ const AutoScrollCarousel = ({ lng }: { lng: string }) => {
       type: "loop",
       perPage: 1,
       autoplay: true,
-      autoplaySpeed: 2000,
+      autoplaySpeed: 50,
     });
 
     splide.mount();
@@ -71,7 +65,7 @@ const AutoScrollCarousel = ({ lng }: { lng: string }) => {
 
   return (
     <>
-      <div className="mx-5 flex">
+      <div className="mx-2 flex">
         <div className="splide mb-5">
           <div className="splide__track">
             <ul className="splide__list ">
@@ -80,20 +74,12 @@ const AutoScrollCarousel = ({ lng }: { lng: string }) => {
                   <li className="splide__slide" key={advert.advertid}>
                     <Card
                       isFooterBlurred
+                      shadow="md"
                       className="w-full h-[200px] col-span-12 sm:col-span-5"
                     >
-                      <CardHeader className="absolute z-10 top-1 flex-col items-start">
-                        <p className="text-tiny text-white/60 uppercase font-bold">
-                          New
-                        </p>
-                        <h4 className="text-black font-medium text-2xl">
-                          Acme camera
-                        </h4>
-                      </CardHeader>
-                      <Image
-                        removeWrapper
-                        alt="Card example background"
-                        className="z-0 w-full h-full scale-125 -translate-y-6 object-cover"
+                      <img
+                        alt="Relaxing app background"
+                        className="z-0 w-full h-full object-cover"
                         src={advert.advertLogo}
                       />
                     </Card>
@@ -103,7 +89,6 @@ const AutoScrollCarousel = ({ lng }: { lng: string }) => {
                 <></>
               )}
             </ul>
-            <div className="splide__pagination "></div>
           </div>
         </div>
       </div>

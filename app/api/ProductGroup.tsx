@@ -3,7 +3,11 @@
 import ProductGroup from "@/models/ProductGroup";
 import ProductNew from "@/models/ProductNew";
 
+<<<<<<< HEAD
 const mainAPI = "https://largeredpencil72.conveyor.cloud/api/ProductGroup";
+=======
+const mainAPI = "https://widesparklydart56.conveyor.cloud/api/ProductGroup";
+>>>>>>> ed1f625c9b893de1e181e76b3d26aecf7dfeb9ca
 
 const fetchProductGroups = async (): Promise<ProductGroup[]> => {
   try {

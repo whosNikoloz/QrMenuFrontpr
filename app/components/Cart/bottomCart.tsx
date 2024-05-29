@@ -141,6 +141,8 @@ const BottomCart: React.FC<BottomCartProps> = ({
         delete filteredQuantities[key];
       }
 
+      onCartItemsChange(updatedCartItems);
+
       return filteredQuantities;
     });
   };

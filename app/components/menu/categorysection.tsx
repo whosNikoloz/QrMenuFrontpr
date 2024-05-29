@@ -43,6 +43,7 @@ interface CategorySectionProps {
   cartItems: CartItemNew[];
   onAddToCart: (cartItem: CartItemNew) => void;
   onUpdateCartItemQuantity: (product: ProductNew, quantity: number) => void;
+  onSearchLoading: (isLoading: boolean) => void;
 }
 
 export interface CategorySectionRef {
@@ -59,6 +60,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
       lang,
       onAddToCart,
       onUpdateCartItemQuantity,
+      onSearchLoading,
     },
     ref
   ) => {
@@ -71,20 +73,24 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
     const [extras, setExtras] = useState<{ [key: string]: string[] }>({});
     const handleAddToCart = (product: ProductData) => {
       setSelectedProduct(null); // Reset the selected item
-      // const fetchData = async () => {
-      //   try {
-      //     const data = await fetchProductWithOptionsAndValues(product.id);
-      //     setSelectedProduct(data);
-      //   } catch (error) {
-      //     console.error("Error fetching product groups:", error);
-      //   }
-      // };
 
-      // fetchData();
       const selectedProduct = products.find((p) => p.id === product.id);
       if (selectedProduct) {
+        onSearchLoading(false);
         setSelectedProduct(selectedProduct);
         onOpen();
+      } else {
+        const fetchData = async () => {
+          try {
+            const data = await fetchProductWithOptionsAndValues(product.id);
+            setSelectedProduct(data);
+            onSearchLoading(false);
+            onOpen();
+          } catch (error) {
+            console.error("Error fetching product groups:", error);
+          }
+        };
+        fetchData();
       }
     };
 
@@ -161,10 +167,10 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
         if (cartItem.quantity > 1) {
           onUpdateCartItemQuantity(product, cartItem.quantity - 1);
         } else {
-          // If quantity is 1, removing the item
           const updatedCartItems = cartItems.filter(
             (item) => item.product?.id !== product.id
           );
+          onUpdateCartItemQuantity(product, cartItem.quantity - 1);
           localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
         }
       }
@@ -172,6 +178,23 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
 
     const handleOptionRadioToggle = (optionId: number, valueId: number) => {
       if (selectedProduct) {
+<<<<<<< HEAD
+=======
+        // const newSelectedProduct = new ProductNew(
+        //   selectedProduct.id,
+        //   selectedProduct.name_En,
+        //   selectedProduct.name_Ka,
+        //   selectedProduct.price,
+        //   selectedProduct.imageUrl,
+        //   selectedProduct.discount,
+        //   selectedProduct.description_En,
+        //   selectedProduct.description_Ka,
+        //   selectedProduct.group_Id,
+        //   selectedProduct.options,
+        //   selectedProduct.DiscountedPrice ?? 0
+        // );
+
+>>>>>>> ed1f625c9b893de1e181e76b3d26aecf7dfeb9ca
         // Find the selected option and its value
         const selectedOption = selectedProduct.options.find(
           (option) => option.id === optionId
@@ -232,6 +255,23 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
 
     const handleOptionCheckboxToggle = (optionId: number, valueId: number) => {
       if (selectedProduct) {
+<<<<<<< HEAD
+=======
+        // const newSelectedProduct = new ProductNew(
+        //   selectedProduct.id,
+        //   selectedProduct.name_En,
+        //   selectedProduct.name_Ka,
+        //   selectedProduct.price,
+        //   selectedProduct.imageUrl,
+        //   selectedProduct.discount,
+        //   selectedProduct.description_En,
+        //   selectedProduct.description_Ka,
+        //   selectedProduct.group_Id,
+        //   selectedProduct.options,
+        //   selectedProduct.DiscountedPrice ?? 0
+        // );
+
+>>>>>>> ed1f625c9b893de1e181e76b3d26aecf7dfeb9ca
         const selectedOption = selectedProduct.options.find(
           (option) => option.id === optionId
         );
@@ -388,7 +428,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                         )}
                       </h3>
                       {cartItem ? (
-                        <div className="flex justify-center mt-4">
+                        <div className="flex justify-center  mb-4">
                           <div className="flex flex-row gap-4 items-center bg-white rounded-lg mt-4">
                             <Button
                               size="sm"
@@ -453,14 +493,14 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                     <h1 className="text-md uppercase font-bold text-black dark:text-white ">
                       {formatedPr.name}
                     </h1>
-                    <p className="text-xs/3 mt-2 leading-tight dark:text-white/70 text-black/70">
+                    <p className="text-[11px] mt-1 leading-tight dark:text-white/70 text-black/70">
                       {formatedPr.description}
                     </p>
 
-                    <div className="mt-auto flex items-center justify-between">
+                    <div className="mt-auto  flex items-center justify-between">
                       <p className="mr-2 mt-4 text-black dark:text-white relative">
                         {formatedPr.discount !== 0 ? (
-                          <p className="flex flex-col">
+                          <p className="flex flex-col font-bold">
                             {/* Original price */}
                             <span className="line-through text-slate-400">
                               <span className="text-sm">
@@ -481,7 +521,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                           </p>
                         ) : (
                           <>
-                            <span className="text-md">
+                            <span className="text-md font-bold">
                               {formatedPr.price.toFixed(2)}
                             </span>{" "}
                             <span className="text-xs">
@@ -570,21 +610,33 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                         <>
                           {/* Original price */}
                           <span className="line-through text-slate-400">
+<<<<<<< HEAD
                             {selectedProduct.originalPrice.toFixed(2)}{" "}
+=======
+                            {selectedProduct.originalPrice?.toFixed(2)}{" "}
+>>>>>>> ed1f625c9b893de1e181e76b3d26aecf7dfeb9ca
                             {lang === "en" ? "GEL" : "₾"}
                           </span>
 
                           {/* Discounted price */}
                           <span className="text-green-500 ml-1">
+<<<<<<< HEAD
                             {selectedProduct.originalDiscountedPrice?.toFixed(
                               2
                             )}
+=======
+                            {selectedProduct.originalDiscountPrice?.toFixed(2)}
+>>>>>>> ed1f625c9b893de1e181e76b3d26aecf7dfeb9ca
                             {lang === "en" ? "GEL" : "₾"}
                           </span>
                         </>
                       ) : (
                         <>
+<<<<<<< HEAD
                           {selectedProduct.originalPrice.toFixed(2)}{" "}
+=======
+                          {selectedProduct.originalPrice?.toFixed(2)}
+>>>>>>> ed1f625c9b893de1e181e76b3d26aecf7dfeb9ca
                           {lang === "en" ? "GEL" : "₾"}
                         </>
                       )}
@@ -688,6 +740,12 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                                     type="number"
                                     placeholder="0"
                                     className="mr-2"
+                                    classNames={{
+                                      base: "max-w-full sm:max-w-[10rem] h-10",
+                                      mainWrapper: "h-full",
+                                      input: "text-[16px]",
+                                    }}
+                                    inputMode="numeric"
                                     value={inputValues}
                                     onValueChange={(value) => {
                                       handleOptionNumFieldChange(value);
@@ -723,6 +781,9 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                     <Textarea
                       variant="bordered"
                       size="lg"
+                      classNames={{
+                        input: "text-[16px]",
+                      }}
                       onChange={(e) => setCustomDescription(e.target.value)}
                       placeholder={
                         lang === "ka"

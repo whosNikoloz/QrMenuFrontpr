@@ -194,7 +194,10 @@ export default function AdminPage({
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleAuthorize = () => {
+  const handleAuthorize = (event: { preventDefault: () => void }) => {
+    // Prevent the default form submission behavior
+    event.preventDefault();
+
     if (user === "admin" && password === "admin") {
       const sessionDuration = 3600; // 1 hour in seconds
       const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
@@ -243,7 +246,7 @@ export default function AdminPage({
       <AddGroup lang={lang} onAddnewGroup={handlenewGroupAdd} />
 
       <Modal
-        size="5xl"
+        size="full"
         isOpen={isOpenSearchModal}
         onClose={onCloseSearchModal}
         radius="md"
@@ -283,25 +286,26 @@ export default function AdminPage({
                   >
                     <Image
                       src={product?.imageUrl ?? ""}
-                      width={270}
-                      height={270}
+                      width={200}
+                      isZoomed
+                      height={200}
                       as={NextImage}
                       alt="Sample Image"
-                      className="rounded-lg"
+                      className="rounded-lg h-28"
                     />
 
                     <div className="ml-4  flex w-full flex-col justify-between">
-                      <h1 className="text-md font-bold text-black dark:text-white ">
+                      <h1 className="text-md uppercase font-bold text-black dark:text-white ">
                         {lang === "en" ? product?.name_En : product?.name_Ka}
                       </h1>
-                      <p className="text-xs/3 mt-2 dark:text-white/70 text-black/70">
+                      <p className="text-[11px] mt-1 leading-tight dark:text-white/70 text-black/70">
                         {lang === "en"
                           ? product?.description_En
                           : product?.description_Ka}
                       </p>
 
-                      <div className="mt-auto flex items-center justify-between">
-                        <p className="mr-2 text-sm text-black dark:text-white relative">
+                      <div className="mt-auto  flex items-center justify-between">
+                        <p className="mr-2 mt-4 text-black dark:text-white relative">
                           {product?.discount !== 0 ? (
                             <>
                               <span className="line-through text-slate-400">
@@ -401,11 +405,7 @@ export default function AdminPage({
               </div>
             </ModalBody>
             <ModalFooter>
-              <Button
-                className="bg-green-600"
-                type="submit"
-                onPress={handleAuthorize}
-              >
+              <Button className="bg-green-600" type="submit">
                 {lang === "en" ? "Sign in" : "შესვლა"}
               </Button>
             </ModalFooter>

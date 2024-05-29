@@ -31,22 +31,3 @@ body {
     text-wrap: balance;
   }
 }
-
-.splide__pagination {
-  counter-reset: pagination-num;
-}
-
-/* Style for each pagination page */
-.splide__pagination__page {
-  display: inline-block;
-  width: 10px; /* Set the width of each circle */
-  height: 10px; /* Set the height of each circle */
-  border-radius: 50%; /* Make the shape a circle */
-  background-color: #ccc; /* Set the default color for circles */
-  margin-right: 5px; /* Add spacing between circles */
-}
-
-/* Style the middle pagination page to be wider */
-.splide__pagination__page:nth-child(2n) {
-  width: 20px; /* Set a wider width for the middle circle */
-}
