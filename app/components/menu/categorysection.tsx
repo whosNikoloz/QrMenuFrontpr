@@ -418,7 +418,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                         )}
                       </h3>
                       {cartItem ? (
-                        <div className="flex justify-center mt-4">
+                        <div className="flex justify-center  mb-4">
                           <div className="flex flex-row gap-4 items-center bg-white rounded-lg mt-4">
                             <Button
                               size="sm"
@@ -483,7 +483,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                     <h1 className="text-md uppercase font-bold text-black dark:text-white ">
                       {formatedPr.name}
                     </h1>
-                    <p className="text-xs/3 mt-2 leading-tight dark:text-white/70 text-black/70">
+                    <p className="text-[11px] mt-1 leading-tight dark:text-white/70 text-black/70">
                       {formatedPr.description}
                     </p>
 

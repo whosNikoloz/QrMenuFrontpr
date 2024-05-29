@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, CardHeader } from "@nextui-org/react";
+import { Button, Card, CardFooter, CardHeader } from "@nextui-org/react";
 import { Image } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { Locale } from "@/i18n.config";
@@ -37,35 +37,44 @@ const ProductCategory: React.FC<ProductCategoryProps> = ({ items, lang }) => {
       image:
         "https://images.immediate.co.uk/production/volatile/sites/30/2022/08/Corndogs-7832ef6.jpg?quality=90&resize=556,505",
     },
+    {
+      id: "3",
+      name: "Category C",
+      image:
+        "https://images.immediate.co.uk/production/volatile/sites/30/2022/08/Corndogs-7832ef6.jpg?quality=90&resize=556,505",
+    },
   ];
 
   const categoriesToShow = predefinedItems;
 
   return (
-    <div className="mx-4 mt-4 grid  grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="mx-auto mt-4 grid  grid-cols-2  gap-4 mb-10">
       {categoriesToShow.map((item) => (
         <div key={item.id} className="w-full">
           <Card
-            className="h-[170px] w-[170px] relative"
+            isFooterBlurred
+            className="h-[190px] w-[190px] col-span-12 sm:col-span-7"
             isPressable
             onPress={() => {
               router.push(`${lang}/menu`);
             }}
           >
-            <CardHeader className="absolute z-10 top-1 left-1 flex-col items-start">
-              <p className="text-xs text-white uppercase font-bold">
-                {item.name}
-              </p>
-              <h4 className="text-white font-medium text-sm">
-                Creates beauty like a beast
-              </h4>
-            </CardHeader>
             <Image
               removeWrapper
-              alt="Category Image"
+              alt="Relaxing app background"
               className="z-0 w-full h-full object-cover"
               src={item.image}
             />
+            <CardFooter className="absolute bg-black/40 bottom-0 z-10 border-t-1 border-default-600 dark:border-default-100">
+              <div className="flex flex-grow gap-2 items-center">
+                <div className="flex flex-col text-start">
+                  <p className="text-tiny text-white/60">Breathing App</p>
+                  <p className="text-tiny text-white/60">
+                    Get a good night's sleep.
+                  </p>
+                </div>
+              </div>
+            </CardFooter>
           </Card>
         </div>
       ))}
