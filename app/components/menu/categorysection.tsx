@@ -157,15 +157,16 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
       const cartItem = cartItems.find(
         (item) => item.product?.id === product.id
       );
+      console.log("Cart Item:", cartItem);
 
       if (cartItem) {
         if (cartItem.quantity > 1) {
           onUpdateCartItemQuantity(product, cartItem.quantity - 1);
         } else {
-          // If quantity is 1, removing the item
           const updatedCartItems = cartItems.filter(
             (item) => item.product?.id !== product.id
           );
+          onUpdateCartItemQuantity(product, cartItem.quantity - 1);
           localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
         }
       }
@@ -786,7 +787,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                     ) : (
                       <>
                         <span className="text-sm mr-4 flex flex-row gap-1">
-                          {selectedProduct.price}
+                          {selectedProduct.price.toFixed(2)}
                           <span>{lang === "en" ? "GEL" : "₾"}</span>
                         </span>
                       </>

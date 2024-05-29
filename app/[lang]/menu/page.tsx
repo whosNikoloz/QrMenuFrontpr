@@ -121,12 +121,14 @@ export default function MenuPage({
 
   function handleUpdateCartItemQuantity(product: ProductNew, quantity: number) {
     setCartItems((prevCartItems: CartItemNew[]) => {
-      const updatedCartItems = prevCartItems.map((cartItem) => {
-        if (cartItem.product?.id === product.id) {
-          return { ...cartItem, quantity } as CartItemNew;
-        }
-        return cartItem;
-      });
+      const updatedCartItems = prevCartItems
+        .map((cartItem) => {
+          if (cartItem.product?.id === product.id) {
+            return { ...cartItem, quantity } as CartItemNew;
+          }
+          return cartItem;
+        })
+        .filter((cartItem) => cartItem.quantity !== 0);
 
       return updatedCartItems;
     });
