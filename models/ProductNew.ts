@@ -13,13 +13,8 @@ class ProductNew {
   DiscountedPrice?: number;
   StaticPrice?: number;
   options: Option[];
-<<<<<<< HEAD
-  originalPrice: number;
-  originalDiscountedPrice: number;
-=======
   originalPrice?: number;
   originalDiscountPrice?: number;
->>>>>>> ed1f625c9b893de1e181e76b3d26aecf7dfeb9ca
 
   constructor(
     id: number,
@@ -48,11 +43,7 @@ class ProductNew {
     this.StaticPrice = price - (price * discount) / 100 ?? price;
 
     this.originalPrice = price;
-<<<<<<< HEAD
-    this.originalDiscountedPrice = this.DiscountedPrice;
-=======
     this.originalDiscountPrice = price - (price * discount) / 100;
->>>>>>> ed1f625c9b893de1e181e76b3d26aecf7dfeb9ca
   }
 
   incrementPrice(optionId: number, valueId: number): void {

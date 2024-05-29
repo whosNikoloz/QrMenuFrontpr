@@ -178,8 +178,6 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
 
     const handleOptionRadioToggle = (optionId: number, valueId: number) => {
       if (selectedProduct) {
-<<<<<<< HEAD
-=======
         // const newSelectedProduct = new ProductNew(
         //   selectedProduct.id,
         //   selectedProduct.name_En,
@@ -194,7 +192,6 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
         //   selectedProduct.DiscountedPrice ?? 0
         // );
 
->>>>>>> ed1f625c9b893de1e181e76b3d26aecf7dfeb9ca
         // Find the selected option and its value
         const selectedOption = selectedProduct.options.find(
           (option) => option.id === optionId
@@ -255,8 +252,6 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
 
     const handleOptionCheckboxToggle = (optionId: number, valueId: number) => {
       if (selectedProduct) {
-<<<<<<< HEAD
-=======
         // const newSelectedProduct = new ProductNew(
         //   selectedProduct.id,
         //   selectedProduct.name_En,
@@ -271,7 +266,6 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
         //   selectedProduct.DiscountedPrice ?? 0
         // );
 
->>>>>>> ed1f625c9b893de1e181e76b3d26aecf7dfeb9ca
         const selectedOption = selectedProduct.options.find(
           (option) => option.id === optionId
         );
@@ -610,33 +604,19 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                         <>
                           {/* Original price */}
                           <span className="line-through text-slate-400">
-<<<<<<< HEAD
-                            {selectedProduct.originalPrice.toFixed(2)}{" "}
-=======
                             {selectedProduct.originalPrice?.toFixed(2)}{" "}
->>>>>>> ed1f625c9b893de1e181e76b3d26aecf7dfeb9ca
                             {lang === "en" ? "GEL" : "₾"}
                           </span>
 
                           {/* Discounted price */}
                           <span className="text-green-500 ml-1">
-<<<<<<< HEAD
-                            {selectedProduct.originalDiscountedPrice?.toFixed(
-                              2
-                            )}
-=======
                             {selectedProduct.originalDiscountPrice?.toFixed(2)}
->>>>>>> ed1f625c9b893de1e181e76b3d26aecf7dfeb9ca
                             {lang === "en" ? "GEL" : "₾"}
                           </span>
                         </>
                       ) : (
                         <>
-<<<<<<< HEAD
-                          {selectedProduct.originalPrice.toFixed(2)}{" "}
-=======
                           {selectedProduct.originalPrice?.toFixed(2)}
->>>>>>> ed1f625c9b893de1e181e76b3d26aecf7dfeb9ca
                           {lang === "en" ? "GEL" : "₾"}
                         </>
                       )}

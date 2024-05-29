@@ -111,7 +111,6 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
   const [optionValueId, setOptionValueId] = useState(0);
 
   const handleAddOption = (value: string) => {
-    alert(value);
     setEnglishName("");
     setGeorgianName("");
     setType(value);
