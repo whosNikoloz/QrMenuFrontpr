@@ -653,17 +653,14 @@ const ProductOptionsCreator: React.FC<ProductOptionsCreatorProps> = ({
                                     //   handleOptionNumFieldChange(value);
                                     // }}
                                   />
-                                  <div className="flex flex-col items-end gap-1">
+                                  <div className="flex flex-row items-end ">
                                     <Chip
                                       color="success"
                                       size="sm"
                                       variant="flat"
                                       className="mb-2"
                                     >
-                                      +
-                                      {(
-                                        selectedProduct?.StaticPrice ?? 0
-                                      ).toFixed(2)}
+                                      +{value.price}{" "}
                                       {lang === "en" ? "GEL" : "₾"}
                                     </Chip>
                                     <Button

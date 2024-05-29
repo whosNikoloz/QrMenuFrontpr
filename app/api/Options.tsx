@@ -2,7 +2,7 @@ import ProductNew from "@/models/ProductNew";
 import { OptionClass, Option } from "@/models/Option";
 import { OptionValueClass, OptionValue } from "@/models/OptionValue";
 
-const mainAPI = "https://newsageleaf67.conveyor.cloud/api/Option";
+const mainAPI = "https://losttealbook42.conveyor.cloud/api/Option";
 
 const createOption = async (
   option: OptionCreateDto
