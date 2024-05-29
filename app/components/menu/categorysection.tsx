@@ -486,10 +486,10 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                       {formatedPr.description}
                     </p>
 
-                    <div className="mt-auto flex items-center justify-between">
+                    <div className="mt-auto  flex items-center justify-between">
                       <p className="mr-2 mt-4 text-black dark:text-white relative">
                         {formatedPr.discount !== 0 ? (
-                          <p className="flex flex-col">
+                          <p className="flex flex-col font-bold">
                             {/* Original price */}
                             <span className="line-through text-slate-400">
                               <span className="text-sm">
@@ -510,7 +510,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
                           </p>
                         ) : (
                           <>
-                            <span className="text-md">
+                            <span className="text-md font-bold">
                               {formatedPr.price.toFixed(2)}
                             </span>{" "}
                             <span className="text-xs">
