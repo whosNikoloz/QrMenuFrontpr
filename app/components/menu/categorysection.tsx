@@ -43,6 +43,7 @@ interface CategorySectionProps {
   cartItems: CartItemNew[];
   onAddToCart: (cartItem: CartItemNew) => void;
   onUpdateCartItemQuantity: (product: ProductNew, quantity: number) => void;
+  onSearchLoading: (isLoading: boolean) => void;
 }
 
 export interface CategorySectionRef {
@@ -59,6 +60,7 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
       lang,
       onAddToCart,
       onUpdateCartItemQuantity,
+      onSearchLoading,
     },
     ref
   ) => {
@@ -71,20 +73,24 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
     const [extras, setExtras] = useState<{ [key: string]: string[] }>({});
     const handleAddToCart = (product: ProductData) => {
       setSelectedProduct(null); // Reset the selected item
-      // const fetchData = async () => {
-      //   try {
-      //     const data = await fetchProductWithOptionsAndValues(product.id);
-      //     setSelectedProduct(data);
-      //   } catch (error) {
-      //     console.error("Error fetching product groups:", error);
-      //   }
-      // };
 
-      // fetchData();
       const selectedProduct = products.find((p) => p.id === product.id);
       if (selectedProduct) {
+        onSearchLoading(false);
         setSelectedProduct(selectedProduct);
         onOpen();
+      } else {
+        const fetchData = async () => {
+          try {
+            const data = await fetchProductWithOptionsAndValues(product.id);
+            setSelectedProduct(data);
+            onSearchLoading(false);
+            onOpen();
+          } catch (error) {
+            console.error("Error fetching product groups:", error);
+          }
+        };
+        fetchData();
       }
     };
 
@@ -122,7 +128,6 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
               ? selectedProduct.DiscountedPrice ?? 0
               : selectedProduct.price,
         });
-        console.log("Selected Product:", selectedProduct);
         setCustomDescription("");
         setExtras({});
         onClose();
@@ -157,7 +162,6 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
       const cartItem = cartItems.find(
         (item) => item.product?.id === product.id
       );
-      console.log("Cart Item:", cartItem);
 
       if (cartItem) {
         if (cartItem.quantity > 1) {
