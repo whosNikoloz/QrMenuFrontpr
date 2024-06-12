@@ -73,4 +73,4 @@ We welcome contributions from the community to enhance the qrMenu project. To co
 3. Make your changes, ensuring adherence to coding standards and guidelines.
 4. Submit a pull request, providing a clear description of your changes and their purpose.
 
-Feel free to customize and expand the sections as needed to accurately reflect your qrMenu project. Replace placeholders like `path/to/qrMenuBanner.png`, `path/to/mainMenuView.png`, `path/to/productDetailView.png`, and `path/to/shoppingCart.png` with the actual paths to your images and tailor the content to your project's specifics. Best of luck with your qrMenu project!
+
