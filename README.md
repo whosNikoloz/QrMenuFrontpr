@@ -1,6 +1,6 @@
 # qrMenu - Your Interactive Restaurant Menu
 
-![qrMenu Banner](path/to/qrMenuBanner.png)
+![qrMenu Banner](mainMenuView.png)
 
 qrMenu is a modern web application developed using Next.js with React framework, offering an interactive dining experience. Built on top of ASP.NET Web API, qrMenu simplifies the process of browsing menus, placing orders, and customizing dishes. With seamless integration of QR code technology, users can access the menu instantly by scanning a QR code placed on the dining table.
 
@@ -21,7 +21,7 @@ Welcome to qrMenu, an innovative solution designed to revolutionize the dining e
 ## Features
 
 - Instant access to the restaurant menu by scanning a QR code.
-- Browse through menu items, view descriptions, and prices.
+- Browse through menu categories and items.
 - Add items to the cart with customizable modifiers and ingredients.
 - Place orders directly from the web application.
 - Role-based authentication for staff and administrators.
@@ -53,6 +53,17 @@ qrMenu implements a robust authentication system to ensure secure access for use
 
 Refer to the [qrMenuAPI Documentation](https://github.com/yourusername/qrMenuAPI) for detailed information on the endpoints provided by the qrMenuAPI. The API facilitates functionalities such as managing menus, processing orders, and handling user authentication.
 
+## Screenshots
+
+### Main Menu View
+![Main Menu View](mainMenuView.png)
+
+### Product Detail View
+![Product Detail View](productDetailView.png)
+
+### Shopping Cart
+![Shopping Cart](shoppingCart.png)
+
 ## Contributing
 
 We welcome contributions from the community to enhance the qrMenu project. To contribute:
@@ -62,4 +73,4 @@ We welcome contributions from the community to enhance the qrMenu project. To co
 3. Make your changes, ensuring adherence to coding standards and guidelines.
 4. Submit a pull request, providing a clear description of your changes and their purpose.
 
-Feel free to customize and expand the sections as needed to accurately reflect your qrMenu project. Replace placeholders like `path/to/qrMenuBanner.png` with the actual paths and tailor the content to your project's specifics. Best of luck with your qrMenu project!
+Feel free to customize and expand the sections as needed to accurately reflect your qrMenu project. Replace placeholders like `path/to/qrMenuBanner.png`, `path/to/mainMenuView.png`, `path/to/productDetailView.png`, and `path/to/shoppingCart.png` with the actual paths to your images and tailor the content to your project's specifics. Best of luck with your qrMenu project!
