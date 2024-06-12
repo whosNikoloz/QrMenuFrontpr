@@ -51,7 +51,7 @@ qrMenu implements a robust authentication system to ensure secure access for use
 
 ## API - qrMenuAPI
 
-Refer to the [qrMenuAPI Documentation](https://github.com/yourusername/qrMenuAPI) for detailed information on the endpoints provided by the qrMenuAPI. The API facilitates functionalities such as managing menus, processing orders, and handling user authentication.
+Refer to the [qrMenuAPI Documentation](https://github.com/whosNikoloz/QrMenuBackend.git) for detailed information on the endpoints provided by the qrMenuAPI. The API facilitates functionalities such as managing menus, processing orders, and handling user authentication.
 
 ## Screenshots
 
