@@ -119,12 +119,29 @@ const AddProduct = ({
       shouldBlockScroll={true}
     >
       <ModalContent>
-        <ModalHeader className="flex flex-col gap-1 dark:text-white text-black">
+        <ModalHeader className="flex flex-col gap-1 dark:text-white text-black px-4 sm:px-6 lg:px-8">
           {lang === "en" ? "Create Product" : "პროდუქტის დამატება"}
         </ModalHeader>
-        <ModalBody>
-          <div className="flex flex-col gap-2">
-            <div className="flex flex-row gap-3">
+        <ModalBody className="px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 max-w-6xl mx-auto w-full">
+            {/* Image Section - Left side on desktop */}
+            <div className="lg:w-2/5 lg:flex-shrink-0 lg:order-2">
+              {image && (
+                <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl lg:sticky lg:top-0">
+                  <Image
+                    src={image}
+                    width={500}
+                    alt="Product"
+                    height={500}
+                    className="w-full max-h-[250px] sm:max-h-[350px] lg:max-h-[500px] object-cover rounded-2xl"
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Form Section - Right side on desktop */}
+            <div className="flex-1 flex flex-col gap-3 lg:order-1">
+              <div className="flex flex-col sm:flex-row gap-3">
               <Input
                 placeholder={
                   lang === "en"
@@ -145,155 +162,147 @@ const AddProduct = ({
               </label>
             </div>
 
-            <div className="flex flex-row gap-3">
-              <Input
-                placeholder={
-                  lang === "en"
-                    ? "Enter Georgian Name"
-                    : "შეიყვანეთ ქართული სახელი"
-                }
-                classNames={{
-                  input: ["text-[16px] "],
-                }}
-                value={georgianName}
-                onChange={(e) => setGeorgianName(e.target.value)}
-              />
-              <label
-                htmlFor="NameGeorgian"
-                className="text-xs items-center justify-start flex w-1/2"
-              >
-                {lang === "en" ? "Georgian Name" : "ქართული სახელი"}
-              </label>
-            </div>
-            <div className="flex flex-row gap-3">
-              <Input
-                placeholder={lang === "en" ? "Enter Price" : "შეიყვანეთ ფასი"}
-                endContent={
-                  <div className="pointer-events-none flex items-center">
-                    <span className="text-default-400 text-small">$</span>
-                  </div>
-                }
-                classNames={{
-                  input: ["text-[16px] "],
-                }}
-                inputMode="numeric"
-                type="number"
-                value={price.toString()}
-                onChange={(e) => setPrice(Number(e.target.value))}
-              />
-              <label
-                htmlFor="Price"
-                className="text-xs items-center justify-start flex w-1/2"
-              >
-                {lang === "en" ? "Price" : "ფასი"}
-              </label>
-            </div>
-            <div className="flex flex-row gap-3">
-              <Input
-                placeholder="0.00"
-                endContent={
-                  <div className="pointer-events-none flex items-center">
-                    <span className="text-default-400 text-small">%</span>
-                  </div>
-                }
-                classNames={{
-                  input: ["text-[16px] "],
-                }}
-                type="number"
-                inputMode="numeric"
-                value={discount.toString()}
-                onChange={(e) => setDiscount(Number(e.target.value))}
-              />
-              <label
-                htmlFor="Discount"
-                className="text-xs items-center justify-start flex w-1/2"
-              >
-                {lang === "en" ? "Discount" : "ფასდაკლება"}
-              </label>
-            </div>
-            <div className="flex flex-row gap-3">
-              <Textarea
-                classNames={{
-                  input: ["text-[16px] "],
-                }}
-                placeholder={
-                  lang === "en"
-                    ? "Enter English Description"
-                    : "შეიყვანეთ ინგლისური აღწერა"
-                }
-                value={descriptionEnglish}
-                onChange={(e) => setDescriptionEnglish(e.target.value)}
-              />
-              <label
-                htmlFor="DescriptionEnglish"
-                className="text-xs items-center justify-start flex w-1/2"
-              >
-                {lang === "en"
-                  ? "Description (English)"
-                  : "აღწერა (ინგლისურად)"}
-              </label>
-            </div>
-            <div className="flex flex-row gap-3">
-              <Textarea
-                classNames={{
-                  input: ["text-[16px] "],
-                }}
-                placeholder={
-                  lang === "en"
-                    ? "Enter Georgian Description"
-                    : "შეიყვანეთ ქართული აღწერა"
-                }
-                value={descriptionGeorgian}
-                onChange={(e) => setDescriptionGeorgian(e.target.value)}
-              />
-              <label
-                htmlFor="NameGeorgian"
-                className="text-xs items-center justify-start flex w-1/2"
-              >
-                {lang === "en" ? "Description (Georgian)" : "აღწერა (ქართულად)"}
-              </label>
-            </div>
-
-            <div className="flex gap-4 p-3">
-              <Input
-                label={lang === "en" ? "Image URL" : "სურათის URL"}
-                placeholder={
-                  lang === "en" ? "Enter Image URL" : "შეიყვანეთ სურათის URL"
-                }
-                classNames={{
-                  input: ["text-[16px] "],
-                }}
-                value={image}
-                onChange={(e) => setImage(e.target.value)}
-              />
-              {image && (
-                <Image
-                  src={image}
-                  width={100}
-                  alt="Product"
-                  height={100}
-                  className="rounded-2xl"
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Input
+                  placeholder={
+                    lang === "en"
+                      ? "Enter Georgian Name"
+                      : "შეიყვანეთ ქართული სახელი"
+                  }
+                  classNames={{
+                    input: ["text-[16px] "],
+                  }}
+                  value={georgianName}
+                  onChange={(e) => setGeorgianName(e.target.value)}
                 />
-              )}
-            </div>
-
-            <Select
-              size="md"
-              label={lang === "en" ? "Select a group" : "აირჩიეთ ჯგუფი"}
-              onChange={(e) => setGroupId(Number(e.target.value))}
-              defaultSelectedKeys={[groupId.toString()]}
-              value={groupId.toString()}
-              required
-            >
-              {groups.map((group) => (
-                <SelectItem
-                  key={group.id.toString()}
-                  value={group.id.toString()}
+                <label
+                  htmlFor="NameGeorgian"
+                  className="text-xs sm:text-sm items-center justify-start flex sm:w-1/2 w-full"
                 >
-                  {lang === "en" ? group.name_En : group.name_Ka}
-                </SelectItem>
-              ))}
-            </Select>
+                  {lang === "en" ? "Georgian Name" : "ქართული სახელი"}
+                </label>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Input
+                  placeholder={lang === "en" ? "Enter Price" : "შეიყვანეთ ფასი"}
+                  endContent={
+                    <div className="pointer-events-none flex items-center">
+                      <span className="text-default-400 text-small">$</span>
+                    </div>
+                  }
+                  classNames={{
+                    input: ["text-[16px] "],
+                  }}
+                  inputMode="numeric"
+                  type="number"
+                  value={price.toString()}
+                  onChange={(e) => setPrice(Number(e.target.value))}
+                />
+                <label
+                  htmlFor="Price"
+                  className="text-xs sm:text-sm items-center justify-start flex sm:w-1/2 w-full"
+                >
+                  {lang === "en" ? "Price" : "ფასი"}
+                </label>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Input
+                  placeholder="0.00"
+                  endContent={
+                    <div className="pointer-events-none flex items-center">
+                      <span className="text-default-400 text-small">%</span>
+                    </div>
+                  }
+                  classNames={{
+                    input: ["text-[16px] "],
+                  }}
+                  type="number"
+                  inputMode="numeric"
+                  value={discount.toString()}
+                  onChange={(e) => setDiscount(Number(e.target.value))}
+                />
+                <label
+                  htmlFor="Discount"
+                  className="text-xs sm:text-sm items-center justify-start flex sm:w-1/2 w-full"
+                >
+                  {lang === "en" ? "Discount" : "ფასდაკლება"}
+                </label>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Textarea
+                  classNames={{
+                    input: ["text-[16px] "],
+                  }}
+                  placeholder={
+                    lang === "en"
+                      ? "Enter English Description"
+                      : "შეიყვანეთ ინგლისური აღწერა"
+                  }
+                  value={descriptionEnglish}
+                  onChange={(e) => setDescriptionEnglish(e.target.value)}
+                />
+                <label
+                  htmlFor="DescriptionEnglish"
+                  className="text-xs sm:text-sm items-center justify-start flex sm:w-1/2 w-full"
+                >
+                  {lang === "en"
+                    ? "Description (English)"
+                    : "აღწერა (ინგლისურად)"}
+                </label>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Textarea
+                  classNames={{
+                    input: ["text-[16px] "],
+                  }}
+                  placeholder={
+                    lang === "en"
+                      ? "Enter Georgian Description"
+                      : "შეიყვანეთ ქართული აღწერა"
+                  }
+                  value={descriptionGeorgian}
+                  onChange={(e) => setDescriptionGeorgian(e.target.value)}
+                />
+                <label
+                  htmlFor="NameGeorgian"
+                  className="text-xs sm:text-sm items-center justify-start flex sm:w-1/2 w-full"
+                >
+                  {lang === "en" ? "Description (Georgian)" : "აღწერა (ქართულად)"}
+                </label>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Input
+                  label={lang === "en" ? "Image URL" : "სურათის URL"}
+                  placeholder={
+                    lang === "en" ? "Enter Image URL" : "შეიყვანეთ სურათის URL"
+                  }
+                  classNames={{
+                    input: ["text-[16px] "],
+                  }}
+                  value={image}
+                  onChange={(e) => setImage(e.target.value)}
+                />
+              </div>
+
+              <Select
+                size="md"
+                label={lang === "en" ? "Select a group" : "აირჩიეთ ჯგუფი"}
+                onChange={(e) => setGroupId(Number(e.target.value))}
+                defaultSelectedKeys={[groupId.toString()]}
+                value={groupId.toString()}
+                required
+              >
+                {groups.map((group) => (
+                  <SelectItem
+                    key={group.id.toString()}
+                    value={group.id.toString()}
+                  >
+                    {lang === "en" ? group.name_En : group.name_Ka}
+                  </SelectItem>
+                ))}
+              </Select>
+            </div>
           </div>
         </ModalBody>
         <ModalFooter>

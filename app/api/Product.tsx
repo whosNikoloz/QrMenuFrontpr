@@ -2,7 +2,8 @@ import ProductNew from "@/models/ProductNew";
 import { OptionClass, Option } from "@/models/Option";
 import { OptionValueClass, OptionValue } from "@/models/OptionValue";
 
-const mainAPI = "https://firstbrushedski38.conveyor.cloud/api/Product";
+const mainAPI = process.env.NEXT_PUBLIC_API_URL + "Product";
+
 
 const fetchProductWithOptionsAndValues = async (
   productid: number

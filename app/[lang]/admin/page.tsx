@@ -257,11 +257,11 @@ export default function AdminPage({
         shouldBlockScroll={true}
       >
         <ModalContent>
-          <ModalHeader className="flex flex-col gap-1 ">
-            <div className="px-10">
+          <ModalHeader className="flex flex-col gap-1">
+            <div className="w-full px-4 sm:px-6 lg:px-10">
               <Input
                 classNames={{
-                  base: "max-w-full sm:max-w-[10rem] h-10",
+                  base: "max-w-full h-10",
                   mainWrapper: "h-full",
                   input: "text-[16px]",
                   inputWrapper:
@@ -276,12 +276,12 @@ export default function AdminPage({
               />
             </div>
           </ModalHeader>
-          <ModalBody>
-            <div>
+          <ModalBody className="px-4 sm:px-6 lg:px-8">
+            <div className="max-w-4xl mx-auto w-full">
               {filteredProducts.map((product, index) => {
                 return (
                   <div
-                    className="flex justify-between dark:bg-[#313638]/85 bg-white shadow-2xl p-4 mt-2 rounded-2xl"
+                    className="flex justify-between dark:bg-[#313638]/85 bg-white shadow-2xl p-3 sm:p-4 mt-2 rounded-2xl"
                     key={index}
                   >
                     <Image
@@ -291,10 +291,10 @@ export default function AdminPage({
                       height={200}
                       as={NextImage}
                       alt="Sample Image"
-                      className="rounded-lg h-28"
+                      className="rounded-lg h-20 w-20 sm:h-28 sm:w-28 object-cover flex-shrink-0"
                     />
 
-                    <div className="ml-4  flex w-full flex-col justify-between">
+                    <div className="ml-3 sm:ml-4 flex w-full flex-col justify-between">
                       <h1 className="text-md uppercase font-bold text-black dark:text-white ">
                         {lang === "en" ? product?.name_En : product?.name_Ka}
                       </h1>

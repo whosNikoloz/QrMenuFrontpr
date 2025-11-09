@@ -9,8 +9,8 @@ export default function MainLayout({
   lang: Locale;
 }) {
   return (
-    <div className="relative  flex flex-col h-full min-h-screen">
-      <div className="justify-center items-center flex mb-24">
+    <div className="relative flex flex-col h-full min-h-screen w-full">
+      <div className="justify-center items-center flex mb-12 sm:mb-16 lg:mb-20">
         <Navbar
           lng={lang}
           Menupage={false}
@@ -22,7 +22,9 @@ export default function MainLayout({
           }}
         />{" "}
       </div>
-      {children}
+      <div className="flex-1 w-full">
+        {children}
+      </div>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { OptionValueClass, OptionValue } from "@/models/OptionValue";
 
-const mainAPI = "https://firstbrushedski38.conveyor.cloud/api/OptionValue";
+const mainAPI = process.env.NEXT_PUBLIC_API_URL + "OptionValue";
 
 const createOptionValue = async (
   option: OptionValueCreateDto

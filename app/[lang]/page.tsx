@@ -14,8 +14,10 @@ export default function Home({
 }) {
   return (
     <MainLayout lang={lang}>
-      <AutoScrollCarousel lng={""} />
-      <ProductCategory items={[]} lang={lang} />
+      <div className="w-full space-y-8 sm:space-y-12 lg:space-y-16 pb-12 sm:pb-16 lg:pb-20">
+        <AutoScrollCarousel lng={""} />
+        <ProductCategory items={[]} lang={lang} />
+      </div>
     </MainLayout>
   );
 }

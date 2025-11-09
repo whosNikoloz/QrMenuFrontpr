@@ -65,17 +65,17 @@ const AutoScrollCarousel = ({ lng }: { lng: string }) => {
 
   return (
     <>
-      <div className="mx-2 flex">
-        <div className="splide mb-5">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="splide mb-8 lg:mb-12">
           <div className="splide__track">
-            <ul className="splide__list ">
+            <ul className="splide__list">
               {adverts.length > 0 ? ( // Check if there is fetched data
                 adverts.map((advert) => (
                   <li className="splide__slide" key={advert.advertid}>
                     <Card
                       isFooterBlurred
                       shadow="md"
-                      className="w-full h-[200px] col-span-12 sm:col-span-5"
+                      className="w-full h-[200px] sm:h-[300px] lg:h-[400px] col-span-12 sm:col-span-5"
                     >
                       <img
                         alt="Relaxing app background"

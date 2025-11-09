@@ -3,7 +3,7 @@
 import ProductGroup from "@/models/ProductGroup";
 import ProductNew from "@/models/ProductNew";
 
-const mainAPI = "https://firstbrushedski38.conveyor.cloud/api/ProductGroup";
+const mainAPI = process.env.NEXT_PUBLIC_API_URL + "ProductGroup";
 
 const fetchProductGroups = async (): Promise<ProductGroup[]> => {
   try {

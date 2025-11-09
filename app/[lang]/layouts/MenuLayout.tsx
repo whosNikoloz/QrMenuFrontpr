@@ -23,8 +23,8 @@ export const MenuLayout: React.FC<MenuLayoutProps> = ({
   }
 
   return (
-    <div className="relative  flex flex-col h-full ">
-      <div className="justify-center items-center flex mb-24">
+    <div className="relative flex flex-col h-full min-h-screen w-full">
+      <div className="justify-center items-center flex mb-12 sm:mb-16 lg:mb-20">
         <Navbar
           lng={lang}
           Menupage={true}
@@ -32,7 +32,9 @@ export const MenuLayout: React.FC<MenuLayoutProps> = ({
           openSearch={openSearch}
         />
       </div>
-      {children}
+      <div className="flex-1 w-full">
+        {children}
+      </div>
     </div>
   );
 };

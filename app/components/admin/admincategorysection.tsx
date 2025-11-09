@@ -311,36 +311,37 @@ const CategorySectionAdmin = forwardRef<
 
     return (
       <>
-        <div className="p-2">
-          <div className="flex justify-between">
-            <h1 className="ml-4 text-black dark:text-white font-bold text-3xl">
-              {title}
-            </h1>
-            <div className="flex gap-3 ">
-              <Button
-                size="sm"
-                isIconOnly
-                onClick={onEditGroup}
-                color="success"
-                className="dark:text-white text-black text-3xl bg-transparent"
-              >
-                <EditIcon size={24} />
-              </Button>
+        <div className="w-full flex flex-col items-center px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+          <div className="w-full max-w-7xl">
+            {biglayout ? (
+              <div className="w-full max-w-4xl mx-auto">
+                <div className="flex justify-between items-center mb-4 sm:mb-5 lg:mb-6">
+                  <h1 className="text-black dark:text-white font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl tracking-tight">
+                    {title}
+                  </h1>
+                  <div className="flex gap-3">
+                    <Button
+                      size="sm"
+                      isIconOnly
+                      onClick={onEditGroup}
+                      color="success"
+                      className="dark:text-white text-black text-3xl bg-transparent"
+                    >
+                      <EditIcon size={24} />
+                    </Button>
 
-              <Button
-                size="sm"
-                isIconOnly
-                onClick={hanldeAddProduct}
-                color="success"
-                className="dark:text-green-600 text-black text-3xl bg-transparent"
-              >
-                <AddIcon size={26} />
-              </Button>
-            </div>
-          </div>
-
-          {biglayout ? (
-            <div className="mt-4 grid  grid-cols-2 gap-4">
+                    <Button
+                      size="sm"
+                      isIconOnly
+                      onClick={hanldeAddProduct}
+                      color="success"
+                      className="dark:text-green-600 text-black text-3xl bg-transparent"
+                    >
+                      <AddIcon size={26} />
+                    </Button>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
               {products.map((product, index) => {
                 const formatedPr: ProductData = product.getProductData(
                   lang === "en" ? "en" : "ka"
@@ -348,7 +349,7 @@ const CategorySectionAdmin = forwardRef<
 
                 return (
                   <div key={index} className="w-full">
-                    <div className="max-w-[200px] h-auto rounded-3xl border dark:bg-[#313638]/85 bg-white shadow-2xl text-center font-semibold ">
+                    <div className="w-full h-auto rounded-3xl border dark:bg-[#313638]/85 bg-white shadow-2xl text-center font-semibold">
                       <Image
                         src={formatedPr.imageUrl ?? ""}
                         width={200}
@@ -356,12 +357,12 @@ const CategorySectionAdmin = forwardRef<
                         height={200}
                         as={NextImage}
                         alt="Sample Image"
-                        className="rounded-3xl"
+                        className="rounded-3xl w-full aspect-square object-cover"
                       />
-                      <h1 className="text-md uppercase font-bold mt-3 mx-1">
+                      <h1 className="text-xs sm:text-sm uppercase font-bold mt-2 sm:mt-3 mx-1 px-1">
                         {formatedPr.name}
                       </h1>
-                      <h3 className="text-sm text-gray-400">
+                      <h3 className="text-[10px] sm:text-xs text-gray-400 line-clamp-2 px-2">
                         {formatedPr.description}
                       </h3>
                       <h3 className="text-sm mt-5">
@@ -409,17 +410,46 @@ const CategorySectionAdmin = forwardRef<
                   </div>
                 );
               })}
+              </div>
             </div>
           ) : (
-            products.map((product, index) => {
-              const formatedPr: ProductData = product.getProductData(
-                lang === "en" ? "en" : "ka"
-              );
-              return (
-                <div
-                  className="flex justify-between dark:bg-[#313638]/85 bg-white shadow-2xl p-4 mt-2 rounded-2xl"
-                  key={index}
-                >
+            <div className="w-full max-w-4xl mx-auto">
+              <div className="flex justify-between items-center mb-4 sm:mb-5 lg:mb-6">
+                <h1 className="text-black dark:text-white font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl tracking-tight">
+                  {title}
+                </h1>
+                <div className="flex gap-3">
+                  <Button
+                    size="sm"
+                    isIconOnly
+                    onClick={onEditGroup}
+                    color="success"
+                    className="dark:text-white text-black text-3xl bg-transparent"
+                  >
+                    <EditIcon size={24} />
+                  </Button>
+
+                  <Button
+                    size="sm"
+                    isIconOnly
+                    onClick={hanldeAddProduct}
+                    color="success"
+                    className="dark:text-green-600 text-black text-3xl bg-transparent"
+                  >
+                    <AddIcon size={26} />
+                  </Button>
+                </div>
+              </div>
+              <div className="space-y-2 sm:space-y-3">
+              {products.map((product, index) => {
+                const formatedPr: ProductData = product.getProductData(
+                  lang === "en" ? "en" : "ka"
+                );
+                return (
+                  <div
+                    className="flex justify-between dark:bg-[#313638]/85 bg-white shadow-lg hover:shadow-xl transition-shadow duration-300 p-3 sm:p-4 lg:p-5 rounded-2xl"
+                    key={index}
+                  >
                   <Image
                     src={formatedPr.imageUrl ?? ""}
                     width={200}
@@ -488,8 +518,11 @@ const CategorySectionAdmin = forwardRef<
                   </div>
                 </div>
               );
-            })
+              })}
+              </div>
+            </div>
           )}
+          </div>
         </div>
 
         <Modal
@@ -556,25 +589,33 @@ const CategorySectionAdmin = forwardRef<
           backdrop="blur"
         >
           <ModalContent>
-            <ModalHeader className="flex flex-col gap-1 dark:text-white text-black">
+            <ModalHeader className="flex flex-col gap-1 dark:text-white text-black px-4 sm:px-6 lg:px-8">
               {lang === "en" ? "Edit Product" : "პროდუქტის რედაქტირება"}
             </ModalHeader>
-            <ModalBody>
-              <div className="flex flex-col gap-2">
+            <ModalBody className="px-4 sm:px-6 lg:px-8">
+              <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 max-w-6xl mx-auto w-full">
                 {selectedProduct && (
                   <>
-                    {image && (
-                      <Image
-                        src={image ?? ""}
-                        width={500}
-                        height={500}
-                        isZoomed
-                        as={NextImage}
-                        alt="Sample Image"
-                        className="rounded-3xl"
-                      />
-                    )}
-                    <div className="flex flex-row gap-3">
+                    {/* Image Section - Left side on desktop */}
+                    <div className="lg:w-2/5 lg:flex-shrink-0">
+                      {image && (
+                        <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl lg:sticky lg:top-0">
+                          <Image
+                            src={image ?? ""}
+                            width={500}
+                            height={500}
+                            isZoomed
+                            as={NextImage}
+                            alt="Sample Image"
+                            className="w-full max-h-[250px] sm:max-h-[350px] lg:max-h-[500px] object-cover"
+                          />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Form Section - Right side on desktop */}
+                    <div className="flex-1 flex flex-col gap-3">
+                      <div className="flex flex-col sm:flex-row gap-3">
                       <Input
                         placeholder={
                           lang === "en"
@@ -589,13 +630,13 @@ const CategorySectionAdmin = forwardRef<
                       />
                       <label
                         htmlFor="ImageUrl"
-                        className="text-xs items-center justify-start flex w-1/2 "
+                        className="text-xs sm:text-sm items-center justify-start flex sm:w-1/2 w-full"
                       >
                         {lang === "en" ? "Enter Image URL" : "სურათის URL"}
                       </label>
                     </div>
 
-                    <div className="flex flex-row gap-3">
+                    <div className="flex flex-col sm:flex-row gap-3">
                       <Input
                         placeholder={
                           lang === "en"
@@ -610,13 +651,13 @@ const CategorySectionAdmin = forwardRef<
                       />
                       <label
                         htmlFor="NameEnglish"
-                        className="text-xs items-center justify-start flex w-1/2"
+                        className="text-xs sm:text-sm items-center justify-start flex sm:w-1/2 w-full"
                       >
                         {lang === "en" ? "English Name" : "ინგლისური სახელი"}
                       </label>
                     </div>
 
-                    <div className="flex flex-row gap-3">
+                    <div className="flex flex-col sm:flex-row gap-3">
                       <Input
                         placeholder={
                           lang === "en"
@@ -631,66 +672,66 @@ const CategorySectionAdmin = forwardRef<
                       />
                       <label
                         htmlFor="NameGeorgian"
-                        className="text-xs items-center justify-start flex w-1/2"
+                        className="text-xs sm:text-sm items-center justify-start flex sm:w-1/2 w-full"
                       >
                         {lang === "en" ? "Georgian Name" : "ქართული სახელი"}
                       </label>
                     </div>
-                    <div className="flex flex-row gap-3">
-                      <Input
-                        placeholder={
-                          lang === "en" ? "Enter Price" : "შეიყვანეთ ფასი"
-                        }
-                        endContent={
-                          <div className="pointer-events-none flex items-center">
-                            <span className="text-default-400 text-small">
-                              $
-                            </span>
-                          </div>
-                        }
-                        classNames={{
-                          input: ["text-[16px] "],
-                        }}
-                        type="number"
-                        inputMode="numeric"
-                        value={price.toString()}
-                        onChange={(e) => setPrice(Number(e.target.value))}
-                      />
-                      <label
-                        htmlFor="Price"
-                        className="text-xs items-center justify-start flex w-1/2"
-                      >
-                        {lang === "en" ? "Price" : "ფასი"}
-                      </label>
-                    </div>
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <Input
+                          placeholder={
+                            lang === "en" ? "Enter Price" : "შეიყვანეთ ფასი"
+                          }
+                          endContent={
+                            <div className="pointer-events-none flex items-center">
+                              <span className="text-default-400 text-small">
+                                $
+                              </span>
+                            </div>
+                          }
+                          classNames={{
+                            input: ["text-[16px] "],
+                          }}
+                          type="number"
+                          inputMode="numeric"
+                          value={price?.toString() ?? "0"}
+                          onChange={(e) => setPrice(Number(e.target.value))}
+                        />
+                        <label
+                          htmlFor="Price"
+                          className="text-xs sm:text-sm items-center justify-start flex sm:w-1/2 w-full"
+                        >
+                          {lang === "en" ? "Price" : "ფასი"}
+                        </label>
+                      </div>
 
-                    <div className="flex flex-row gap-3">
-                      <Input
-                        placeholder="0.00"
-                        endContent={
-                          <div className="pointer-events-none flex items-center">
-                            <span className="text-default-400 text-small">
-                              %
-                            </span>
-                          </div>
-                        }
-                        classNames={{
-                          input: ["text-[16px] "],
-                        }}
-                        type="number"
-                        inputMode="numeric"
-                        value={discount.toString()}
-                        onChange={(e) => setDiscount(Number(e.target.value))}
-                      />
-                      <label
-                        htmlFor="Discount"
-                        className="text-xs items-center justify-start flex w-1/2"
-                      >
-                        {lang === "en" ? "Discount" : "ფასდაკლება"}
-                      </label>
-                    </div>
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <Input
+                          placeholder="0.00"
+                          endContent={
+                            <div className="pointer-events-none flex items-center">
+                              <span className="text-default-400 text-small">
+                                %
+                              </span>
+                            </div>
+                          }
+                          classNames={{
+                            input: ["text-[16px] "],
+                          }}
+                          type="number"
+                          inputMode="numeric"
+                          value={discount?.toString() ?? "0"}
+                          onChange={(e) => setDiscount(Number(e.target.value))}
+                        />
+                        <label
+                          htmlFor="Discount"
+                          className="text-xs sm:text-sm items-center justify-start flex sm:w-1/2 w-full"
+                        >
+                          {lang === "en" ? "Discount" : "ფასდაკლება"}
+                        </label>
+                      </div>
 
-                    <div className="flex flex-row gap-3">
+                    <div className="flex flex-col sm:flex-row gap-3">
                       <Textarea
                         classNames={{
                           input: ["text-[16px] "],
@@ -705,7 +746,7 @@ const CategorySectionAdmin = forwardRef<
                       />
                       <label
                         htmlFor="DescriptionEnglish"
-                        className="text-xs items-center justify-start flex w-1/2"
+                        className="text-xs sm:text-sm items-center justify-start flex sm:w-1/2 w-full"
                       >
                         {lang === "en"
                           ? "Description (English)"
@@ -713,27 +754,28 @@ const CategorySectionAdmin = forwardRef<
                       </label>
                     </div>
 
-                    <div className="flex flex-row gap-3">
-                      <Textarea
-                        classNames={{
-                          input: ["text-[16px] "],
-                        }}
-                        placeholder={
-                          lang === "en"
-                            ? "Enter Georgian Description"
-                            : "შეიყვანეთ ქართული აღწერა"
-                        }
-                        value={descriptionGeorgian}
-                        onChange={(e) => setDescriptionGeorgian(e.target.value)}
-                      />
-                      <label
-                        htmlFor="DescriptionGeorgian"
-                        className="text-xs items-center justify-start flex w-1/2"
-                      >
-                        {lang === "en"
-                          ? "Description (Georgian)"
-                          : "აღწერა (ქართულად)"}
-                      </label>
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <Textarea
+                          classNames={{
+                            input: ["text-[16px] "],
+                          }}
+                          placeholder={
+                            lang === "en"
+                              ? "Enter Georgian Description"
+                              : "შეიყვანეთ ქართული აღწერა"
+                          }
+                          value={descriptionGeorgian}
+                          onChange={(e) => setDescriptionGeorgian(e.target.value)}
+                        />
+                        <label
+                          htmlFor="DescriptionGeorgian"
+                          className="text-xs sm:text-sm items-center justify-start flex sm:w-1/2 w-full"
+                        >
+                          {lang === "en"
+                            ? "Description (Georgian)"
+                            : "აღწერა (ქართულად)"}
+                        </label>
+                      </div>
                     </div>
                   </>
                 )}

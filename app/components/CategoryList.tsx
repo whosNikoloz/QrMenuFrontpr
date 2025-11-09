@@ -53,35 +53,37 @@ const ProductCategory: React.FC<ProductCategoryProps> = ({ items, lang }) => {
   const categoriesToShow = predefinedItems;
 
   return (
-    <div className="mx-auto grid  grid-cols-2  gap-4 mb-10">
-      {categoriesToShow.map((item) => (
-        <div key={item.id} className="w-full">
-          <Card
-            isFooterBlurred
-            className="h-[190px] w-[190px] col-span-12 sm:col-span-7"
-            isPressable
-            onPress={() => {
-              router.push(`${lang}/menu`);
-            }}
-          >
-            <Image
-              removeWrapper
-              alt="Relaxing app background"
-              className="z-0 w-full h-full object-cover"
-              src={item.image}
-            />
-            <CardFooter className="absolute bg-black/40 bottom-0 z-10 border-t-1 border-default-600 dark:border-default-100">
-              <div className="flex flex-grow gap-2 items-center">
-                <div className="flex flex-col text-start">
-                  <p className="text-tiny text-white/60">
-                    {lang === "en" ? item.name_en : item.name_ka}
-                  </p>
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-10">
+        {categoriesToShow.map((item) => (
+          <div key={item.id} className="w-full">
+            <Card
+              isFooterBlurred
+              className="w-full aspect-square col-span-12 sm:col-span-7"
+              isPressable
+              onPress={() => {
+                router.push(`${lang}/menu`);
+              }}
+            >
+              <Image
+                removeWrapper
+                alt="Relaxing app background"
+                className="z-0 w-full h-full object-cover"
+                src={item.image}
+              />
+              <CardFooter className="absolute bg-black/40 bottom-0 z-10 border-t-1 border-default-600 dark:border-default-100">
+                <div className="flex flex-grow gap-2 items-center">
+                  <div className="flex flex-col text-start">
+                    <p className="text-sm sm:text-base text-white/60">
+                      {lang === "en" ? item.name_en : item.name_ka}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </CardFooter>
-          </Card>
-        </div>
-      ))}
+              </CardFooter>
+            </Card>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
