@@ -147,6 +147,10 @@ const BottomCart: React.FC<BottomCartProps> = ({
     });
   };
 
+
+
+  
+
   const getTotalPrice = (): number => {
     return cartItems.reduce((total, item) => {
       const sortedExtras = sortExtras(item.extras);
@@ -161,8 +165,9 @@ const BottomCart: React.FC<BottomCartProps> = ({
   return (
     <>
       {/* Cart display section */}
-      <div className="fixed z-50 bottom-4 left-1/2 transform -translate-x-1/2 inline-flex items-center w-11/12 max-w-screen-lg dark:bg-green-600 bg-white shadow-xl rounded-3xl p-2">
+      <div className="fixed z-50 bottom-4 left-1/2 transform -translate-x-1/2 inline-flex items-center sm:w-4/12 w-11/12 max-w-screen-lg dark:bg-green-600 bg-white shadow-xl rounded-3xl p-2">
         {/* Display total price and order button */}
+        <h1 className="bg-white/90 dark:bg-black/50 text-gray-700 dark:text-gray-300"></h1>
         <div className="flex justify-between w-full ml-3">
           <div className="flex items-center gap-2 dark:text-white text-black">
             <p className="font-bold">{lng === "en" ? "Total:" : "სულ:"}</p>

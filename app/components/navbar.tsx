@@ -5,8 +5,10 @@ import { Link, Button, Avatar, ButtonGroup, Switch } from "@nextui-org/react";
 import { usePathname, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
+import { restaurantConfig } from "@/config/restaurant";
 
 import { SearchIcon, LayoutOne, LayoutSecond } from "@/app/components/icons";
+import Image from "next/image";
 
 const SunFilledIcon = dynamic(
   () => import("@/app/components/icons").then((mod) => mod.SunFilledIcon),
@@ -115,7 +117,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <>
       <nav
-        className={`z-50 fixed sm:w-8/12 w-11/12  top-1  rounded-2xl transition-all duration-300 backdrop-blur-sm ${
+        className={`z-50 fixed sm:w-4/12 w-11/12  top-1  rounded-2xl transition-all duration-300 backdrop-blur-sm ${
           visible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full"
         }  mt-3 dark:bg-green-600 bg-white shadow-xl`}
       >
@@ -126,11 +128,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 href={`/${lng}`}
                 className={`p-0 bg-transparent  data-[hover=true]:bg-transparent font-bold gap-1 text-md sm:text-xl dark:text-white text-black `}
               >
-                {Menupage
-                  ? `${lng == "en" ? "Menu" : "მენიუ"}`
-                  : `${lng == "en" ? "Nika" : "ნიკა"} ${
-                      lng == "en" ? "DEV" : "დევ"
-                    }`}
+                {restaurantConfig.name[lng as keyof typeof restaurantConfig.name]}
               </Link>
             </div>
 

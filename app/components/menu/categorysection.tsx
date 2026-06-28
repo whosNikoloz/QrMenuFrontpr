@@ -178,35 +178,20 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
 
     const handleOptionRadioToggle = (optionId: number, valueId: number) => {
       if (selectedProduct) {
-        // const newSelectedProduct = new ProductNew(
-        //   selectedProduct.id,
-        //   selectedProduct.name_En,
-        //   selectedProduct.name_Ka,
-        //   selectedProduct.price,
-        //   selectedProduct.imageUrl,
-        //   selectedProduct.discount,
-        //   selectedProduct.description_En,
-        //   selectedProduct.description_Ka,
-        //   selectedProduct.group_Id,
-        //   selectedProduct.options,
-        //   selectedProduct.DiscountedPrice ?? 0
-        // );
+       
 
-        // Find the selected option and its value
         const selectedOption = selectedProduct.options.find(
           (option) => option.id === optionId
         );
         const selectedValue = selectedOption?.optionValues.find(
           (value) => value.id === valueId
         );
-        if (!selectedOption || !selectedValue) return; // Exit if option or value not found
+        if (!selectedOption || !selectedValue) return; 
 
-        // Find the previously selected value
         const previouslySelectedValue = selectedOption.optionValues.find(
           (value) => value.selected
         );
 
-        // Toggle the selection status
         selectedProduct.options = selectedProduct.options.map((option) => {
           if (option.id === optionId) {
             return {
@@ -221,10 +206,8 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
           return option;
         });
 
-        // Decrement the price of the previously selected value if exists
         if (previouslySelectedValue) {
           selectedProduct.decrementPrice(optionId, previouslySelectedValue.id);
-          // Remove the previously selected value from extras
           setExtras((prevExtras) => ({
             ...prevExtras,
             ["en"]: prevExtras["en"]?.filter(
@@ -236,10 +219,8 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
           }));
         }
 
-        // Increment the price of the newly selected value
         selectedProduct.incrementPrice(optionId, valueId);
 
-        // Add the newly selected value to extras
         setExtras((prevExtras) => ({
           ...prevExtras,
           ["en"]: [...(prevExtras["en"] || []), selectedValue.name_En],
@@ -376,7 +357,8 @@ const CategorySection = forwardRef<CategorySectionRef, CategorySectionProps>(
 
                 return (
                   <div key={index} className="w-full max-w-[200px] group">
-                    <div className="w-full h-full rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1a1a1a] hover:border-green-500 dark:hover:border-green-500 transition-all duration-300 overflow-hidden flex flex-col">
+                    <div className="w-full h-full rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1a1a1a]
+                     hover:border-green-500 dark:hover:border-green-500 transition-all duration-300 overflow-hidden flex flex-col">
                       <div className="relative overflow-hidden aspect-square bg-gray-100 dark:bg-gray-800">
                         <Image
                           src={formatedPr.imageUrl ?? ""}
